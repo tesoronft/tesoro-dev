@@ -1,4 +1,4 @@
-package com.example.tesoro_nft_app
+package com.tesoro.nft.application
 
 import io.flutter.embedding.android.FlutterActivity
 
