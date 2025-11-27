@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="tesoro_nft_app"
+        android:label="Tesoro Nft"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
