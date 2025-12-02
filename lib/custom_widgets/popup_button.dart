@@ -13,14 +13,18 @@ class PopupButton extends StatelessWidget {
             context.pop();
           },
       child: Container(
+        height: 35,
+        width: 35,
         decoration: BoxDecoration(
           color: AppColors.light,
-          borderRadius: BorderRadius.circular(12.0),
+          borderRadius: BorderRadius.circular(10.0),
         ),
-        alignment: Alignment.center,
-        child: Icon(
-          Icons.arrow_back_ios,
-          color: AppColors.dark,
+        child: Center(
+          child: Icon(
+            Icons.arrow_back_ios,
+            size: 18,
+            color: AppColors.dark,
+          ),
         ),
       ),
     );

@@ -23,6 +23,7 @@ class AppStrings {
   static const String enterPassword = 'Enter Password';
   static const String forgotPassword = 'Forgot Password?';
   static const String dontHaveAnAccount = 'Don’t have an account?';
+  static const String alreadyHaveAnAccount = 'Already have an account?';
   static const String signup = 'Sign Up';
   static const String continueWithGoogle = 'Continue with Google';
   static const String name = 'Name';

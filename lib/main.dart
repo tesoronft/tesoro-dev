@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:tesoro_nft_app/features/onboarding/splash.dart';
+import 'package:tesoro_nft_app/consts/app_providers.dart';
+import 'routes/routes.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(AppProviders.providers(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -11,12 +12,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Tesoro Nft',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const SplashView(),
+      routerConfig: Routes.router,
     );
   }
 }
