@@ -5,14 +5,9 @@ import 'package:tesoro_nft_app/consts/app_colors.dart';
 import 'package:tesoro_nft_app/data/dashboard/dashboard_data.dart';
 import 'package:tesoro_nft_app/providers/dashboard_provider.dart';
 
-class DashboardView extends StatefulWidget {
+class DashboardView extends StatelessWidget {
   const DashboardView({super.key});
 
-  @override
-  State<DashboardView> createState() => _DashboardViewState();
-}
-
-class _DashboardViewState extends State<DashboardView> {
   @override
   Widget build(BuildContext context) {
     return Consumer<DashboardProvider>(

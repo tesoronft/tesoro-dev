@@ -22,4 +22,14 @@ class AppImages {
   static const String phone = 'assets/images/phone.svg';
   static const String doc = 'assets/images/doc.svg';
   static const String chat = 'assets/images/chat.svg';
+
+  // Account
+  static const String bankCard = 'assets/images/bankCard.png';
+  static const String rocket = 'assets/images/rocket.png';
+  static const String coin = 'assets/images/coin.png';
+  static const String exchangeCurrency = 'assets/images/exchangeCurrency.png';
+  static const String referral = 'assets/images/referral.png';
+
+  //Others
+  static const String chairs = 'assets/images/chair.png';
 }

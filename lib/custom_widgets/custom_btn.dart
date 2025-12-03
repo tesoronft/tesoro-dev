@@ -54,7 +54,8 @@ class CustomBtn extends StatelessWidget {
             leadingIcon ?? SizedBox.shrink(),
             Text(
               text,
-              style: textStyle ?? AppTextStyles.bodyMedium,
+              style: textStyle ??
+                  AppTextStyles.bodyMedium.copyWith(color: AppColors.light),
             ),
             trailingIcon ?? SizedBox.shrink(),
           ],

@@ -12,7 +12,7 @@ class AppTextStyles {
   static TextStyle headingMedium = GoogleFonts.raleway(
     fontSize: 20,
     fontWeight: FontWeight.w700,
-    color: AppColors.light,
+    color: AppColors.dark,
   );
   static TextStyle bodyLarge = GoogleFonts.poppins(
     fontSize: 18,
@@ -22,16 +22,16 @@ class AppTextStyles {
   static TextStyle bodyMedium = GoogleFonts.poppins(
     fontSize: 16,
     fontWeight: FontWeight.w500,
-    color: AppColors.light,
+    color: AppColors.dark,
   );
   static TextStyle bodySmall = GoogleFonts.poppins(
     fontSize: 14,
     fontWeight: FontWeight.w400,
-    color: AppColors.light,
+    color: AppColors.dark,
   );
   static TextStyle labelMedium = GoogleFonts.raleway(
     fontSize: 12,
     fontWeight: FontWeight.w400,
-    color: AppColors.light,
+    color: AppColors.dark,
   );
 }

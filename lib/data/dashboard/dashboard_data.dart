@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:tesoro_nft_app/consts/app_images.dart';
+import 'package:tesoro_nft_app/features/dashboard/account/user_account_view.dart';
 import 'package:tesoro_nft_app/features/dashboard/settings/settings_view.dart';
 
 class DashboardData {
@@ -12,7 +13,7 @@ class DashboardData {
   static List<Widget> dashboardScreens = [
     Placeholder(),
     Placeholder(),
-    Placeholder(),
+    UserAccountView(),
     SettingsView()
   ];
 }

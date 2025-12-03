@@ -11,14 +11,14 @@ class CustomScaffold extends StatelessWidget {
       this.defaultPadding,
       this.extendBody,
       this.backgroundColor,
-      this.isAppbarRequired = true,
+      this.isAppbarRequired = false,
       this.appBarTitle,
       this.appBarTitleColor});
   final Widget child;
   final PreferredSizeWidget? appBar;
   final EdgeInsets? defaultPadding;
   final bool? extendBody;
-  bool isAppbarRequired = true;
+  bool isAppbarRequired = false;
   final Color? backgroundColor, appBarTitleColor;
   final String? appBarTitle;
 
@@ -27,7 +27,7 @@ class CustomScaffold extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: backgroundColor ?? AppColors.primary,
-      extendBody: extendBody ?? false,
+      extendBody: extendBody ?? true,
       appBar: isAppbarRequired == false
           ? null
           : AppBar(

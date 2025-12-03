@@ -36,7 +36,7 @@ class AppStrings {
   static const String categories = 'Categories';
   static const String treasureDetails = 'Treasure Details';
   static const String huntForThisItem = 'Hunt for This Item';
-  static const String condition = 'Condition';
+  static const String condition = 'Condition: ';
   static const String free = 'Free';
   static const String description = 'Description';
   static const String address = 'Address';
@@ -85,7 +85,7 @@ class AppStrings {
   static const String postItems = 'Post Your Item';
   static const String title = 'Title';
   static const String enterTitle = 'Enter Title';
-  static const String location = 'Location';
+  static const String location = 'Location: ';
   static const String addLocation = 'Add Location';
   static const String addPhotos = 'Add Photos';
   static const String itemIsPlacedOnSideWalk = 'Item is placed on side walk.';
@@ -116,4 +116,36 @@ class AppStrings {
 
   //Paywall screen
   static const String yourFreeTrial = 'Your Free Trial With Tesoro';
+
+  //Account
+  static const String paymentAndDeposit = 'Payment and Deposit Methods';
+  static const String tipsHistory = 'Tips History';
+  static const String tipsReceived = 'Tips Received';
+  static const String tipsGiven = 'Tips Given';
+  static const String treasureHistory = 'Treasure History';
+  static const String treasureCollected = 'Treasure Collected';
+  static const String collected = 'Collected';
+  static const String posted = 'Posted';
+  static const String earnOroTokens = 'Earn \$ORO Tokens';
+  static const String amountReceived = 'Amount Received: ';
+  static const String amountTipped = 'Amount Tipped: ';
+  static const String treasurePosted = 'Treasure Posted';
+  static const String collectedOn = 'Collected on: ';
+  static const String collectedFrom = 'Collected From: ';
+  static const String didYouKnowWeHaveAToekn =
+      'Did you know we have a\ntoken on the Solana blockchain?';
+  static const String earnOroByPosting = 'Earn \$ORO by posting items';
+  static const String availableWhenSubscribed =
+      'Available when you are subscribed to the Premium plan.';
+  static const String earnOroByReferring = 'Earn \$ORO by referring others';
+  static const String getRewards =
+      'Get rewards when your referrals sign up for Premium.';
+  static const String earnOroWhen =
+      'Earn \$ORO when your referrals take action ';
+  static const String boostYourrewards = 'Boost your \$ORO rewards ';
+  static const String premiumSubscribersEarns =
+      'Premium subscribers earn higher rewards and faster bonuses.';
+  static const String convertOroToOther =
+      'Convert \$ORO into other crypto or USD\nPro tip: Hold as much \$ORO as possible.';
+  static const String learnMore = 'Learn More';
 }
