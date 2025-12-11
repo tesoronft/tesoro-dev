@@ -21,7 +21,7 @@ class TreasurePostedCard extends StatelessWidget {
         spacing: 4,
         children: [
           Expanded(
-            child: Image.asset(
+            child: Image.network(
               imagePath,
               // height: 150,
               width: double.infinity,

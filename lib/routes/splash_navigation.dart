@@ -3,11 +3,11 @@ import 'package:go_router/go_router.dart';
 import 'package:tesoro_nft_app/routes/routes.dart';
 
 class SplashNavigation {
-  void nonPremiumLoggedInUser() {}
-  void nonPremiumLoggedOutUser(BuildContext context) {
-    context.go(Routes.onboarding1);
+  void appNavigation(BuildContext context, String token) {
+    if (token != '') {
+      context.go(Routes.dashboard);
+    } else {
+      context.go(Routes.onboarding1);
+    }
   }
-
-  void premiumLoggedInUser() {}
-  void premiumLoggedOutUser() {}
 }

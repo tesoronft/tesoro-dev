@@ -50,7 +50,7 @@ class SettingsCentral extends StatelessWidget {
                         .copyWith(color: AppColors.dark),
                   ),
                   Text(
-                    receivedAmount,
+                    givenAmount,
                     style: AppTextStyles.headingLarge
                         .copyWith(fontSize: 24, color: AppColors.error),
                   ),

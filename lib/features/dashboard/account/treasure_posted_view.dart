@@ -1,69 +1,111 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tesoro_nft_app/consts/app_colors.dart';
-import 'package:tesoro_nft_app/consts/app_images.dart';
 import 'package:tesoro_nft_app/consts/app_strings.dart';
 import 'package:tesoro_nft_app/consts/app_text_styles.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_scaffold.dart';
 import 'package:tesoro_nft_app/custom_widgets/popup_button.dart';
 import 'package:tesoro_nft_app/custom_widgets/treasure_posted_card.dart';
+import 'package:tesoro_nft_app/providers/api_provider.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:tesoro_nft_app/providers/preferences_provider.dart';
 
-class TreasurePostedView extends StatelessWidget {
+class TreasurePostedView extends StatefulWidget {
   const TreasurePostedView({super.key});
 
   @override
+  State<TreasurePostedView> createState() => _TreasurePostedViewState();
+}
+
+class _TreasurePostedViewState extends State<TreasurePostedView> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final apis = Provider.of<ApiProvider>(context, listen: false);
+      if (apis.getAllTreasureModel == null) {
+        await apis.getAllTreasuresData(1, 10, 'mine', '67.0011', '24.8607',
+            '10', context.read<PreferencesProvider>().accessToken ?? '');
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return CustomScaffold(
-        backgroundColor: AppColors.light,
-        child: SafeArea(
-            minimum: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    PopupButton(),
-                    Text(
-                      AppStrings.treasurePosted,
-                      style: AppTextStyles.headingMedium,
-                    ),
-                    SizedBox.shrink()
-                  ],
-                ),
-                DropdownButton(
-                  borderRadius: BorderRadius.circular(10),
-                  value: AppStrings.available,
-                  items: [
-                    DropdownMenuItem(
-                      value: 'Available',
-                      child: Text(
-                        AppStrings.available,
-                        style: AppTextStyles.bodyMedium,
-                      ),
-                    ),
-                    DropdownMenuItem(
-                        value: 'Unavailable',
-                        child: Text(
-                          AppStrings.unavailable,
-                          style: AppTextStyles.bodyMedium,
-                        ))
-                  ],
-                  onChanged: (value) {},
-                ),
-                Expanded(
-                    child: GridView.builder(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 10,
-                            childAspectRatio: 0.9,
-                            mainAxisSpacing: 10),
-                        itemCount: 13,
-                        itemBuilder: (context, index) {
-                          return TreasurePostedCard(
-                              condition: 'Good',
-                              imagePath: AppImages.chairs,
-                              itemName: 'Old Chair');
-                        }))
-              ],
-            )));
+    return Consumer<ApiProvider>(
+      builder: (context, api, child) => CustomScaffold(
+          backgroundColor:
+              api.isLoading ? AppColors.light.withAlpha(60) : AppColors.light,
+          child: SafeArea(
+              minimum: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+              child: api.isLoading
+                  ? Center(
+                      child: SpinKitCircle(
+                      color: AppColors.primary,
+                    ))
+                  : api.getAllTreasureModel?.allTreasuresData == []
+                      ? Center(
+                          child: Text(
+                            'No treasures posted yet',
+                            style: AppTextStyles.bodyMedium,
+                          ),
+                        )
+                      : Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                PopupButton(),
+                                Text(
+                                  AppStrings.treasurePosted,
+                                  style: AppTextStyles.headingMedium,
+                                ),
+                                SizedBox.shrink()
+                              ],
+                            ),
+                            DropdownButton(
+                              borderRadius: BorderRadius.circular(10),
+                              value: AppStrings.available,
+                              items: [
+                                DropdownMenuItem(
+                                  value: 'Available',
+                                  child: Text(
+                                    AppStrings.available,
+                                    style: AppTextStyles.bodyMedium,
+                                  ),
+                                ),
+                                DropdownMenuItem(
+                                    value: 'Unavailable',
+                                    child: Text(
+                                      AppStrings.unavailable,
+                                      style: AppTextStyles.bodyMedium,
+                                    ))
+                              ],
+                              onChanged: (value) {},
+                            ),
+                            Expanded(
+                                child: GridView.builder(
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 2,
+                                            crossAxisSpacing: 10,
+                                            childAspectRatio: 0.9,
+                                            mainAxisSpacing: 10),
+                                    itemCount: api.getAllTreasureModel
+                                        ?.allTreasuresData?.length,
+                                    itemBuilder: (context, index) {
+                                      final thisTreasure = api
+                                          .getAllTreasureModel
+                                          ?.allTreasuresData?[index];
+                                      return TreasurePostedCard(
+                                          condition:
+                                              thisTreasure?.condition ?? '',
+                                          imagePath:
+                                              thisTreasure?.photos?.first,
+                                          itemName: thisTreasure?.title ?? '');
+                                    }))
+                          ],
+                        ))),
+    );
   }
 }
