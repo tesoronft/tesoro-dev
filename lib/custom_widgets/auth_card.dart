@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tesoro_nft_app/consts/app_colors.dart';
@@ -93,8 +94,8 @@ class AuthCard extends StatelessWidget {
                               fontWeight: FontWeight.w900),
                         )),
                     apis.isLoading
-                        ? CircularProgressIndicator(
-                            color: AppColors.light,
+                        ? SpinKitCircle(
+                            color: AppColors.primary,
                           )
                         : CustomBtn(
                             text: issSignin

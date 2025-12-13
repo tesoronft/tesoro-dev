@@ -32,7 +32,8 @@ class CustomBtn extends StatelessWidget {
         height: height ?? 50,
         width: width ?? double.infinity,
         decoration: BoxDecoration(
-            color: btnColor ?? AppColors.primary,
+            color:
+                isDisabled ? Colors.grey[350] : btnColor ?? AppColors.primary,
             borderRadius: BorderRadius.circular(padding ?? 10),
             boxShadow: [
               BoxShadow(

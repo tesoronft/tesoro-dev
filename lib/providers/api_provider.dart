@@ -10,6 +10,8 @@ import 'package:tesoro_nft_app/models/treasures/get_all_treasures_model.dart';
 import 'package:tesoro_nft_app/models/treasures/get_posted_treasure_model.dart';
 import 'package:tesoro_nft_app/models/user/user_profile.dart';
 
+import '../models/tips/sended_tips_model.dart';
+
 class ApiProvider with ChangeNotifier {
   final String baseUrl = 'https://tesoro-app-production.up.railway.app/api';
   bool _isLoading = false;
@@ -24,8 +26,9 @@ class ApiProvider with ChangeNotifier {
   UserProfile? get userProfile => _userProfile;
   GetAllCollectedTreasure? _allCollectedTreasure;
   GetAllCollectedTreasure? get allCollectedTreasure => _allCollectedTreasure;
-  ReceivedTipsResponse? _giveTipsModel, _receivedTipsModel;
-  ReceivedTipsResponse? get givenTipsModel => _giveTipsModel;
+  ReceivedTipsResponse? _receivedTipsModel;
+  SendedTipsResponse? _giveTipsModel;
+  SendedTipsResponse? get givenTipsModel => _giveTipsModel;
   ReceivedTipsResponse? get receivedTipsModel => _receivedTipsModel;
   Future<ApiEnums> createAccount(
       String userName, String email, String password) async {
@@ -582,7 +585,7 @@ class ApiProvider with ChangeNotifier {
         final jsonData = jsonDecode(response.body);
         log(response.body);
 
-        _giveTipsModel = ReceivedTipsResponse.fromJson(jsonData);
+        _giveTipsModel = SendedTipsResponse.fromJson(jsonData);
 
         _isLoading = false;
         notifyListeners();

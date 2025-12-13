@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tesoro_nft_app/consts/app_colors.dart';
 import 'package:tesoro_nft_app/data/dashboard/dashboard_data.dart';
 import 'package:tesoro_nft_app/providers/dashboard_provider.dart';
+import 'package:tesoro_nft_app/routes/routes.dart';
 
 class DashboardView extends StatelessWidget {
   const DashboardView({super.key});
@@ -14,7 +16,9 @@ class DashboardView extends StatelessWidget {
       builder: (context, dashboardValue, child) => Scaffold(
         body: DashboardData.dashboardScreens[dashboardValue.currentIndex],
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            context.push(Routes.postTreasure);
+          },
           backgroundColor: AppColors.primary,
           clipBehavior: Clip.antiAlias,
           shape:

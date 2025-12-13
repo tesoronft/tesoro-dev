@@ -3,11 +3,12 @@ import 'package:tesoro_nft_app/consts/app_colors.dart';
 import 'package:tesoro_nft_app/consts/app_text_styles.dart';
 
 class CustomTextField extends StatelessWidget {
-  const CustomTextField(
+  CustomTextField(
       {super.key,
       required this.hintText,
       this.isPassword = false,
       this.isVissible = false,
+      this.fillColors,
       required this.keyboardType,
       this.onVisibilityTap,
       required this.editingController});
@@ -16,6 +17,7 @@ class CustomTextField extends StatelessWidget {
   final VoidCallback? onVisibilityTap;
   final TextInputType keyboardType;
   final TextEditingController editingController;
+  Color? fillColors;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -25,11 +27,11 @@ class CustomTextField extends StatelessWidget {
       smartDashesType: SmartDashesType.disabled,
       keyboardType: keyboardType,
       decoration: InputDecoration(
-        fillColor: AppColors.light,
+        fillColor: fillColors ?? AppColors.light,
         filled: true,
         enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(10)),
-            borderSide: BorderSide(color: AppColors.light)),
+            borderSide: BorderSide(color: AppColors.dark.withAlpha(30))),
         hintText: hintText,
         hintStyle: AppTextStyles.bodySmall.copyWith(color: Color(0xff9EA1A8)),
         errorBorder: OutlineInputBorder(

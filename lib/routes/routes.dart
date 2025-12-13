@@ -8,6 +8,9 @@ import 'package:tesoro_nft_app/features/dashboard/account/tips_received_view.dar
 import 'package:tesoro_nft_app/features/dashboard/account/treasure_collected_view.dart';
 import 'package:tesoro_nft_app/features/dashboard/account/treasure_posted_view.dart';
 import 'package:tesoro_nft_app/features/dashboard/account/user_account_view.dart';
+import 'package:tesoro_nft_app/features/dashboard/treasures/all_treasures/all_treasures_view.dart';
+import 'package:tesoro_nft_app/features/dashboard/treasures/post_treasures/item_details_view.dart';
+import 'package:tesoro_nft_app/features/dashboard/treasures/post_treasures/post_treasure_view.dart';
 import 'package:tesoro_nft_app/features/onboarding/onboarding1_view.dart';
 
 import '../features/dashboard/dashboard_view.dart';
@@ -34,6 +37,9 @@ class Routes {
   static const String treasureCollected =
       '/dashboard/account/treasureCollected';
   static const String oroPage = '/dashboard/account/oroPage';
+  static const String allTreasures = '/dashboard/allTreasures';
+  static const String itemDetails = '/dashboard/postTreasures/itemDetails';
+  static const String postTreasure = '/dashboard/postTreasures/postTreasure';
   static GoRouter router = GoRouter(initialLocation: splash, routes: [
     GoRoute(path: splash, builder: (context, state) => const SplashView()),
     GoRoute(
@@ -65,5 +71,17 @@ class Routes {
         path: treasurePosted,
         builder: (context, state) => const TreasurePostedView()),
     GoRoute(path: oroPage, builder: (context, state) => const OroPageView()),
+    GoRoute(
+      path: allTreasures,
+      builder: (context, state) => const AllTreasuresView(),
+    ),
+    GoRoute(
+      path: itemDetails,
+      builder: (context, state) => ItemDetailsView(),
+    ),
+    GoRoute(
+      path: postTreasure,
+      builder: (context, state) => PostTreasureView(),
+    ),
   ]);
 }

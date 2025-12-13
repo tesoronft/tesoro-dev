@@ -12,10 +12,12 @@ class TreasurePostedCard extends StatelessWidget {
   final String imagePath, itemName, condition;
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Container(
       clipBehavior: Clip.antiAlias,
-      color: AppColors.light,
-      margin: EdgeInsets.zero,
+      decoration: BoxDecoration(
+          color: AppColors.light,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [BoxShadow(color: AppColors.dark, blurRadius: 2)]),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 4,

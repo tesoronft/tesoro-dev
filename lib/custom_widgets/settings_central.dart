@@ -26,19 +26,9 @@ class SettingsCentral extends StatelessWidget {
             child: Container(
               width: MediaQuery.sizeOf(context).width / 2.3,
               decoration: BoxDecoration(
-                color: AppColors.light,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black12,
-                      offset: Offset(0, 2),
-                      spreadRadius: 1),
-                  BoxShadow(
-                      color: Colors.black12,
-                      offset: Offset(2, 0),
-                      spreadRadius: 1),
-                ],
-              ),
+                  color: AppColors.light,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [BoxShadow(color: AppColors.dark, blurRadius: 2)]),
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,19 +53,9 @@ class SettingsCentral extends StatelessWidget {
             child: Container(
               width: MediaQuery.sizeOf(context).width / 2.3,
               decoration: BoxDecoration(
-                color: AppColors.light,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black12,
-                      offset: Offset(0, 2),
-                      spreadRadius: 1),
-                  BoxShadow(
-                      color: Colors.black12,
-                      offset: Offset(2, 0),
-                      spreadRadius: 1),
-                ],
-              ),
+                  color: AppColors.light,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [BoxShadow(color: AppColors.dark, blurRadius: 2)]),
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

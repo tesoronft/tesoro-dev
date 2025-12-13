@@ -14,11 +14,12 @@ class TipsInfo extends StatelessWidget {
   final String userName, date, amountTitle, totalAmount, address;
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: AppColors.light,
-      elevation: 2,
+    return Container(
       clipBehavior: Clip.antiAlias,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      decoration: BoxDecoration(
+          color: AppColors.light,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [BoxShadow(color: AppColors.dark, blurRadius: 2)]),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(

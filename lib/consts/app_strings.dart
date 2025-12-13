@@ -38,7 +38,7 @@ class AppStrings {
   static const String huntForThisItem = 'Hunt for This Item';
   static const String condition = 'Condition: ';
   static const String free = 'Free';
-  static const String description = 'Description';
+  static const String description = 'Description (Optional)';
   static const String address = 'Address';
   static const String postedBy = 'Posted by';
   static const String youHaveArrived = 'You have arrived';
@@ -97,14 +97,15 @@ class AppStrings {
   static const String category = 'Category';
   static const String selectCategory = 'Select Category';
   static const String selectCondition = 'Select Condition';
-  static const String brand = 'Brand';
+  static const String brand = 'Brand (Optional)';
   static const String selectBrand = 'Select Brand';
-  static const String model = 'Model';
+  static const String model = 'Model (Optional)';
   static const String selectModel = 'Select Model';
-  static const String type = 'Type';
+  static const String type = 'Type (Optional)';
   static const String selectType = 'Select Type';
   static const String enterItemDesc = 'Enter Item Description';
   static const String postItem = 'Post Item';
+  static const String postYourItem = 'Post Your Item';
   static const String itemPostedSuccessfully = 'Item Posted Successfully';
   static const String yourListingItemIsVissible =
       'Your listing is now visible to\nnearby users.';
@@ -113,6 +114,7 @@ class AppStrings {
   static const String available = 'Available';
   static const String unavailable = 'Unavailable';
   static const String myTreasureDetails = 'My Treasure Details';
+  static const String distance = 'Distance';
 
   //Paywall screen
   static const String yourFreeTrial = 'Your Free Trial With Tesoro';
