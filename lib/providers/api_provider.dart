@@ -4,6 +4,7 @@ import 'package:http/http.dart' as https;
 import 'package:flutter/material.dart';
 import 'package:tesoro_nft_app/enums/api_enums.dart';
 import 'package:tesoro_nft_app/models/auth/auth_model.dart';
+import 'package:tesoro_nft_app/models/content/get_content_info_model.dart';
 import 'package:tesoro_nft_app/models/tips/give_tips_model.dart';
 import 'package:tesoro_nft_app/models/tips/received_tips_model.dart';
 import 'package:tesoro_nft_app/models/treasures/get_all_treasures_model.dart';
@@ -18,8 +19,13 @@ class ApiProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   String _responseTxt = '';
   String get responseTxt => _responseTxt;
-  GetAllTreasuresModel? _getAllTreasuresModel;
+  GetAllTreasuresModel? _getAllTreasuresModel, _getUserTreasureModel;
   GetAllTreasuresModel? get getAllTreasureModel => _getAllTreasuresModel;
+  GetAllTreasuresModel? get getUserTreasureModel => _getUserTreasureModel;
+  GetContentInfoModel? _contentInfoModel;
+  GetContentInfoModel? get contentInfoModel => _contentInfoModel;
+  ContentInfo? _contentInfo;
+  ContentInfo? get contentInfo => _contentInfo;
   AuthModel? _authModel;
   AuthModel? get authModel => _authModel;
   UserProfile? _userProfile;
@@ -384,6 +390,49 @@ class ApiProvider with ChangeNotifier {
     }
   }
 
+  Future<String> getPostedTreasuresData(
+    int page,
+    int limit,
+    String token,
+    String uid,
+  ) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final uri = Uri.parse('$baseUrl/treasures/collected/user').replace(
+        queryParameters: {
+          'page': '$page',
+          'limit': '$limit',
+        },
+      );
+
+      final response = await https.post(uri, headers: {
+        'Authorization': 'Bearer $token',
+      }, body: {
+        'userId': uid
+      });
+
+      if (response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        log(response.body);
+        _getUserTreasureModel = GetAllTreasuresModel.fromJson(json);
+        _isLoading = false;
+        notifyListeners();
+        return json;
+      } else {
+        log(response.body);
+        _isLoading = false;
+        notifyListeners();
+        return response.reasonPhrase ?? response.statusCode.toString();
+      }
+    } catch (e) {
+      log(e.toString());
+      _isLoading = false;
+      notifyListeners();
+      return e.toString();
+    }
+  }
+
   Future<String> updateTreasure(String accessToken) async {
     _isLoading = true;
     notifyListeners();
@@ -587,6 +636,63 @@ class ApiProvider with ChangeNotifier {
 
         _giveTipsModel = SendedTipsResponse.fromJson(jsonData);
 
+        _isLoading = false;
+        notifyListeners();
+        return ApiEnums.success;
+      } else {
+        log(response.body);
+        _isLoading = false;
+        notifyListeners();
+        return ApiEnums.failed;
+      }
+    } catch (e) {
+      log(e.toString());
+      _isLoading = false;
+      notifyListeners();
+      return ApiEnums.failed;
+    }
+  }
+
+  // settings
+  Future<ApiEnums> getAppUrls(String accessToken) async {
+    try {
+      final response = await https
+          .post(Uri.parse('$baseUrl/contents/all?page=1&limit=15'), headers: {
+        'Authorization': 'Bearer $accessToken',
+      });
+      if (response.statusCode == 201) {
+        log(response.body);
+        final jsonData = jsonDecode(response.body);
+        _contentInfoModel = GetContentInfoModel.fromJson(jsonData);
+        _isLoading = false;
+        notifyListeners();
+        return ApiEnums.success;
+      } else {
+        log(response.body);
+        _isLoading = false;
+        notifyListeners();
+        return ApiEnums.failed;
+      }
+    } catch (e) {
+      log(e.toString());
+      _isLoading = false;
+      notifyListeners();
+      return ApiEnums.failed;
+    }
+  }
+
+  Future<ApiEnums> getAppContent(String accessToken, String contentId) async {
+    try {
+      final response =
+          await https.post(Uri.parse('$baseUrl/contents/detail'), body: {
+        "contentId": contentId
+      }, headers: {
+        'Authorization': 'Bearer $accessToken',
+      });
+      if (response.statusCode == 201) {
+        log(response.body);
+        final jsonData = jsonDecode(response.body);
+        _contentInfo = ContentInfo.fromJson(jsonData);
         _isLoading = false;
         notifyListeners();
         return ApiEnums.success;

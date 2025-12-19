@@ -14,6 +14,7 @@ class TreasureGetModel {
   int? price, distance;
   List<dynamic>? photos;
   LocationModel? location;
+  PostedBy? postedBy;
   TreasureGetModel(
       {this.brand,
       this.category,
@@ -30,26 +31,27 @@ class TreasureGetModel {
       this.productId,
       this.title,
       this.type,
-      this.userId});
+      this.userId,
+      this.postedBy});
   factory TreasureGetModel.fromJson(Map<String, dynamic> jsonData) {
     return TreasureGetModel(
-      brand: jsonData['brand'],
-      category: jsonData['category'],
-      condition: jsonData['condition'],
-      createdAt: jsonData['createdAt'],
-      collectedAt: jsonData['collectedAt'],
-      collectedBy: jsonData['collectedBy'],
-      description: jsonData['description'],
-      distance: jsonData['distance'],
-      itemModel: jsonData['itemModel'],
-      location: LocationModel.fromJson(jsonData['location']),
-      photos: jsonData['photos'] as List<dynamic>,
-      price: jsonData['price'],
-      productId: jsonData['_id'],
-      title: jsonData['title'],
-      type: jsonData['type'],
-      userId: jsonData['user'],
-    );
+        brand: jsonData['brand'],
+        category: jsonData['category'],
+        condition: jsonData['condition'],
+        createdAt: jsonData['createdAt'],
+        collectedAt: jsonData['collectedAt'],
+        collectedBy: jsonData['collectedBy'],
+        description: jsonData['description'],
+        distance: jsonData['distance'],
+        itemModel: jsonData['itemModel'],
+        location: LocationModel.fromJson(jsonData['location']),
+        photos: jsonData['photos'] as List<dynamic>,
+        price: jsonData['price'],
+        productId: jsonData['_id'],
+        title: jsonData['title'],
+        type: jsonData['type'],
+        userId: jsonData['user'],
+        postedBy: PostedBy.fromJson(jsonData['postedBy']));
   }
 }
 
@@ -73,5 +75,19 @@ placeId:$placeId,
 type:$type,
 coordinates:$coordinates,
 ''';
+  }
+}
+
+class PostedBy {
+  String? id, name, profileImage;
+  int? rating;
+  PostedBy({this.id, this.name, this.profileImage, this.rating});
+  factory PostedBy.fromJson(Map<String, dynamic> jsonData) {
+    return PostedBy(
+      id: jsonData['_id'],
+      name: jsonData['name'],
+      profileImage: jsonData['profileImage'],
+      rating: jsonData['rating'],
+    );
   }
 }

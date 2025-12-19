@@ -8,15 +8,21 @@ import 'package:tesoro_nft_app/features/dashboard/account/tips_received_view.dar
 import 'package:tesoro_nft_app/features/dashboard/account/treasure_collected_view.dart';
 import 'package:tesoro_nft_app/features/dashboard/account/treasure_posted_view.dart';
 import 'package:tesoro_nft_app/features/dashboard/account/user_account_view.dart';
+import 'package:tesoro_nft_app/features/dashboard/settings/settings_sections/web_view.dart';
 import 'package:tesoro_nft_app/features/dashboard/treasures/all_treasures/all_treasures_view.dart';
+import 'package:tesoro_nft_app/features/dashboard/treasures/all_treasures/treasure_details_view.dart';
 import 'package:tesoro_nft_app/features/dashboard/treasures/post_treasures/item_details_view.dart';
 import 'package:tesoro_nft_app/features/dashboard/treasures/post_treasures/post_treasure_view.dart';
 import 'package:tesoro_nft_app/features/onboarding/onboarding1_view.dart';
+import 'package:tesoro_nft_app/features/subscriptions/main_subscription_view.dart';
+import 'package:tesoro_nft_app/features/subscriptions/subscription_first_view.dart';
+import 'package:tesoro_nft_app/features/subscriptions/subscription_second_view.dart';
 
 import '../features/dashboard/dashboard_view.dart';
 import '../features/dashboard/settings/settings_view.dart';
 import '../features/onboarding/onboarding2_view.dart';
 import '../features/onboarding/splash.dart';
+import '../models/treasures/treasure_get_model.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -38,8 +44,17 @@ class Routes {
       '/dashboard/account/treasureCollected';
   static const String oroPage = '/dashboard/account/oroPage';
   static const String allTreasures = '/dashboard/allTreasures';
+  static const String treasureDetails =
+      '/dashboard/allTreasures/treasureDetails';
   static const String itemDetails = '/dashboard/postTreasures/itemDetails';
   static const String postTreasure = '/dashboard/postTreasures/postTreasure';
+  static const String webView = '/dashboard/settings/webView';
+  static const String subscriptionViewOne =
+      '/subscriptions/subscriptionViewOne';
+  static const String subscriptionViewTwo =
+      '/subscriptions/subscriptionViewTwo';
+  static const String mainSubscriptionView =
+      '/subscriptions/mainSubscriptionView';
   static GoRouter router = GoRouter(initialLocation: splash, routes: [
     GoRoute(path: splash, builder: (context, state) => const SplashView()),
     GoRoute(
@@ -82,6 +97,34 @@ class Routes {
     GoRoute(
       path: postTreasure,
       builder: (context, state) => PostTreasureView(),
+    ),
+    GoRoute(
+        path: treasureDetails,
+        builder: (context, state) {
+          final data = state.extra as TreasureGetModel;
+          return TreasureDetailsView(
+            treasureGetModel: data,
+          );
+        }),
+    GoRoute(
+        path: webView,
+        builder: (context, state) {
+          final url = state.extra as String;
+          return WebView(
+            contentId: url,
+          );
+        }),
+    GoRoute(
+      path: subscriptionViewOne,
+      builder: (context, state) => SubscriptionFirstView(),
+    ),
+    GoRoute(
+      path: subscriptionViewTwo,
+      builder: (context, state) => SubscriptionSecondView(),
+    ),
+    GoRoute(
+      path: subscriptionViewTwo,
+      builder: (context, state) => MainSubscriptionView(),
     ),
   ]);
 }

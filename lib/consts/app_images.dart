@@ -30,6 +30,14 @@ class AppImages {
   static const String exchangeCurrency = 'assets/images/exchangeCurrency.png';
   static const String referral = 'assets/images/referral.png';
 
+  // Subscription
+  static const String subscriptionImage = 'assets/images/subscriptionImage.png';
+  static const String searchTreasure = 'assets/images/searchTreasure.png';
+  static const String searchMap = 'assets/images/searchMap.png';
+  static const String notification = 'assets/images/notification.png';
+  static const String chest = 'assets/images/chest.png';
+  static const String bell = 'assets/images/bell.png';
+
   //Others
   static const String chairs = 'assets/images/chair.png';
 }

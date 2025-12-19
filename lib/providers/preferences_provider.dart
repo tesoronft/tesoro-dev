@@ -5,6 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class PreferencesProvider with ChangeNotifier {
   String? _accessToken, _refereshToken, _userId;
+  bool _isDeleting = false;
+  bool get isDeleting => _isDeleting;
   String? get refreshToken => _refereshToken;
   String? get accessToken => _accessToken;
   String? get userId => _userId;
@@ -28,14 +30,16 @@ class PreferencesProvider with ChangeNotifier {
   Future<void> setRefreshToken(String refreshToken) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('refreshToken', refreshToken);
-    log(refreshToken);
+    log('Refresh token: $refreshToken');
+    _refereshToken = refreshToken;
     notifyListeners();
   }
 
   Future<void> setAccessToken(String accessToken) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('accessToken', accessToken);
-    log(accessToken);
+    _accessToken = accessToken;
+    log('Access token: $accessToken');
     notifyListeners();
   }
 
@@ -43,7 +47,19 @@ class PreferencesProvider with ChangeNotifier {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('userId', userId);
     _userId = userId;
-    log(userId);
+    log('UserId: $userId');
+    notifyListeners();
+  }
+
+  Future<void> clearAllValues() async {
+    _isDeleting = true;
+    notifyListeners();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    _accessToken = '';
+    _refereshToken = '';
+    _userId = '';
+    _isDeleting = false;
     notifyListeners();
   }
 

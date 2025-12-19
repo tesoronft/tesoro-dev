@@ -118,6 +118,36 @@ class AppStrings {
 
   //Paywall screen
   static const String yourFreeTrial = 'Your Free Trial With Tesoro';
+  static const String now = 'Now';
+  static const String inFiveDays = 'In 5 Days';
+  static const String inSevenDays = 'In 7 Days';
+  static const String startYourTrialToUnlock =
+      'Start your trial to unlock the full version of\nTesoro today.';
+  static const String receiveAnEmailReminder =
+      'Receive an email reminder that your free\ntrial is ending. ';
+  static const String youWillBeCharged =
+      'You’ll be charged for Tesoro. Cancel\nanytime';
+  static const String sevenDayFreeTrial = '7 day free trial then';
+  static const String tryFreeAndSubscribe = 'Try free & subscribe';
+  static const String theAppStoreWillOnlyChargeYouAfter =
+      'The App store will only charge you after the 7 day trial.\nCancel anytime.';
+  static const String restorePurchase = 'Restore Purchase';
+  static const String termsAndSConditions = 'Terms & Conditions';
+  static const String specialOfferForEarly = 'Special Offer For Early Adopters';
+  static const String unclockTheFullVersion =
+      'Unlock the full version of Tesoro App';
+  static const String recuringBill = 'Recurring billing. Cancel anytime';
+  static const String getExclusiveAccess =
+      'Get exclusive access to hundreds\nof highly valued items';
+  static const String getInstantCategorized =
+      'Get instant categorized notifications';
+  static const String hideAnItemFromMap = 'Hide an item from the map';
+  static const String optimizeYourSearch = 'Optimize your search results';
+  static const String notificationOnCategorizedItem =
+      'Notification on categorized item';
+  static const String goPremium = 'Go Premium';
+  static const String subscriptionsAutomaticalyRenew =
+      'Subscriptions automatically renew auto-renew is turned\noff at  least 24 hours before the end of the current period.\nAccount will be charged for renewel within 24 hours prior\nto the end of the current period.';
 
   //Account
   static const String paymentAndDeposit = 'Payment and Deposit Methods';
@@ -150,4 +180,7 @@ class AppStrings {
   static const String convertOroToOther =
       'Convert \$ORO into other crypto or USD\nPro tip: Hold as much \$ORO as possible.';
   static const String learnMore = 'Learn More';
+  // Others
+  static const String downloadThisAmazingApp = 'Download this amazing app';
+  static const String tesoroNFT = 'Tesoro NFT';
 }

@@ -34,10 +34,6 @@ class _UserAccountViewState extends State<UserAccountView> {
         await apis.getUserData(
           context.read<PreferencesProvider>().accessToken ?? '',
         );
-        log(apis.userProfile?.uid ?? '');
-        await context
-            .read<PreferencesProvider>()
-            .setUserId(apis.userProfile?.uid ?? '');
       }
     });
   }

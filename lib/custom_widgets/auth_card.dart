@@ -112,6 +112,8 @@ class AuthCard extends StatelessWidget {
                                       _authController.passwordController.text);
                               if (!apis.isLoading &&
                                   result == ApiEnums.success) {
+                                await prefs.setUserId(
+                                    apis.authModel?.user?.userId ?? '');
                                 await prefs.setAccessToken(
                                     apis.authModel?.accessToken ?? '');
                                 await prefs.setRefreshToken(
