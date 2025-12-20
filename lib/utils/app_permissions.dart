@@ -7,13 +7,13 @@ class AppPermissions {
     bool locationEnables;
     LocationPermission permission;
 
-    locationEnables = await Geolocator.isLocationServiceEnabled();
+    // locationEnables = await Geolocator.isLocationServiceEnabled();
 
-    if (!locationEnables) {
-      await Geolocator.openLocationSettings();
-      log('User device location is off');
-      return Future.error('User device location is off');
-    }
+    // if (!locationEnables) {
+    //   await Geolocator.openLocationSettings();
+    //   log('User device location is off');
+    //   return Future.error('User device location is off');
+    // }
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -31,6 +31,13 @@ class AppPermissions {
     final placeMark =
         await placemarkFromCoordinates(position.latitude, position.longitude);
     final place = placeMark[0];
+    // log(place.name ?? '');
+    // log(place.administrativeArea ?? '');
+    // log(place.street ?? '');
+    // log(place.country ?? '');
+    // log(place.postalCode ?? '');
+    // log(place.subLocality ?? '');
+    // log(place.locality ?? '');
     return place;
 
     // return '${place.street}, ${place.subLocality}, ${place.locality}, ${place.administrativeArea}, ${place.country}';
@@ -40,13 +47,13 @@ class AppPermissions {
     bool locationEnables;
     LocationPermission permission;
 
-    locationEnables = await Geolocator.isLocationServiceEnabled();
+    // locationEnables = await Geolocator.isLocationServiceEnabled();
 
-    if (!locationEnables) {
-      await Geolocator.openLocationSettings();
-      log('User device location is off');
-      return null;
-    }
+    // if (!locationEnables) {
+    //   await Geolocator.openLocationSettings();
+    //   log('User device location is off');
+    //   return null;
+    // }
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -62,7 +69,7 @@ class AppPermissions {
 
     final position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-    log(position.latitude.toString());
+    log(position.longitude.toString());
     log(position.latitude.toString());
     return position;
   }

@@ -5,7 +5,7 @@ class SettingsData {
   static const List<String> settingsTitle = [
     AppStrings.myAccount,
     AppStrings.upgradeToPremium,
-    AppStrings.privacyPolicy,
+    AppStrings.termsAndConditions,
     AppStrings.rateUs,
     AppStrings.feedback,
     AppStrings.contactUs,

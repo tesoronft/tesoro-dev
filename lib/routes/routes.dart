@@ -11,12 +11,14 @@ import 'package:tesoro_nft_app/features/dashboard/account/user_account_view.dart
 import 'package:tesoro_nft_app/features/dashboard/settings/settings_sections/web_view.dart';
 import 'package:tesoro_nft_app/features/dashboard/treasures/all_treasures/all_treasures_view.dart';
 import 'package:tesoro_nft_app/features/dashboard/treasures/all_treasures/treasure_details_view.dart';
+import 'package:tesoro_nft_app/features/dashboard/treasures/post_treasures/confirm_details_view.dart';
 import 'package:tesoro_nft_app/features/dashboard/treasures/post_treasures/item_details_view.dart';
 import 'package:tesoro_nft_app/features/dashboard/treasures/post_treasures/post_treasure_view.dart';
 import 'package:tesoro_nft_app/features/onboarding/onboarding1_view.dart';
 import 'package:tesoro_nft_app/features/subscriptions/main_subscription_view.dart';
 import 'package:tesoro_nft_app/features/subscriptions/subscription_first_view.dart';
 import 'package:tesoro_nft_app/features/subscriptions/subscription_second_view.dart';
+import 'package:tesoro_nft_app/models/treasures/treasure_post_model.dart';
 
 import '../features/dashboard/dashboard_view.dart';
 import '../features/dashboard/settings/settings_view.dart';
@@ -47,6 +49,8 @@ class Routes {
   static const String treasureDetails =
       '/dashboard/allTreasures/treasureDetails';
   static const String itemDetails = '/dashboard/postTreasures/itemDetails';
+  static const String confirmDetails =
+      '/dashboard/postTreasures/confirmDetails';
   static const String postTreasure = '/dashboard/postTreasures/postTreasure';
   static const String webView = '/dashboard/settings/webView';
   static const String subscriptionViewOne =
@@ -91,9 +95,13 @@ class Routes {
       builder: (context, state) => const AllTreasuresView(),
     ),
     GoRoute(
-      path: itemDetails,
-      builder: (context, state) => ItemDetailsView(),
-    ),
+        path: itemDetails,
+        builder: (context, state) {
+          final data = state.extra as TreasurePostModel;
+          return ItemDetailsView(
+            treasurePostModel: data,
+          );
+        }),
     GoRoute(
       path: postTreasure,
       builder: (context, state) => PostTreasureView(),
@@ -123,8 +131,16 @@ class Routes {
       builder: (context, state) => SubscriptionSecondView(),
     ),
     GoRoute(
-      path: subscriptionViewTwo,
+      path: mainSubscriptionView,
       builder: (context, state) => MainSubscriptionView(),
     ),
+    GoRoute(
+        path: confirmDetails,
+        builder: (context, state) {
+          final data = state.extra as TreasurePostModel;
+          return ConfirmDetailsView(
+            treasurePostModel: data,
+          );
+        }),
   ]);
 }

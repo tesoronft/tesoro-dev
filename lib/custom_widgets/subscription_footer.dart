@@ -10,37 +10,40 @@ class SubscriptionFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         TextButton(
+          style: ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsets.zero)),
           onPressed: () {},
           child: Text(
             AppStrings.restorePurchase,
             style: AppTextStyles.labelMedium.copyWith(
               color: AppColors.error,
-              decoration: TextDecoration.lineThrough,
+              decoration: TextDecoration.underline,
               decorationColor: AppColors.error,
             ),
           ),
         ),
         TextButton(
           onPressed: () {},
+          style: ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsets.zero)),
           child: Text(
             AppStrings.termsAndConditions,
             style: AppTextStyles.labelMedium.copyWith(
               color: AppColors.error,
-              decoration: TextDecoration.lineThrough,
+              decoration: TextDecoration.underline,
               decorationColor: AppColors.error,
             ),
           ),
         ),
         TextButton(
           onPressed: () {},
+          style: ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsets.zero)),
           child: Text(
             AppStrings.privacyPolicy,
             style: AppTextStyles.labelMedium.copyWith(
               color: AppColors.error,
-              decoration: TextDecoration.lineThrough,
+              decoration: TextDecoration.underline,
               decorationColor: AppColors.error,
             ),
           ),

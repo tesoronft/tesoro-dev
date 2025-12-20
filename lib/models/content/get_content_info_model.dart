@@ -9,7 +9,7 @@ class GetContentInfoModel {
         items: (jsonData['items'] as List<dynamic>)
             .map((data) => Item.fromJson(data))
             .toList(),
-        pagination: jsonData['pagination']);
+        pagination: Pagination.fromJson(jsonData['pagination']));
   }
 }
 

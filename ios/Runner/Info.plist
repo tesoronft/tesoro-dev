@@ -29,13 +29,11 @@
 		<key>UIMainStoryboardFile</key>
 		<string>Main</string>
 		<key>NSLocationWhenInUseUsageDescription</key>
-		<string>Need location when in use</string>
-		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-		<string>Always and when in use!</string>
-		<key>NSLocationUsageDescription</key>
-		<string>Older devices need location.</string>
+		<string>This app needs access to location when open to show nearby stores.</string>
 		<key>NSLocationAlwaysUsageDescription</key>
-		<string>Can I have location always?</string>
+		<string>This app needs access to location even in the background to track your delivery.</string>
+		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+		<string>This app needs location access to provide a seamless experience both in the foreground and background.</string>
 		<key>UISupportedInterfaceOrientations</key>
 		<array>
 			<string>UIInterfaceOrientationPortrait</string>

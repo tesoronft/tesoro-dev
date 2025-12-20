@@ -40,4 +40,7 @@ class AppImages {
 
   //Others
   static const String chairs = 'assets/images/chair.png';
+
+  // dialogs
+  static const String achievment = 'assets/images/achievment.png';
 }

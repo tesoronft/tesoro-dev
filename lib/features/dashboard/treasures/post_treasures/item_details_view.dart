@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tesoro_nft_app/consts/app_colors.dart';
 import 'package:tesoro_nft_app/consts/app_strings.dart';
 import 'package:tesoro_nft_app/consts/app_text_styles.dart';
@@ -6,11 +7,14 @@ import 'package:tesoro_nft_app/controllers/post_treasure_controller.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_btn.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_scaffold.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_text_field.dart';
+import 'package:tesoro_nft_app/models/treasures/treasure_post_model.dart';
+import 'package:tesoro_nft_app/routes/routes.dart';
 
 class ItemDetailsView extends StatelessWidget {
-  ItemDetailsView({super.key});
+  ItemDetailsView({super.key, required this.treasurePostModel});
   final PostTreasureController _postTreasureController =
       PostTreasureController();
+  final TreasurePostModel treasurePostModel;
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
@@ -41,7 +45,7 @@ class ItemDetailsView extends StatelessWidget {
                 CustomTextField(
                   hintText: AppStrings.selectCategory,
                   keyboardType: TextInputType.text,
-                  editingController: _postTreasureController.price,
+                  editingController: _postTreasureController.category,
                 ),
                 Text(
                   AppStrings.condition,
@@ -50,7 +54,7 @@ class ItemDetailsView extends StatelessWidget {
                 CustomTextField(
                   hintText: AppStrings.selectCondition,
                   keyboardType: TextInputType.text,
-                  editingController: _postTreasureController.price,
+                  editingController: _postTreasureController.condition,
                 ),
                 Text(
                   AppStrings.brand,
@@ -59,7 +63,7 @@ class ItemDetailsView extends StatelessWidget {
                 CustomTextField(
                   hintText: AppStrings.selectBrand,
                   keyboardType: TextInputType.text,
-                  editingController: _postTreasureController.price,
+                  editingController: _postTreasureController.brand,
                 ),
                 Text(
                   AppStrings.model,
@@ -68,7 +72,7 @@ class ItemDetailsView extends StatelessWidget {
                 CustomTextField(
                   hintText: AppStrings.selectModel,
                   keyboardType: TextInputType.text,
-                  editingController: _postTreasureController.price,
+                  editingController: _postTreasureController.model,
                 ),
                 Text(
                   AppStrings.type,
@@ -77,7 +81,7 @@ class ItemDetailsView extends StatelessWidget {
                 CustomTextField(
                   hintText: AppStrings.selectType,
                   keyboardType: TextInputType.text,
-                  editingController: _postTreasureController.price,
+                  editingController: _postTreasureController.type,
                 ),
                 Text(
                   AppStrings.description,
@@ -86,14 +90,29 @@ class ItemDetailsView extends StatelessWidget {
                 CustomTextField(
                   hintText: AppStrings.enterItemDesc,
                   keyboardType: TextInputType.text,
-                  editingController: _postTreasureController.price,
+                  editingController: _postTreasureController.description,
                 ),
                 CustomBtn(
                   text: AppStrings.next,
-                  onBtnTap: () {},
-                  isDisabled: _postTreasureController.price.text.isEmpty &&
-                      _postTreasureController.category.text.isEmpty &&
-                      _postTreasureController.condition.text.isEmpty,
+                  onBtnTap: () {
+                    treasurePostModel.brand =
+                        _postTreasureController.brand.text;
+                    treasurePostModel.description =
+                        _postTreasureController.description.text;
+                    treasurePostModel.type = _postTreasureController.type.text;
+                    treasurePostModel.itemModel =
+                        _postTreasureController.model.text;
+                    treasurePostModel.condition =
+                        _postTreasureController.brand.text;
+                    treasurePostModel.condition =
+                        _postTreasureController.brand.text;
+                    treasurePostModel.category =
+                        _postTreasureController.category.text;
+                    treasurePostModel.price =
+                        int.parse(_postTreasureController.price.text);
+                    context.push(Routes.confirmDetails,
+                        extra: treasurePostModel);
+                  },
                 ),
                 SizedBox(
                   height: 20,

@@ -115,6 +115,7 @@ class AppStrings {
   static const String unavailable = 'Unavailable';
   static const String myTreasureDetails = 'My Treasure Details';
   static const String distance = 'Distance';
+  static const String estimatePrice = 'Estimated Price';
 
   //Paywall screen
   static const String yourFreeTrial = 'Your Free Trial With Tesoro';
@@ -138,7 +139,7 @@ class AppStrings {
       'Unlock the full version of Tesoro App';
   static const String recuringBill = 'Recurring billing. Cancel anytime';
   static const String getExclusiveAccess =
-      'Get exclusive access to hundreds\nof highly valued items';
+      'Get exclusive access to hundreds of highly valued items';
   static const String getInstantCategorized =
       'Get instant categorized notifications';
   static const String hideAnItemFromMap = 'Hide an item from the map';

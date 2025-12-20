@@ -682,6 +682,8 @@ class ApiProvider with ChangeNotifier {
   }
 
   Future<ApiEnums> getAppContent(String accessToken, String contentId) async {
+    _isLoading = true;
+    notifyListeners();
     try {
       final response =
           await https.post(Uri.parse('$baseUrl/contents/detail'), body: {

@@ -25,8 +25,9 @@ class _SettingsViewState extends State<SettingsView> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final apisProvider = Provider.of<ApiProvider>(context);
-      final prefsProvider = Provider.of<PreferencesProvider>(context);
+      final apisProvider = Provider.of<ApiProvider>(context, listen: false);
+      final prefsProvider =
+          Provider.of<PreferencesProvider>(context, listen: false);
       await apisProvider.getAppUrls(prefsProvider.accessToken ?? '');
     });
   }
@@ -50,8 +51,14 @@ class _SettingsViewState extends State<SettingsView> {
                       itemBuilder: (context, index) {
                         return InkWell(
                           onTap: () {
+                            final privacyPolicy = api.contentInfoModel?.items
+                                ?.where((data) =>
+                                    data.name == 'Terms and Conditions')
+                                .first;
                             SettingsController.performNavigation(
-                                index, '', context);
+                                index,
+                                privacyPolicy?.id ?? '694259439b4544bc2d874689',
+                                context);
                           },
                           child: Padding(
                             padding: EdgeInsets.symmetric(vertical: 10),

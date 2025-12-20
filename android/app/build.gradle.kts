@@ -7,8 +7,7 @@ plugins {
 
 android {
     namespace = "com.tesoro.nft.application"
-    //compileSdk = flutter.compileSdkVersion
-    compileSdk = 35
+    compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
     compileOptions {

@@ -8,10 +8,35 @@ import 'package:tesoro_nft_app/custom_widgets/custom_btn.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_scaffold.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_text_field.dart';
 import 'package:tesoro_nft_app/custom_widgets/go_to_camera.dart';
+import 'package:tesoro_nft_app/models/treasures/treasure_post_model.dart';
 import 'package:tesoro_nft_app/routes/routes.dart';
 
-class PostTreasureView extends StatelessWidget {
-  PostTreasureView({super.key});
+import '../../../../utils/app_permissions.dart';
+
+class PostTreasureView extends StatefulWidget {
+  const PostTreasureView({super.key});
+
+  @override
+  State<PostTreasureView> createState() => _PostTreasureViewState();
+}
+
+class _PostTreasureViewState extends State<PostTreasureView> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final positions = await AppPermissions.getCurrentPosition();
+      final location = await AppPermissions.getCurrentPlacemark();
+      longitude = positions?.longitude;
+      latitude = positions?.latitude;
+
+      _postTreasureController.location.text =
+          '${location.street} ${location.subLocality}, ${location.locality}, ${location.administrativeArea}, ${location.country}, ${location.postalCode}';
+    });
+  }
+
+  double? longitude, latitude;
+  TreasurePostModel treasurePostModel = TreasurePostModel();
   final PostTreasureController _postTreasureController =
       PostTreasureController();
 
@@ -56,12 +81,20 @@ class PostTreasureView extends StatelessWidget {
               CustomBtn(
                 text: AppStrings.next,
                 onBtnTap: () {
-                  context.push(Routes.itemDetails);
+                  if (_postTreasureController.location.text.isNotEmpty &&
+                      _postTreasureController.title.text.isNotEmpty) {
+                    treasurePostModel.location ??= Location();
+                    treasurePostModel.location!.coordinates = [
+                      longitude ?? 0.0,
+                      latitude ?? 0.0,
+                    ];
+                    treasurePostModel.location!.address =
+                        _postTreasureController.location.text;
+                    treasurePostModel.title =
+                        _postTreasureController.title.text;
+                    context.push(Routes.itemDetails, extra: treasurePostModel);
+                  }
                 },
-                isDisabled: _postTreasureController.title.text.isEmpty &&
-                        _postTreasureController.location.text.isEmpty
-                    ? true
-                    : false,
               ),
             ],
           ),

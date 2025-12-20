@@ -16,46 +16,52 @@ class SubscriptionSecondView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
+      backgroundColor: AppColors.light,
       child: SafeArea(
         minimum: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         child: Column(
-          spacing: 20,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          spacing: 35,
           children: [
             Text(
               AppStrings.yourFreeTrial,
               style: AppTextStyles.headingMedium,
             ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: SubscriptionData.tilesData.length,
-                itemBuilder: (context, index) {
-                  final data = SubscriptionData.tilesData[index];
-                  return ListTile(
-                    leading: Icon(
-                      index == 0 ? Icons.check_box : Icons.square_outlined,
-                      color: AppColors.dialogBtn,
+            ListView.separated(
+              shrinkWrap: true,
+              itemCount: SubscriptionData.tilesData.length,
+              separatorBuilder: (context, index) => const Divider(),
+              itemBuilder: (context, index) {
+                final data = SubscriptionData.tilesData[index];
+                return ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Icon(
+                    index == 0 ? Icons.check_box : Icons.square_outlined,
+                    color: AppColors.dialogBtn,
+                  ),
+                  title: Text(
+                    data['title'],
+                    style: AppTextStyles.bodyLarge
+                        .copyWith(color: Color(0xff0D5C63)),
+                  ),
+                  subtitle: Text(
+                    data['subtitle'],
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: Color(0xff666666),
                     ),
-                    title: Text(
-                      data['title'],
-                      style: AppTextStyles.bodyLarge
-                          .copyWith(color: Color(0xff0D5C63)),
-                    ),
-                    subtitle: Text(
-                      data['subtitle'],
-                      style: AppTextStyles.bodySmall.copyWith(
-                        color: Color(0xff666666),
-                      ),
-                    ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
             RichText(
               text: TextSpan(
                 children: [
                   TextSpan(
                       text: AppStrings.sevenDayFreeTrial,
-                      style: AppTextStyles.bodyLarge),
+                      style: AppTextStyles.bodyLarge.copyWith(
+                          color: AppColors.dark,
+                          fontWeight: FontWeight.normal)),
                   TextSpan(
                     text: ' \$4.99 per month',
                     style: AppTextStyles.bodyLarge
@@ -66,12 +72,16 @@ class SubscriptionSecondView extends StatelessWidget {
             ),
             CustomBtn(
               text: AppStrings.tryFreeAndSubscribe,
-              trailingIcon: Icon(Icons.arrow_forward),
-              onBtnTap: () => context.push(Routes.mainSubscriptionView),
+              trailingIcon: Icon(
+                Icons.arrow_forward,
+                color: AppColors.light,
+              ),
+              onBtnTap: () => context.go(Routes.mainSubscriptionView),
             ),
             Text(
               AppStrings.theAppStoreWillOnlyChargeYouAfter,
-              style: AppTextStyles.bodySmall,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.labelMedium,
             ),
             SubscriptionFooter(),
           ],
