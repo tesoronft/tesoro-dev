@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:tesoro_nft_app/enums/api_enums.dart';
 import 'package:tesoro_nft_app/models/auth/auth_model.dart';
 import 'package:tesoro_nft_app/models/content/get_content_info_model.dart';
+import 'package:tesoro_nft_app/models/maps/markers_model.dart';
 import 'package:tesoro_nft_app/models/tips/give_tips_model.dart';
 import 'package:tesoro_nft_app/models/tips/received_tips_model.dart';
 import 'package:tesoro_nft_app/models/treasures/get_all_treasures_model.dart';
@@ -12,9 +13,10 @@ import 'package:tesoro_nft_app/models/treasures/get_posted_treasure_model.dart';
 import 'package:tesoro_nft_app/models/user/user_profile.dart';
 
 import '../models/tips/sended_tips_model.dart';
+import '../models/treasures/treasure_post_model.dart';
 
 class ApiProvider with ChangeNotifier {
-  final String baseUrl = 'https://tesoro-app-production.up.railway.app/api';
+  final String baseUrl = 'https://tesoro-app--muzammilfaiz981.replit.app/api';
   bool _isLoading = false;
   bool get isLoading => _isLoading;
   String _responseTxt = '';
@@ -36,6 +38,9 @@ class ApiProvider with ChangeNotifier {
   SendedTipsResponse? _giveTipsModel;
   SendedTipsResponse? get givenTipsModel => _giveTipsModel;
   ReceivedTipsResponse? get receivedTipsModel => _receivedTipsModel;
+  AllMarkers? _allMarkers;
+  AllMarkers? get allMarkers => _allMarkers;
+
   Future<ApiEnums> createAccount(
       String userName, String email, String password) async {
     _isLoading = true;
@@ -45,14 +50,16 @@ class ApiProvider with ChangeNotifier {
           body: {"name": userName, "email": email, "password": password});
       if (response.statusCode == 201) {
         final json = jsonDecode(response.body);
-
-        log(json);
+        log(response.body);
+        _authModel = AuthModel.fromJson(json['data']);
         _responseTxt = json['message'];
         _isLoading = false;
         notifyListeners();
         return ApiEnums.success;
       } else {
         log(response.body);
+        final json = jsonDecode(response.body);
+        _responseTxt = json['details']['message'];
         _isLoading = false;
         notifyListeners();
         return ApiEnums.failed;
@@ -81,6 +88,8 @@ class ApiProvider with ChangeNotifier {
         return ApiEnums.success;
       } else {
         log(response.body);
+        final json = jsonDecode(response.body);
+        _responseTxt = json['details']['message'];
         _isLoading = false;
         notifyListeners();
         return ApiEnums.failed;
@@ -267,48 +276,50 @@ class ApiProvider with ChangeNotifier {
   }
 
   // Treasure Section
-  Future<String> createTreasure() async {
+  Future<ApiEnums> createTreasure(TreasurePostModel treaSurePostModel) async {
     _isLoading = true;
     notifyListeners();
     try {
-      final response =
-          await https.post(Uri.parse('$baseUrl/treasures/create'), body: {
-        "title": "Gold Necklace",
-        "location": {
-          "address": "Clifton, Karachi, Pakistan",
-          "lat": 24.8607,
-          "lng": 67.0011,
-          "placeId": "ChIJd_Y0eVIvkIARuQyDN0F1LBA"
-        },
-        "photos": [
-          "https://example.com/photo1.jpg",
-          "https://example.com/photo2.jpg"
-        ],
-        "price": 15000,
-        "category": "69309587820eb12d63b8238b",
-        "condition": "Used",
-        "brand": "GulAhmed",
-        "itemModel": "NA",
-        "type": "Accessory",
-        "description": "Beautiful gold necklace in excellent condition."
-      });
+      final response = await https.post(Uri.parse('$baseUrl/treasures/create'),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: jsonEncode({
+            "title": treaSurePostModel.title,
+            "location": {
+              "address": treaSurePostModel.location?.address,
+              "lat": treaSurePostModel.location?.coordinates![1],
+              "lng": treaSurePostModel.location?.coordinates![0],
+              "placeId": "ChIJd_Y0eVIvkIARuQyDN0F1LBA"
+            },
+            "photos": treaSurePostModel.photos,
+            "price": treaSurePostModel.price,
+            "category": treaSurePostModel.category,
+            "condition": treaSurePostModel.condition,
+            "brand": treaSurePostModel.brand,
+            "itemModel": treaSurePostModel.itemModel,
+            "type": treaSurePostModel.type,
+            "description": treaSurePostModel.description,
+          }));
       if (response.statusCode == 201) {
         final json = jsonDecode(response.body);
         log(json);
         _isLoading = false;
         notifyListeners();
-        return json;
+        return ApiEnums.success;
+      } else if (response.statusCode == 401) {
+        return ApiEnums.processing;
       } else {
         log(response.body);
         _isLoading = false;
         notifyListeners();
-        return response.reasonPhrase ?? response.statusCode.toString();
+        return ApiEnums.failed;
       }
     } catch (e) {
       log(e.toString());
       _isLoading = false;
       notifyListeners();
-      return e.toString();
+      return ApiEnums.failed;
     }
   }
 
@@ -695,6 +706,50 @@ class ApiProvider with ChangeNotifier {
         log(response.body);
         final jsonData = jsonDecode(response.body);
         _contentInfo = ContentInfo.fromJson(jsonData);
+        _isLoading = false;
+        notifyListeners();
+        return ApiEnums.success;
+      } else {
+        log(response.body);
+        _isLoading = false;
+        notifyListeners();
+        return ApiEnums.failed;
+      }
+    } catch (e) {
+      log(e.toString());
+      _isLoading = false;
+      notifyListeners();
+      return ApiEnums.failed;
+    }
+  }
+
+  Future<ApiEnums> getMarkers(String accessToken, int page, double longitude,
+      double latitude, int distance) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final uri = Uri.parse('$baseUrl/treasures/markers').replace(
+        queryParameters: {
+          'page': '$page',
+          'limit': 5,
+          'longitude': longitude,
+          'latitude': latitude,
+          'distance': distance,
+        },
+      );
+
+      final response = await https.post(
+        uri,
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 201) {
+        log(response.body);
+        final jsonData = jsonDecode(response.body);
+        _allMarkers = AllMarkers.fromJson(jsonData);
         _isLoading = false;
         notifyListeners();
         return ApiEnums.success;

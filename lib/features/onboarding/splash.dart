@@ -19,10 +19,13 @@ class _SplashViewState extends State<SplashView> {
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      //  await _initializeNavigation();
       final prefs = Provider.of<PreferencesProvider>(context, listen: false);
-      Future.delayed(const Duration(seconds: 3), () {
-        SplashNavigation().appNavigation(context, prefs.accessToken ?? '');
+      Future.delayed(const Duration(seconds: 3), () async {
+        await SplashNavigation()
+            .appNavigation(context, prefs.accessToken ?? '');
       });
     });
   }

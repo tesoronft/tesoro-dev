@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:tesoro_nft_app/routes/routes.dart';
 
 class SplashNavigation {
-  void appNavigation(BuildContext context, String token) {
+  Future<void> appNavigation(BuildContext context, String token) async {
     if (token != '') {
       context.go(Routes.dashboard);
     } else {

@@ -20,11 +20,15 @@ class ImagePreview extends StatelessWidget {
                     alignment: Alignment.center,
                     height: MediaQuery.sizeOf(context).height / 3,
                     width: MediaQuery.sizeOf(context).width / 1,
-                    // clipBehavior: Clip.hardEdge,
-                    decoration: BoxDecoration(),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: AppColors.currency),
+                    clipBehavior: Clip.antiAlias,
                     child: Image.network(
                       images[currentIndex.value],
-                      fit: BoxFit.contain,
+                      height: MediaQuery.sizeOf(context).height / 3,
+                      width: MediaQuery.sizeOf(context).width / 1,
+                      fit: BoxFit.cover,
                     ),
                   ),
                   Padding(
@@ -32,28 +36,40 @@ class ImagePreview extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          decoration: BoxDecoration(
-                              color: Color(0xffE4E4E4),
-                              borderRadius: BorderRadius.circular(100)),
-                          alignment: Alignment.center,
-                          padding: EdgeInsets.all(8),
-                          child: Icon(
-                            Icons.arrow_back_ios,
-                            size: 26,
-                            color: AppColors.dark.withAlpha(90),
+                        InkWell(
+                          onTap: () {
+                            currentIndex.value == 0 ? () : currentIndex.value--;
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Color(0xffE4E4E4),
+                                borderRadius: BorderRadius.circular(100)),
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.all(8),
+                            child: Icon(
+                              Icons.arrow_back_ios,
+                              size: 26,
+                              color: AppColors.dark.withAlpha(90),
+                            ),
                           ),
                         ),
-                        Container(
-                          decoration: BoxDecoration(
-                              color: Color(0xffE4E4E4),
-                              borderRadius: BorderRadius.circular(100)),
-                          padding: EdgeInsets.all(8),
-                          alignment: Alignment.center,
-                          child: Icon(
-                            Icons.arrow_forward_ios,
-                            size: 26,
-                            color: AppColors.dark.withAlpha(90),
+                        InkWell(
+                          onTap: () {
+                            currentIndex.value == images.length - 1
+                                ? ()
+                                : currentIndex.value++;
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Color(0xffE4E4E4),
+                                borderRadius: BorderRadius.circular(100)),
+                            padding: EdgeInsets.all(8),
+                            alignment: Alignment.center,
+                            child: Icon(
+                              Icons.arrow_forward_ios,
+                              size: 26,
+                              color: AppColors.dark.withAlpha(90),
+                            ),
                           ),
                         )
                       ],

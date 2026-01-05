@@ -4,16 +4,27 @@ import 'package:camera/camera.dart';
 import 'package:flutter/widgets.dart';
 
 class CameraProvider with ChangeNotifier {
-  late CameraController _cameraController;
-  CameraController get cameraController => _cameraController;
+  CameraController? _cameraController;
+  CameraController? get cameraController => _cameraController;
   bool _isLoading = false, _isInitialized = false;
   bool get isLoading => _isLoading;
   bool get isInitialized => _isInitialized;
   List<CameraDescription> cameras = [];
-  late Future<void> _initializeControllerFuture;
-  Future<void> get initializeControllerFuture => _initializeControllerFuture;
+  List<String> get cameraImages => _cameraImages;
+  List<String> _cameraImages = [];
+  Future<void>? _initializeControllerFuture;
+  Future<void>? get initializeControllerFuture => _initializeControllerFuture;
   bool _isFlashOn = false;
   bool get isFlashOn => _isFlashOn;
+  void setImages(List<String> images) {
+    _cameraImages.addAll(images);
+    notifyListeners();
+  }
+
+  void removeImage(int index) {
+    _cameraImages.removeAt(index);
+    notifyListeners();
+  }
 
   Future<void> initializeCamera() async {
     _isLoading = true;
@@ -23,7 +34,7 @@ class CameraProvider with ChangeNotifier {
       if (cameras.isNotEmpty) {
         _cameraController = CameraController(cameras[0], ResolutionPreset.high,
             enableAudio: false);
-        _initializeControllerFuture = _cameraController.initialize();
+        await _cameraController?.initialize();
         _isLoading = false;
         notifyListeners();
       } else {
@@ -40,8 +51,10 @@ class CameraProvider with ChangeNotifier {
 
   Future<String> clickImage() async {
     try {
-      final image = await _cameraController.takePicture();
-      return image.path;
+      final image = await _cameraController?.takePicture();
+      log(image?.path ?? '');
+      _cameraImages.add(image?.path ?? '');
+      return image?.path ?? '';
     } catch (e) {
       log(e.toString());
       _isLoading = false;
@@ -55,7 +68,7 @@ class CameraProvider with ChangeNotifier {
       _isFlashOn = !_isFlashOn;
       notifyListeners();
       await _cameraController
-          .setFlashMode(_isFlashOn ? FlashMode.torch : FlashMode.off);
+          ?.setFlashMode(_isFlashOn ? FlashMode.torch : FlashMode.off);
     } catch (e) {
       log(e.toString());
       notifyListeners();
@@ -63,7 +76,7 @@ class CameraProvider with ChangeNotifier {
   }
 
   Future<void> disposeCamera() async {
-    _cameraController.dispose();
+    _cameraController?.dispose();
     notifyListeners();
   }
 }

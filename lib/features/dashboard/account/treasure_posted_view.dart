@@ -27,10 +27,11 @@ class _TreasurePostedViewState extends State<TreasurePostedView> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final positions = await AppPermissions.getCurrentPosition();
+      final positions =
+          await Provider.of<AppPermissions>(context, listen: false)
+              .getCurrentPosition();
       final apis = Provider.of<ApiProvider>(context, listen: false);
-      longitude = positions?.longitude.toString();
-      latitude = positions?.latitude.toString();
+
       await apis.getAllTreasuresData(
           1,
           10,
@@ -42,12 +43,11 @@ class _TreasurePostedViewState extends State<TreasurePostedView> {
     });
   }
 
-  String? longitude, latitude;
   ValueNotifier<String> availability = ValueNotifier<String>('Available');
   @override
   Widget build(BuildContext context) {
-    return Consumer<ApiProvider>(
-      builder: (context, api, child) => CustomScaffold(
+    return Consumer2<ApiProvider, AppPermissions>(
+      builder: (context, api, permissions, child) => CustomScaffold(
           backgroundColor: AppColors.light,
           child: SafeArea(
               minimum: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
@@ -56,8 +56,8 @@ class _TreasurePostedViewState extends State<TreasurePostedView> {
                     1,
                     10,
                     'mine',
-                    longitude ?? '-73.974187',
-                    latitude ?? '40.771133',
+                    permissions.position?.longitude.toString() ?? '0.0',
+                    permissions.position?.latitude.toString() ?? '0.0',
                     '10',
                     context.read<PreferencesProvider>().accessToken ?? ''),
                 childBuilder: (context, physics) => Column(

@@ -27,9 +27,10 @@ class _AllTreasuresViewState extends State<AllTreasuresView> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final positions = await AppPermissions.getCurrentPosition();
-      longitude = positions?.longitude.toString();
-      latitide = positions?.latitude.toString();
+      final positions =
+          await Provider.of<AppPermissions>(context, listen: false)
+              .getCurrentPosition();
+
       final apis = Provider.of<ApiProvider>(context, listen: false);
 
       await apis.getAllTreasuresData(
@@ -43,12 +44,11 @@ class _AllTreasuresViewState extends State<AllTreasuresView> {
     });
   }
 
-  String? longitude, latitide;
   ValueNotifier<int> rangeNotifier = ValueNotifier<int>(10);
   @override
   Widget build(BuildContext context) {
-    return Consumer<ApiProvider>(
-      builder: (context, api, child) => CustomScaffold(
+    return Consumer2<ApiProvider, AppPermissions>(
+      builder: (context, api, permissions, child) => CustomScaffold(
           backgroundColor: AppColors.light,
           isAppbarRequired: true,
           appBarTitle: AppStrings.treasurePosted,
@@ -59,8 +59,8 @@ class _AllTreasuresViewState extends State<AllTreasuresView> {
                   1,
                   10,
                   'all',
-                  longitude ?? '67.0011',
-                  latitide ?? '24.8607',
+                  permissions.position?.longitude.toString() ?? '0.0',
+                  permissions.position?.latitude.toString() ?? '0.0',
                   '10',
                   context.read<PreferencesProvider>().accessToken ?? ''),
               childBuilder: (context, physics) => ValueListenableBuilder(
@@ -90,8 +90,10 @@ class _AllTreasuresViewState extends State<AllTreasuresView> {
                               1,
                               10,
                               'all',
-                              longitude ?? '67.0011',
-                              latitide ?? '24.8607',
+                              permissions.position?.longitude.toString() ??
+                                  '0.0',
+                              permissions.position?.latitude.toString() ??
+                                  '0.0',
                               value.toInt().toString(),
                               context.read<PreferencesProvider>().accessToken ??
                                   '',

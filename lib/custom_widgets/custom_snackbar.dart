@@ -1,10 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:tesoro_nft_app/consts/app_colors.dart';
+import 'package:tesoro_nft_app/consts/app_text_styles.dart';
+import 'package:tesoro_nft_app/enums/snack_bar_enums.dart';
+import 'package:tesoro_nft_app/routes/routes.dart';
 
-class CustomSnackbar extends StatelessWidget {
-  const CustomSnackbar({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
+class CustomSnackbar {
+  void showSnackbar(
+      SnackBarEnums snackbarEnum, String responseTxt, BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        elevation: 4,
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: snackbarEnum == SnackBarEnums.success
+            ? AppColors.dialogBtn
+            : snackbarEnum == SnackBarEnums.failed
+                ? AppColors.error
+                : Colors.yellow,
+        content: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
+          child: Row(
+            children: [
+              Icon(
+                snackbarEnum == SnackBarEnums.success
+                    ? Icons.check
+                    : snackbarEnum == SnackBarEnums.failed
+                        ? Icons.close
+                        : Icons.info,
+                color: AppColors.light,
+              ),
+              Text(
+                responseTxt,
+                style:
+                    AppTextStyles.bodyMedium.copyWith(color: AppColors.light),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -11,7 +11,8 @@ class TreasureGetModel {
       createdAt,
       collectedBy,
       collectedAt;
-  int? price, distance;
+  dynamic price;
+  dynamic distance;
   List<dynamic>? photos;
   LocationModel? location;
   PostedBy? postedBy;

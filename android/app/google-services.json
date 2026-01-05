@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "498406490238",
+    "project_id": "tesoro-nft-dev",
+    "storage_bucket": "tesoro-nft-dev.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:498406490238:android:a50b5d7187ed3825f8182f",
+        "android_client_info": {
+          "package_name": "com.tesoro.nft.application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6-FktFq7PoqThhr0BsXvX4wsuT7Ceb8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

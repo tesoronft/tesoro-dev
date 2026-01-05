@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:tesoro_nft_app/consts/app_providers.dart';
 import 'routes/routes.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(AppProviders.providers(child: MyApp()));
 }
 

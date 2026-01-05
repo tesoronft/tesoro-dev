@@ -9,8 +9,10 @@ import 'package:tesoro_nft_app/consts/app_strings.dart';
 import 'package:tesoro_nft_app/consts/app_text_styles.dart';
 import 'package:tesoro_nft_app/controllers/auth_controller.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_btn.dart';
+import 'package:tesoro_nft_app/custom_widgets/custom_snackbar.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_text_field.dart';
 import 'package:tesoro_nft_app/enums/api_enums.dart';
+import 'package:tesoro_nft_app/enums/snack_bar_enums.dart';
 import 'package:tesoro_nft_app/providers/api_provider.dart';
 import 'package:tesoro_nft_app/providers/preferences_provider.dart';
 import 'package:tesoro_nft_app/routes/routes.dart';
@@ -112,6 +114,10 @@ class AuthCard extends StatelessWidget {
                                       _authController.passwordController.text);
                               if (!apis.isLoading &&
                                   result == ApiEnums.success) {
+                                CustomSnackbar().showSnackbar(
+                                    SnackBarEnums.success,
+                                    apis.responseTxt,
+                                    context);
                                 await prefs.setUserId(
                                     apis.authModel?.user?.userId ?? '');
                                 await prefs.setAccessToken(
@@ -119,6 +125,11 @@ class AuthCard extends StatelessWidget {
                                 await prefs.setRefreshToken(
                                     apis.authModel?.refreshToken ?? '');
                                 context.go(Routes.dashboard);
+                              } else {
+                                CustomSnackbar().showSnackbar(
+                                    SnackBarEnums.failed,
+                                    apis.responseTxt,
+                                    context);
                               }
                             },
                           ),

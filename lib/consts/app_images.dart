@@ -43,4 +43,9 @@ class AppImages {
 
   // dialogs
   static const String achievment = 'assets/images/achievment.png';
+
+  //camera
+  static const String cameraClick = 'assets/images/cameraClick.png';
+  static const String flash = 'assets/images/flash.png';
+  static const String gallery = 'assets/images/gallery.png';
 }

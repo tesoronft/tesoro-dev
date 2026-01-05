@@ -9,7 +9,7 @@ class SettingsController {
       int index, String contentId, BuildContext context) async {
     switch (index) {
       case 0:
-        context.push(Routes.userAccount);
+        context.push(Routes.updateProfile);
         break;
       case 1:
         context.push(Routes.subscriptionViewOne);

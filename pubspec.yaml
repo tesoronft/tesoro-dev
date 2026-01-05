@@ -41,8 +41,9 @@ dependencies:
   flutter_launcher_icons: ^0.14.4
 
   #maps
-  google_maps_flutter: ^2.14.0
+  #google_maps_flutter: ^2.14.0
   geolocator: ^14.0.2
+  google_navigation_flutter: ^0.7.0
   #maps_launcher: ^3.0.0+1
   #map_launcher: ^4.4.2
 
@@ -65,6 +66,8 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   webview_flutter: ^4.13.0
   geocoding: ^4.0.0
+  firebase_core: ^4.3.0
+ 
 
 
 

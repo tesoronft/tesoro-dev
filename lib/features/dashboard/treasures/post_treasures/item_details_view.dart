@@ -21,10 +21,10 @@ class ItemDetailsView extends StatelessWidget {
       isAppbarRequired: true,
       appBarTitle: AppStrings.itemDetails,
       backgroundColor: AppColors.light,
-      child: SafeArea(
-        minimum: EdgeInsets.symmetric(horizontal: 10),
-        child: Form(
-          child: SingleChildScrollView(
+      child: SingleChildScrollView(
+        child: SafeArea(
+          minimum: EdgeInsets.symmetric(horizontal: 10),
+          child: Form(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 15,

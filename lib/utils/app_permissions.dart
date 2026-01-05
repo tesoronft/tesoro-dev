@@ -1,19 +1,19 @@
 import 'dart:developer';
+import 'package:flutter/foundation.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-class AppPermissions {
-  static Future<Placemark> getCurrentPlacemark() async {
-    bool locationEnables;
+class AppPermissions with ChangeNotifier {
+  Placemark? _placemark;
+  Placemark? get placemark => _placemark;
+  Position? _position;
+  Position? get position => _position;
+  bool _isCameraPermitted = false;
+  bool get isCameraPermitted => _isCameraPermitted;
+  Future<Placemark?> getCurrentPlacemark() async {
     LocationPermission permission;
 
-    // locationEnables = await Geolocator.isLocationServiceEnabled();
-
-    // if (!locationEnables) {
-    //   await Geolocator.openLocationSettings();
-    //   log('User device location is off');
-    //   return Future.error('User device location is off');
-    // }
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -28,9 +28,9 @@ class AppPermissions {
 
     final position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-    final placeMark =
+    final placeMarks =
         await placemarkFromCoordinates(position.latitude, position.longitude);
-    final place = placeMark[0];
+    _placemark = placeMarks[0];
     // log(place.name ?? '');
     // log(place.administrativeArea ?? '');
     // log(place.street ?? '');
@@ -38,23 +38,17 @@ class AppPermissions {
     // log(place.postalCode ?? '');
     // log(place.subLocality ?? '');
     // log(place.locality ?? '');
-    return place;
+    notifyListeners();
+    return _placemark;
 
     // return '${place.street}, ${place.subLocality}, ${place.locality}, ${place.administrativeArea}, ${place.country}';
   }
 
-  static Future<Position?> getCurrentPosition() async {
-    bool locationEnables;
+  Future<Position?> getCurrentPosition() async {
     LocationPermission permission;
 
-    // locationEnables = await Geolocator.isLocationServiceEnabled();
-
-    // if (!locationEnables) {
-    //   await Geolocator.openLocationSettings();
-    //   log('User device location is off');
-    //   return null;
-    // }
     permission = await Geolocator.checkPermission();
+
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
@@ -67,10 +61,40 @@ class AppPermissions {
       return null;
     }
 
-    final position = await Geolocator.getCurrentPosition(
+    _position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-    log(position.longitude.toString());
-    log(position.latitude.toString());
-    return position;
+    notifyListeners();
+    log(position!.longitude.toString());
+    log(position!.latitude.toString());
+
+    return _position;
+  }
+
+  Future<bool> getCameraPermission() async {
+    final permission = Permission.camera;
+    await permission.request();
+    if (await permission.isDenied) {
+      await permission.request();
+      if (await permission.isDenied) {
+        await permission.request();
+        if (await permission.isPermanentlyDenied) {
+          _isCameraPermitted = false;
+          notifyListeners();
+          return false;
+        } else {
+          _isCameraPermitted = true;
+          notifyListeners();
+          return true;
+        }
+      } else {
+        _isCameraPermitted = true;
+        notifyListeners();
+        return true;
+      }
+    } else {
+      _isCameraPermitted = true;
+      notifyListeners();
+      return true;
+    }
   }
 }

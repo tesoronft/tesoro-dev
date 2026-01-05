@@ -40,9 +40,12 @@ class PostedByCard extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                name,
-                style: AppTextStyles.headingMedium.copyWith(fontSize: 22),
+              SizedBox(
+                width: 200,
+                child: Text(
+                  name,
+                  style: AppTextStyles.headingMedium.copyWith(fontSize: 22),
+                ),
               ),
               SizedBox(
                   width: 200,

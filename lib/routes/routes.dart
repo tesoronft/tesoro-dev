@@ -8,6 +8,8 @@ import 'package:tesoro_nft_app/features/dashboard/account/tips_received_view.dar
 import 'package:tesoro_nft_app/features/dashboard/account/treasure_collected_view.dart';
 import 'package:tesoro_nft_app/features/dashboard/account/treasure_posted_view.dart';
 import 'package:tesoro_nft_app/features/dashboard/account/user_account_view.dart';
+import 'package:tesoro_nft_app/features/dashboard/camera/camera_view.dart';
+import 'package:tesoro_nft_app/features/dashboard/settings/settings_sections/edit_profile_view.dart';
 import 'package:tesoro_nft_app/features/dashboard/settings/settings_sections/web_view.dart';
 import 'package:tesoro_nft_app/features/dashboard/treasures/all_treasures/all_treasures_view.dart';
 import 'package:tesoro_nft_app/features/dashboard/treasures/all_treasures/treasure_details_view.dart';
@@ -38,6 +40,7 @@ class Routes {
   static const String dashboard = '/dashboard';
   static const String home = '/dashboard/home';
   static const String settings = '/dashboard/settings';
+  static const String updateProfile = '/dashboard/settings/updateProfile';
   static const String userAccount = '/dashboard/account';
   static const String tipsReceived = '/dashboard/account/tipsReceived';
   static const String tipsGiven = '/dashboard/account/tipsGiven';
@@ -59,6 +62,7 @@ class Routes {
       '/subscriptions/subscriptionViewTwo';
   static const String mainSubscriptionView =
       '/subscriptions/mainSubscriptionView';
+  static const String cameraView = '/dashboard/cameraView';
   static GoRouter router = GoRouter(initialLocation: splash, routes: [
     GoRoute(path: splash, builder: (context, state) => const SplashView()),
     GoRoute(
@@ -133,6 +137,14 @@ class Routes {
     GoRoute(
       path: mainSubscriptionView,
       builder: (context, state) => MainSubscriptionView(),
+    ),
+    GoRoute(
+      path: cameraView,
+      builder: (context, state) => CameraView(),
+    ),
+    GoRoute(
+      path: updateProfile,
+      builder: (context, state) => EditProfileView(),
     ),
     GoRoute(
         path: confirmDetails,
