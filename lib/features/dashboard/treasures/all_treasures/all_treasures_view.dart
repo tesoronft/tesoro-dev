@@ -10,6 +10,7 @@ import '../../../../consts/app_colors.dart';
 import '../../../../consts/app_strings.dart';
 import '../../../../consts/app_text_styles.dart';
 import '../../../../custom_widgets/custom_scaffold.dart';
+import '../../../../custom_widgets/permission_enable_component.dart';
 import '../../../../custom_widgets/treasure_posted_card.dart';
 import '../../../../providers/api_provider.dart';
 import '../../../../providers/preferences_provider.dart';
@@ -52,101 +53,117 @@ class _AllTreasuresViewState extends State<AllTreasuresView> {
           backgroundColor: AppColors.light,
           isAppbarRequired: true,
           appBarTitle: AppStrings.treasurePosted,
-          child: SafeArea(
-            minimum: EdgeInsets.symmetric(horizontal: 12, vertical: 20),
-            child: EasyRefresh.builder(
-              onRefresh: () async => await api.getAllTreasuresData(
-                  1,
-                  10,
-                  'all',
-                  permissions.position?.longitude.toString() ?? '0.0',
-                  permissions.position?.latitude.toString() ?? '0.0',
-                  '10',
-                  context.read<PreferencesProvider>().accessToken ?? ''),
-              childBuilder: (context, physics) => ValueListenableBuilder(
-                  valueListenable: rangeNotifier,
-                  builder: (context, range, child) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '${AppStrings.distance}: $range Miles',
-                          style: AppTextStyles.bodySmall
-                              .copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        Slider(
-                          padding: EdgeInsets.symmetric(vertical: 10),
-                          min: 0,
-                          max: 100,
-                          divisions: 100,
-                          value: rangeNotifier.value.toDouble(),
-                          thumbColor: AppColors.primary,
-                          activeColor: AppColors.primary,
-                          onChanged: (value) async {
-                            rangeNotifier.value = value.toInt();
-                          },
-                          onChangeEnd: (value) async {
-                            await api.getAllTreasuresData(
-                              1,
-                              10,
-                              'all',
-                              permissions.position?.longitude.toString() ??
-                                  '0.0',
-                              permissions.position?.latitude.toString() ??
-                                  '0.0',
-                              value.toInt().toString(),
-                              context.read<PreferencesProvider>().accessToken ??
-                                  '',
-                            );
-                          },
-                        ),
-                        api.isLoading
-                            ? Expanded(child: ShimmerEffect())
-                            : api.getAllTreasureModel == null
-                                ? Center(
-                                    child: Text(
-                                      'No treasures available',
-                                      style: AppTextStyles.bodyMedium
-                                          .copyWith(color: AppColors.dark),
-                                    ),
-                                  )
-                                : Expanded(
-                                    child: GridView.builder(
-                                        physics: physics,
-                                        gridDelegate:
-                                            SliverGridDelegateWithFixedCrossAxisCount(
-                                                crossAxisCount: 2,
-                                                crossAxisSpacing: 10,
-                                                childAspectRatio: 0.9,
-                                                mainAxisSpacing: 10),
-                                        itemCount: api.getAllTreasureModel
-                                            ?.allTreasuresData?.length,
-                                        itemBuilder: (context, index) {
-                                          final thisTreasure = api
-                                              .getAllTreasureModel
-                                              ?.allTreasuresData?[index];
-                                          return GestureDetector(
-                                            onTap: () => context.push(
-                                                Routes.treasureDetails,
-                                                extra: thisTreasure),
-                                            child: TreasurePostedCard(
-                                                condition:
-                                                    thisTreasure?.condition ??
+          child: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              SafeArea(
+                minimum: EdgeInsets.symmetric(horizontal: 12, vertical: 20),
+                child: EasyRefresh.builder(
+                  onRefresh: () async => await api.getAllTreasuresData(
+                      1,
+                      10,
+                      'all',
+                      permissions.position?.longitude.toString() ?? '0.0',
+                      permissions.position?.latitude.toString() ?? '0.0',
+                      '10',
+                      context.read<PreferencesProvider>().accessToken ?? ''),
+                  childBuilder: (context, physics) => ValueListenableBuilder(
+                      valueListenable: rangeNotifier,
+                      builder: (context, range, child) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${AppStrings.distance}: $range Miles',
+                              style: AppTextStyles.bodySmall
+                                  .copyWith(fontWeight: FontWeight.bold),
+                            ),
+                            Slider(
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              min: 0,
+                              max: 100,
+                              divisions: 100,
+                              value: rangeNotifier.value.toDouble(),
+                              thumbColor: AppColors.primary,
+                              activeColor: AppColors.primary,
+                              onChanged: (value) async {
+                                rangeNotifier.value = value.toInt();
+                              },
+                              onChangeEnd: (value) async {
+                                await api.getAllTreasuresData(
+                                  1,
+                                  10,
+                                  'all',
+                                  permissions.position?.longitude.toString() ??
+                                      '0.0',
+                                  permissions.position?.latitude.toString() ??
+                                      '0.0',
+                                  value.toInt().toString(),
+                                  context
+                                          .read<PreferencesProvider>()
+                                          .accessToken ??
+                                      '',
+                                );
+                              },
+                            ),
+                            api.isLoading
+                                ? Expanded(child: ShimmerEffect())
+                                : api.getAllTreasureModel == null
+                                    ? Center(
+                                        child: Text(
+                                          'No treasures available',
+                                          style: AppTextStyles.bodyMedium
+                                              .copyWith(color: AppColors.dark),
+                                        ),
+                                      )
+                                    : Expanded(
+                                        child: GridView.builder(
+                                            physics: physics,
+                                            gridDelegate:
+                                                SliverGridDelegateWithFixedCrossAxisCount(
+                                                    crossAxisCount: 2,
+                                                    crossAxisSpacing: 10,
+                                                    childAspectRatio: 0.9,
+                                                    mainAxisSpacing: 10),
+                                            itemCount: api.getAllTreasureModel
+                                                ?.allTreasuresData?.length,
+                                            itemBuilder: (context, index) {
+                                              final thisTreasure = api
+                                                  .getAllTreasureModel
+                                                  ?.allTreasuresData?[index];
+                                              return GestureDetector(
+                                                onTap: () => context.push(
+                                                    Routes.treasureDetails,
+                                                    extra: thisTreasure),
+                                                child: TreasurePostedCard(
+                                                    condition: thisTreasure
+                                                            ?.condition ??
                                                         '',
-                                                imagePath:
-                                                    thisTreasure?.photos?.first,
-                                                itemName:
-                                                    thisTreasure?.title ?? ''),
-                                          );
-                                        }),
-                                  ),
-                        SizedBox(
-                          height: 10,
-                        )
-                      ],
-                    );
-                  }),
-            ),
+                                                    imagePath: thisTreasure
+                                                        ?.photos?.first,
+                                                    itemName:
+                                                        thisTreasure?.title ??
+                                                            ''),
+                                              );
+                                            }),
+                                      ),
+                            SizedBox(
+                              height: 10,
+                            )
+                          ],
+                        );
+                      }),
+                ),
+              ),
+              permissions.placemark == null || permissions.position == null
+                  ? Align(
+                      alignment: Alignment.bottomCenter,
+                      child: PermissionEnableComponent(
+                        txt:
+                            'For accurate data, we require location permission',
+                      ))
+                  : SizedBox.shrink()
+            ],
           )),
     );
   }

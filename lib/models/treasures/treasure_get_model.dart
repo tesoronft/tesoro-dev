@@ -8,10 +8,9 @@ class TreasureGetModel {
       itemModel,
       type,
       description,
-      createdAt,
-      collectedBy,
-      collectedAt;
-  dynamic price;
+      createdAt;
+
+  dynamic price, collectedBy, collectedAt;
   dynamic distance;
   List<dynamic>? photos;
   LocationModel? location;
@@ -51,7 +50,7 @@ class TreasureGetModel {
         productId: jsonData['_id'],
         title: jsonData['title'],
         type: jsonData['type'],
-        userId: jsonData['user'],
+        userId: jsonData['_id'],
         postedBy: PostedBy.fromJson(jsonData['postedBy']));
   }
 }
@@ -81,14 +80,15 @@ coordinates:$coordinates,
 
 class PostedBy {
   String? id, name, profileImage;
+
   int? rating;
   PostedBy({this.id, this.name, this.profileImage, this.rating});
   factory PostedBy.fromJson(Map<String, dynamic> jsonData) {
     return PostedBy(
-      id: jsonData['_id'],
-      name: jsonData['name'],
+      id: jsonData['_id']?.toString(),
+      name: jsonData['name']?.toString() ?? "Unknown",
       profileImage: jsonData['profileImage'],
-      rating: jsonData['rating'],
+      rating: jsonData['rating'] is int ? jsonData['rating'] : 0,
     );
   }
 }

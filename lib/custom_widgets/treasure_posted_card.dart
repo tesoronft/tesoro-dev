@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:tesoro_nft_app/consts/app_colors.dart';
 import 'package:tesoro_nft_app/consts/app_strings.dart';
@@ -23,8 +25,8 @@ class TreasurePostedCard extends StatelessWidget {
         spacing: 4,
         children: [
           Expanded(
-            child: Image.network(
-              imagePath,
+            child: Image.file(
+              File(imagePath),
               // height: 150,
               width: double.infinity,
               filterQuality: FilterQuality.high,

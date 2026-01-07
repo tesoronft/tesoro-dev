@@ -17,8 +17,9 @@ class CustomSnackbar {
                 ? AppColors.error
                 : Colors.yellow,
         content: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
           child: Row(
+            spacing: 10,
             children: [
               Icon(
                 snackbarEnum == SnackBarEnums.success
@@ -28,10 +29,14 @@ class CustomSnackbar {
                         : Icons.info,
                 color: AppColors.light,
               ),
-              Text(
-                responseTxt,
-                style:
-                    AppTextStyles.bodyMedium.copyWith(color: AppColors.light),
+              SizedBox(
+                width: 275,
+                child: Text(
+                  responseTxt,
+                  softWrap: true,
+                  style: AppTextStyles.bodySmall.copyWith(
+                      color: AppColors.light, fontWeight: FontWeight.bold),
+                ),
               )
             ],
           ),

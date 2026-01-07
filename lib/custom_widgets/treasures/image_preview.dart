@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:tesoro_nft_app/consts/app_colors.dart';
 
@@ -24,8 +26,10 @@ class ImagePreview extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                         color: AppColors.currency),
                     clipBehavior: Clip.antiAlias,
-                    child: Image.network(
-                      images[currentIndex.value],
+                    child: Image.file(
+                      File(
+                        images[currentIndex.value],
+                      ),
                       height: MediaQuery.sizeOf(context).height / 3,
                       width: MediaQuery.sizeOf(context).width / 1,
                       fit: BoxFit.cover,
@@ -93,8 +97,8 @@ class ImagePreview extends StatelessWidget {
                                     ? AppColors.error
                                     : Colors.transparent)),
                         alignment: Alignment.center,
-                        child: Image.network(
-                          images[index],
+                        child: Image.file(
+                          File(images[index]),
                           fit: BoxFit.cover,
                         ),
                       ),

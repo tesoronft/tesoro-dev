@@ -2,6 +2,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:tesoro_nft_app/consts/app_colors.dart';
 import 'package:tesoro_nft_app/custom_widgets/camera/camera_components.dart';
 import 'package:tesoro_nft_app/custom_widgets/camera/camera_unavailable_view.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_scaffold.dart';
@@ -37,6 +38,7 @@ class _CameraViewState extends State<CameraView> {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
+      backgroundColor: AppColors.light,
       child: Consumer2<PreferencesProvider, CameraProvider>(
         builder: (context, prefs, camera, child) => Stack(
           fit: StackFit.expand,
@@ -44,7 +46,10 @@ class _CameraViewState extends State<CameraView> {
           children: [
             camera.cameraController == null ||
                     !camera.cameraController!.value.isInitialized
-                ? CameraUnavailableView()
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CameraUnavailableView(),
+                  )
                 : camera.isLoading
                     ? Center(child: LoaderWidget())
                     : CameraPreview(camera.cameraController!),

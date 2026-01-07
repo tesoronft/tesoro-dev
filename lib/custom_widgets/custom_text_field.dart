@@ -22,6 +22,7 @@ class CustomTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: editingController,
+      style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.normal),
       cursorColor: AppColors.primary,
       textAlign: TextAlign.start,
       smartDashesType: SmartDashesType.disabled,

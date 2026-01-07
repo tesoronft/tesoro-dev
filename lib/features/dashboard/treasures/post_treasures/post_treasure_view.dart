@@ -39,6 +39,8 @@ class _PostTreasureViewState extends State<PostTreasureView>
 
       _postTreasureController.location.text =
           '${geoLocation.placemark?.street} ${geoLocation.placemark?.subLocality}, ${geoLocation.placemark?.locality}, ${geoLocation.placemark?.administrativeArea}, ${geoLocation.placemark?.country}, ${geoLocation.placemark?.postalCode}';
+
+      // _postTreasureController.location.text = 'Samanabad, Lahore, Pakistan';
     });
   }
 
@@ -62,6 +64,8 @@ class _PostTreasureViewState extends State<PostTreasureView>
 
       _postTreasureController.location.text =
           '${geoLocation.placemark?.street} ${geoLocation.placemark?.subLocality}, ${geoLocation.placemark?.locality}, ${geoLocation.placemark?.administrativeArea}, ${geoLocation.placemark?.country}, ${geoLocation.placemark?.postalCode}';
+
+      //_postTreasureController.location.text = 'Samanabad, Lahore, Pakistan';
     }
   }
 
@@ -173,6 +177,8 @@ class _PostTreasureViewState extends State<PostTreasureView>
                         treasurePostModel.location!.coordinates = [
                           longitude ?? 0.0,
                           latitude ?? 0.0,
+                          // 74.2985,
+                          // 31.5357,
                         ];
 
                         treasurePostModel.location!.address =

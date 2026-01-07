@@ -6,8 +6,8 @@ import '../consts/app_text_styles.dart';
 import 'custom_btn.dart';
 
 class PermissionEnableComponent extends StatelessWidget {
-  const PermissionEnableComponent({super.key});
-
+  const PermissionEnableComponent({super.key, this.txt});
+  final String? txt;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -20,16 +20,16 @@ class PermissionEnableComponent extends StatelessWidget {
             SizedBox(
               width: 250,
               child: Text(
-                'Location permissions are denied forever',
+                txt ?? 'Location permissions are denied forever',
                 softWrap: true,
-                style:
-                    AppTextStyles.bodyMedium.copyWith(color: AppColors.light),
+                style: AppTextStyles.bodySmall.copyWith(
+                    color: AppColors.light, fontWeight: FontWeight.w900),
               ),
             ),
             CustomBtn(
               text: 'Enable',
               btnColor: AppColors.lightPrimary,
-              textStyle: AppTextStyles.bodyMedium,
+              textStyle: AppTextStyles.bodySmall,
               onBtnTap: () async {
                 await openAppSettings();
               },

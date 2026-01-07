@@ -10,9 +10,11 @@ import 'package:tesoro_nft_app/consts/app_strings.dart';
 import 'package:tesoro_nft_app/consts/app_text_styles.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_btn.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_scaffold.dart';
+import 'package:tesoro_nft_app/custom_widgets/custom_snackbar.dart';
 import 'package:tesoro_nft_app/custom_widgets/dialogs/message_dialog.dart';
 import 'package:tesoro_nft_app/data/treasure/post_treasure_data.dart';
 import 'package:tesoro_nft_app/enums/api_enums.dart';
+import 'package:tesoro_nft_app/enums/snack_bar_enums.dart';
 import 'package:tesoro_nft_app/models/treasures/treasure_post_model.dart';
 import 'package:tesoro_nft_app/providers/api_provider.dart';
 import 'package:tesoro_nft_app/providers/preferences_provider.dart';
@@ -22,7 +24,7 @@ class ConfirmDetailsView extends StatelessWidget {
   const ConfirmDetailsView({super.key, required this.treasurePostModel});
   final TreasurePostModel treasurePostModel;
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext buildContext) {
     return Consumer2<ApiProvider, PreferencesProvider>(
       builder: (context, apis, prefs, child) => AbsorbPointer(
         absorbing: apis.isLoading,
@@ -153,30 +155,39 @@ class ConfirmDetailsView extends StatelessWidget {
                             color: AppColors.primary,
                           ),
                         )
-                      : CustomBtn(
-                          text: AppStrings.postItem,
-                          trailingIcon: Icon(
-                            Icons.arrow_forward,
-                            color: AppColors.light,
-                          ),
-                          onBtnTap: () async {
-                            final result =
-                                await apis.createTreasure(treasurePostModel);
-                            if (result == ApiEnums.success) {
-                              showDialog(
-                                context: context,
-                                barrierDismissible: false,
-                                builder: (context) => MessageDialog(
-                                    btnTapped: () =>
-                                        context.go(Routes.dashboard),
-                                    btnTxt: 'Back to Home',
-                                    imageUrl: AppImages.achievment,
-                                    subtitle:
-                                        AppStrings.yourListingItemIsVissible,
-                                    title: AppStrings.itemPostedSuccessfully),
-                              );
-                            }
-                          }),
+                      : Consumer<PreferencesProvider>(
+                          builder: (context, prefs, child) => CustomBtn(
+                              text: AppStrings.postItem,
+                              trailingIcon: Icon(
+                                Icons.arrow_forward,
+                                color: AppColors.light,
+                              ),
+                              onBtnTap: () async {
+                                final result = await apis.createTreasure(
+                                    treasurePostModel, prefs.accessToken ?? '');
+                                if (result == ApiEnums.success) {
+                                  showDialog(
+                                    context: buildContext,
+                                    barrierDismissible: false,
+                                    builder: (context) => MessageDialog(
+                                        btnTapped: () =>
+                                            context.goNamed(Routes.dashboard),
+                                        btnTxt: 'Back to Home',
+                                        imageUrl: AppImages.achievment,
+                                        subtitle: AppStrings
+                                            .yourListingItemIsVissible,
+                                        title:
+                                            AppStrings.itemPostedSuccessfully),
+                                  );
+                                } else {
+                                  CustomSnackbar().showSnackbar(
+                                    SnackBarEnums.failed,
+                                    apis.responseTxt,
+                                    buildContext,
+                                  );
+                                }
+                              }),
+                        ),
                 ],
               ),
             ),

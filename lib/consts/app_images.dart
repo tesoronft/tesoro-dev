@@ -14,6 +14,7 @@ class AppImages {
   static const String trashTreasure = 'assets/images/trash_treasure.png';
   static const String user = 'assets/images/User.svg';
   static const String world = 'assets/images/world.png';
+  static const String mark = 'assets/images/mark.png';
   // Settings
   static const String profile = 'assets/images/profileIcon.svg';
   static const String star = 'assets/images/star.svg';
