@@ -145,7 +145,7 @@ class ApiProvider with ChangeNotifier {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       });
-      log('here');
+
       if (response.statusCode == 201) {
         final json = jsonDecode(response.body);
         log(response.body);
@@ -154,22 +154,30 @@ class ApiProvider with ChangeNotifier {
         notifyListeners();
         return ApiEnums.success;
       } else {
+        final json = jsonDecode(response.body);
         log(response.body);
-
+        _responseTxt = json['details']['message'];
         _isLoading = false;
         notifyListeners();
         return ApiEnums.failed;
       }
     } catch (e) {
       log(e.toString());
+      _responseTxt = e.toString();
       _isLoading = false;
       notifyListeners();
       return ApiEnums.failed;
     }
   }
 
-  Future<String> updateUserData(String token, String? email, String? name,
-      String? newPassword, String? oldPassword, String uid) async {
+  Future<ApiEnums> updateUserData(
+      String token,
+      String? email,
+      String? name,
+      String? profileImage,
+      String? newPassword,
+      String? oldPassword,
+      String uid) async {
     _isLoading = true;
     notifyListeners();
     try {
@@ -179,27 +187,30 @@ class ApiProvider with ChangeNotifier {
         "name": name,
         "currentPassword": oldPassword,
         "newPassword": newPassword,
+        "profileImage": profileImage,
       }, headers: {
         'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
       });
       if (response.statusCode == 201) {
         final json = jsonDecode(response.body);
-        log(json);
-        _isLoading = false;
-        notifyListeners();
-        return json;
-      } else {
         log(response.body);
         _isLoading = false;
         notifyListeners();
-        return response.reasonPhrase ?? response.statusCode.toString();
+        return ApiEnums.success;
+      } else {
+        final json = jsonDecode(response.body);
+        log(response.body);
+        _responseTxt = json['details']['message'];
+        _isLoading = false;
+        notifyListeners();
+        return ApiEnums.failed;
       }
     } catch (e) {
       log(e.toString());
       _isLoading = false;
+      _responseTxt = e.toString();
       notifyListeners();
-      return e.toString();
+      return ApiEnums.failed;
     }
   }
 
@@ -264,7 +275,7 @@ class ApiProvider with ChangeNotifier {
           body: {"refreshToken": oldToken});
       if (response.statusCode == 201) {
         final json = jsonDecode(response.body);
-        log(json);
+        log(response.body);
         _isLoading = false;
         notifyListeners();
         return json;
@@ -393,7 +404,7 @@ class ApiProvider with ChangeNotifier {
       if (response.statusCode == 201) {
         final json = jsonDecode(response.body);
         log(response.body);
-        _responseTxt = json['message'];
+        _responseTxt = json['message'] ?? 'Data Received';
         _treasureGetModel = TreasureGetModel.fromJson(json);
         _isLoading = false;
         notifyListeners();

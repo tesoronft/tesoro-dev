@@ -16,6 +16,7 @@ import 'package:tesoro_nft_app/features/dashboard/treasures/all_treasures/treasu
 import 'package:tesoro_nft_app/features/dashboard/treasures/post_treasures/confirm_details_view.dart';
 import 'package:tesoro_nft_app/features/dashboard/treasures/post_treasures/item_details_view.dart';
 import 'package:tesoro_nft_app/features/dashboard/treasures/post_treasures/post_treasure_view.dart';
+import 'package:tesoro_nft_app/features/dashboard/treasures/treasure_navigation.dart';
 import 'package:tesoro_nft_app/features/onboarding/onboarding1_view.dart';
 import 'package:tesoro_nft_app/features/subscriptions/main_subscription_view.dart';
 import 'package:tesoro_nft_app/features/subscriptions/subscription_first_view.dart';
@@ -62,6 +63,7 @@ class Routes {
       '/subscriptions/subscriptionViewTwo';
   static const String mainSubscriptionView =
       '/subscriptions/mainSubscriptionView';
+  static const String navigationView = '/treasures/navigation';
   static const String cameraView = '/dashboard/cameraView';
   static GoRouter router = GoRouter(initialLocation: splash, routes: [
     GoRoute(path: splash, builder: (context, state) => const SplashView()),
@@ -142,6 +144,14 @@ class Routes {
       path: cameraView,
       builder: (context, state) => CameraView(),
     ),
+    GoRoute(
+        path: navigationView,
+        builder: (context, state) {
+          final lating = state.extra;
+          return TreasureNavigation(
+            lating: lating as List<dynamic>,
+          );
+        }),
     GoRoute(
       path: updateProfile,
       builder: (context, state) => EditProfileView(),

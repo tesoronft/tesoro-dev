@@ -15,4 +15,16 @@ class DeviceImagePicker {
       return null;
     }
   }
+
+  Future<String?> pickProfileImage() async {
+    try {
+      final result = await imagePicker.pickImage(source: ImageSource.gallery);
+      log(result?.path ?? '');
+
+      return result?.path;
+    } catch (e) {
+      log(e.toString());
+      return null;
+    }
+  }
 }

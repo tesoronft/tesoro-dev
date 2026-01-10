@@ -28,7 +28,12 @@ class _SettingsViewState extends State<SettingsView> {
       final apisProvider = Provider.of<ApiProvider>(context, listen: false);
       final prefsProvider =
           Provider.of<PreferencesProvider>(context, listen: false);
-      await apisProvider.getAppUrls(prefsProvider.accessToken ?? '');
+      if (apisProvider.userProfile == null) {
+        await apisProvider.getUserData(prefsProvider.accessToken ?? '');
+      }
+      if (apisProvider.contentInfoModel == null) {
+        await apisProvider.getAppUrls(prefsProvider.accessToken ?? '');
+      }
     });
   }
 

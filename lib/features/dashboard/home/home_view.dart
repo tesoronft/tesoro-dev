@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_navigation_flutter/google_navigation_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:tesoro_nft_app/consts/app_colors.dart';
 import 'package:tesoro_nft_app/consts/app_images.dart';
-import 'package:tesoro_nft_app/custom_widgets/custom_scaffold.dart';
+import 'package:tesoro_nft_app/consts/app_text_styles.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_snackbar.dart';
 import 'package:tesoro_nft_app/custom_widgets/loader_widget.dart';
 import 'package:tesoro_nft_app/enums/api_enums.dart';
@@ -31,6 +32,10 @@ class _HomeViewState extends State<HomeView> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final geoLocation = Provider.of<AppPermissions>(context, listen: false);
       final markers = Provider.of<ApiProvider>(context, listen: false);
+      final prefs = Provider.of<PreferencesProvider>(context, listen: false);
+      if (markers.userProfile == null) {
+        final result = await markers.getUserData(prefs.accessToken ?? '');
+      }
 
       final lat = await geoLocation.getCurrentPosition();
       log(lat?.latitude.toString() ?? '');
@@ -52,15 +57,65 @@ class _HomeViewState extends State<HomeView> {
 //AIzaSyCFTwfbaMCWckrykb-e5U4ki0Wm4RFm6po
   @override
   Widget build(BuildContext context) {
-    return CustomScaffold(
-      child: SafeArea(
-        child: Consumer3<AppPermissions, ApiProvider, PreferencesProvider>(
-          builder: (context, permissions, api, prefs, child) => Stack(
-            children: [
-              ValueListenableBuilder(
-                  valueListenable: allmarkers,
-                  builder: (context, mark, child) {
-                    return GoogleMapsMapView(
+    return Consumer3<AppPermissions, ApiProvider, PreferencesProvider>(
+      builder: (context, permissions, api, prefs, child) => Scaffold(
+        backgroundColor: AppColors.light,
+        appBar: AppBar(
+          toolbarHeight: 90,
+          backgroundColor: AppColors.light,
+          title: Image.asset(
+            AppImages.logo,
+            height: 70,
+            width: 70,
+          ),
+          centerTitle: true,
+          automaticallyImplyLeading: false,
+          leadingWidth: 100,
+          leading: Container(
+            decoration: BoxDecoration(
+                border: Border.all(
+                    color: Color(
+                      0xff666666,
+                    ),
+                    width: 0)),
+            alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(vertical: 2),
+            margin: EdgeInsets.symmetric(vertical: 25, horizontal: 5),
+            child: Text(
+              '\$ ${api.userProfile?.tipReceived}',
+              style: AppTextStyles.bodyLarge.copyWith(color: Color(0xff666666)),
+            ),
+          ),
+          actions: [
+            InkWell(
+                onTap: () =>
+                    _controller?.moveCamera(CameraUpdate.newLatLng(LatLng(
+                      longitude: permissions.position?.longitude ?? 0.0,
+                      latitude: permissions.position?.latitude ?? 0.0,
+                    ))),
+                child: Card(
+                    color: AppColors.light,
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: Icon(Icons.loop),
+                    )))
+          ],
+        ),
+        body: Stack(
+          children: [
+            ValueListenableBuilder(
+                valueListenable: allmarkers,
+                builder: (context, mark, child) {
+                  return Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20))),
+                    clipBehavior: Clip.antiAlias,
+                    child: GoogleMapsMapView(
                       initialCameraPosition: CameraPosition(
                         target: LatLng(
                           longitude: permissions.position?.longitude ?? 0.0,
@@ -86,7 +141,7 @@ class _HomeViewState extends State<HomeView> {
                         if (result == ApiEnums.success) {
                           CustomSnackbar().showSnackbar(
                               SnackBarEnums.success, api.responseTxt, context);
-                          context.pushNamed(Routes.treasureDetails,
+                          context.push(Routes.treasureDetails,
                               extra: api.treasureGetModel);
                         } else {
                           CustomSnackbar().showSnackbar(
@@ -118,16 +173,16 @@ class _HomeViewState extends State<HomeView> {
                                           74.2985,
                                     ))));
                       },
-                    );
-                  }),
-              permissions.placemark == null || permissions.position == null
-                  ? Align(
-                      alignment: Alignment.bottomCenter,
-                      child: PermissionEnableComponent())
-                  : SizedBox.shrink(),
-              if (api.isLoading) Center(child: LoaderWidget())
-            ],
-          ),
+                    ),
+                  );
+                }),
+            permissions.placemark == null || permissions.position == null
+                ? Align(
+                    alignment: Alignment.bottomCenter,
+                    child: PermissionEnableComponent())
+                : SizedBox.shrink(),
+            if (api.isLoading) Center(child: LoaderWidget())
+          ],
         ),
       ),
     );

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:tesoro_nft_app/consts/app_colors.dart';
 import 'package:tesoro_nft_app/consts/app_strings.dart';
 import 'package:tesoro_nft_app/consts/app_text_styles.dart';
+import 'package:tesoro_nft_app/custom_widgets/custom_avatar.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_btn.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_notched_appbar.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_scaffold.dart';
@@ -57,13 +56,12 @@ class _UserAccountViewState extends State<UserAccountView> {
                     children: [
                       CustomNotchedAppbar(child: SizedBox()),
                       Positioned(
-                        top: 60,
-                        left: 160,
-                        child: CircleAvatar(
-                          backgroundColor: AppColors.primary,
-                          maxRadius: 45,
-                        ),
-                      )
+                          top: 60,
+                          left: 160,
+                          child: CustomAvatar(
+                              radius: 90,
+                              profileImage: apis.userProfile?.profileImage ??
+                                  'https://www.vectorstock.com/royalty-free-vector/default-avatar-profile-icon-social-media-user-vector-49816613'))
                     ],
                   ),
                   SizedBox(

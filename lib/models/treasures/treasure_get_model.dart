@@ -87,7 +87,7 @@ class PostedBy {
     return PostedBy(
       id: jsonData['_id']?.toString(),
       name: jsonData['name']?.toString() ?? "Unknown",
-      profileImage: jsonData['profileImage'],
+      profileImage: jsonData['profileImage']?.toString() ?? '',
       rating: jsonData['rating'] is int ? jsonData['rating'] : 0,
     );
   }

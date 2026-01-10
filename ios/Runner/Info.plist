@@ -5,7 +5,7 @@
 		<key>CFBundleDevelopmentRegion</key>
 		<string>$(DEVELOPMENT_LANGUAGE)</string>
 		<key>CFBundleDisplayName</key>
-		<string>Tesoro Nft App</string>
+		<string>Tesoro Nft</string>
 		<key>CFBundleExecutable</key>
 		<string>$(EXECUTABLE_NAME)</string>
 		<key>CFBundleIdentifier</key>
@@ -28,10 +28,14 @@
 		<string>LaunchScreen</string>
 		<key>UIMainStoryboardFile</key>
 		<string>Main</string>
+		<key>NSCameraUsageDescription</key>
+		<string>This app needs camera access to take treasure photos.</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>This app needs gallery access to get treasure photos.</string>
 		<key>NSLocationWhenInUseUsageDescription</key>
-		<string>This app needs access to location when open to show nearby stores.</string>
+		<string>This app needs access to location when open to show nearby treasures.</string>
 		<key>NSLocationAlwaysUsageDescription</key>
-		<string>This app needs access to location even in the background to track your delivery.</string>
+		<string>This app needs access to location even in the background to track treasures.</string>
 		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 		<string>This app needs location access to provide a seamless experience both in the foreground and background.</string>
 		<key>UISupportedInterfaceOrientations</key>

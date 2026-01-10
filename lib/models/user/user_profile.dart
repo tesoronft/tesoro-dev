@@ -1,5 +1,5 @@
 class UserProfile {
-  String? uid, name, email, role, createdAt;
+  String? uid, name, email, role, createdAt, profileImage;
   int? treasurePosted, treasureCollected, tipGiven, tipReceived;
   UserProfile(
       {this.createdAt,
@@ -10,6 +10,7 @@ class UserProfile {
       this.tipReceived,
       this.treasureCollected,
       this.treasurePosted,
+      this.profileImage,
       this.uid});
   factory UserProfile.fromJson(Map<String, dynamic> jsonData) {
     return UserProfile(
@@ -22,6 +23,7 @@ class UserProfile {
       treasureCollected: jsonData['totalTreasuresCollected'],
       treasurePosted: jsonData['totalTreasuresPosted'],
       uid: jsonData['_id'],
+      profileImage: jsonData['profileImage'],
     );
   }
 }

@@ -5,7 +5,6 @@ import 'package:tesoro_nft_app/consts/app_strings.dart';
 import 'package:tesoro_nft_app/consts/app_text_styles.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_btn.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_scaffold.dart';
-import 'package:tesoro_nft_app/data/dashboard/settings_data.dart';
 import 'package:tesoro_nft_app/data/subscription/subscription_data.dart';
 import 'package:tesoro_nft_app/routes/routes.dart';
 
