@@ -1,20 +1,18 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_navigation_flutter/google_navigation_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tesoro_nft_app/consts/app_colors.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_scaffold.dart';
-import 'package:tesoro_nft_app/custom_widgets/popup_button.dart';
-import 'package:tesoro_nft_app/routes/routes.dart';
+import 'package:tesoro_nft_app/models/treasures/treasure_get_model.dart';
 import 'package:tesoro_nft_app/utils/app_permissions.dart';
 import 'package:tesoro_nft_app/utils/routes_navigation.dart';
 
 class TreasureNavigation extends StatefulWidget {
-  const TreasureNavigation({super.key, required this.lating});
-  final List<dynamic> lating;
+  const TreasureNavigation({super.key, required this.treasureGetModel});
+  final TreasureGetModel treasureGetModel;
 
   @override
   State<TreasureNavigation> createState() => _TreasureNavigationState();
@@ -39,19 +37,24 @@ class _TreasureNavigationState extends State<TreasureNavigation> {
         child: Column(
           children: [
             Container(
-                height: 50,
-                //width: 100,
-                decoration: BoxDecoration(color: AppColors.light),
-                alignment: Alignment.bottomLeft,
-                padding: EdgeInsets.only(left: 20),
-                child: SafeArea(
-                    child: IconButton(
-                        onPressed: () async {
-                          await GoogleMapsNavigator.stopGuidance();
-                          await GoogleMapsNavigator.clearDestinations();
-                          context.go(Routes.dashboard);
-                        },
-                        icon: Icon(Icons.arrow_back)))),
+              height: 50,
+              width: double.infinity,
+              decoration: BoxDecoration(color: Colors.transparent),
+              alignment: Alignment.bottomLeft,
+              padding: EdgeInsets.only(left: 20),
+              child: SafeArea(
+                  child: IconButton(
+                      onPressed: () async {
+                        log('Button Pressed: Stopping navigation and clearing destinations.');
+                        await GoogleMapsNavigator.stopGuidance();
+                        await GoogleMapsNavigator.clearDestinations();
+                        context.pop();
+                      },
+                      icon: Icon(
+                        Icons.arrow_back,
+                        size: 28,
+                      ))),
+            ),
             Expanded(
               child: SafeArea(
                 child: GoogleMapsNavigationView(
@@ -65,7 +68,9 @@ class _TreasureNavigationState extends State<TreasureNavigation> {
 
                     await _controller?.setMyLocationEnabled(true);
                     await RoutesNavigation.startMapsNavigation(
-                        context, widget.lating);
+                      context,
+                      widget.treasureGetModel,
+                    );
                   },
                   initialNavigationUIEnabledPreference:
                       NavigationUIEnabledPreference.automatic,

@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
+      // key: navigatorKey,
       routerConfig: Routes.router,
     );
   }

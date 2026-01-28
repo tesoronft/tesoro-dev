@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -32,10 +34,15 @@ class PostedByCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
             clipBehavior: Clip.antiAlias,
-            child: Image.network(
-              imageUrl,
-              fit: BoxFit.cover,
-            ),
+            child: imageUrl.contains('https')
+                ? Image.network(
+                    imageUrl,
+                    fit: BoxFit.cover,
+                  )
+                : Image.file(
+                    File(imageUrl),
+                    fit: BoxFit.cover,
+                  ),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,

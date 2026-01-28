@@ -20,26 +20,28 @@ class SigninView extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         Image.asset(AppImages.splashBackground, fit: BoxFit.fill),
-        SafeArea(
-          minimum: EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            spacing: 20,
-            children: [
-              AuthCard(
-                  issSignin: true,
-                  onBtnTap: () {
-                    context.push(Routes.signup);
-                  }),
-              CustomBtn(
-                text: AppStrings.continueWithGoogle,
-                textStyle:
-                    AppTextStyles.bodyMedium.copyWith(color: AppColors.dark),
-                onBtnTap: () {},
-                btnColor: AppColors.light,
-                leadingIcon: SvgPicture.asset(AppImages.google),
-              ),
-            ],
+        SingleChildScrollView(
+          child: SafeArea(
+            minimum: EdgeInsets.symmetric(horizontal: 10),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              spacing: 20,
+              children: [
+                AuthCard(
+                    issSignin: true,
+                    onBtnTap: () {
+                      context.push(Routes.signup);
+                    }),
+                CustomBtn(
+                  text: AppStrings.continueWithGoogle,
+                  textStyle:
+                      AppTextStyles.bodyMedium.copyWith(color: AppColors.dark),
+                  onBtnTap: () {},
+                  btnColor: AppColors.light,
+                  leadingIcon: SvgPicture.asset(AppImages.google),
+                ),
+              ],
+            ),
           ),
         )
       ],

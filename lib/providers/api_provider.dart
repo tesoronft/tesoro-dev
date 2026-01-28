@@ -19,7 +19,7 @@ import '../models/tips/sended_tips_model.dart';
 import '../models/treasures/treasure_post_model.dart';
 
 class ApiProvider with ChangeNotifier {
-  final String baseUrl = 'https://tesoro-app--muzammilfaiz981.replit.app/api';
+  final String baseUrl = 'https://tesoro-backend-production.up.railway.app/api';
   bool _isLoading = false;
   bool get isLoading => _isLoading;
   String _responseTxt = '';
@@ -39,6 +39,8 @@ class ApiProvider with ChangeNotifier {
   UserProfile? get userProfile => _userProfile;
   CategoryModelList? _categoryModelList;
   CategoryModelList? get categoryModelList => _categoryModelList;
+  ConditionsModelList? _conditionsList;
+  ConditionsModelList? get conditionsList => _conditionsList;
   GetAllCollectedTreasure? _allCollectedTreasure;
   GetAllCollectedTreasure? get allCollectedTreasure => _allCollectedTreasure;
   ReceivedTipsResponse? _receivedTipsModel;
@@ -74,6 +76,7 @@ class ApiProvider with ChangeNotifier {
     } catch (e) {
       log(e.toString());
       _isLoading = false;
+      _responseTxt = e.toString();
       notifyListeners();
       return ApiEnums.failed;
     }
@@ -267,7 +270,7 @@ class ApiProvider with ChangeNotifier {
     }
   }
 
-  Future<String> getRefreshToken(String oldToken) async {
+  Future<dynamic> getRefreshToken(String oldToken) async {
     _isLoading = true;
     notifyListeners();
     try {
@@ -275,6 +278,7 @@ class ApiProvider with ChangeNotifier {
           body: {"refreshToken": oldToken});
       if (response.statusCode == 201) {
         final json = jsonDecode(response.body);
+
         log(response.body);
         _isLoading = false;
         notifyListeners();
@@ -308,6 +312,42 @@ class ApiProvider with ChangeNotifier {
         final json = jsonDecode(response.body);
         log(response.body);
         _categoryModelList = CategoryModelList.fromJson(json);
+        // _responseTxt = json['message'];
+        _isLoading = false;
+        notifyListeners();
+        return json;
+      } else {
+        final json = jsonDecode(response.body);
+        log(response.body);
+        _responseTxt = json['details']['message'];
+        _isLoading = false;
+        notifyListeners();
+        return response.reasonPhrase ?? response.statusCode.toString();
+      }
+    } catch (e) {
+      log(e.toString());
+      _responseTxt = e.toString();
+      _isLoading = false;
+      notifyListeners();
+      return e.toString();
+    }
+  }
+
+  Future<String> getConditions(String accessToken) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final response = await https.post(
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer $accessToken',
+        },
+        Uri.parse('$baseUrl/conditions/all?page=1&limit=15'),
+      );
+      if (response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        log(response.body);
+        _conditionsList = ConditionsModelList.fromJson(json);
         _responseTxt = json['message'];
         _isLoading = false;
         notifyListeners();
@@ -354,7 +394,6 @@ class ApiProvider with ChangeNotifier {
             "condition": treaSurePostModel.condition,
             "brand": treaSurePostModel.brand,
             "itemModel": treaSurePostModel.itemModel,
-            "type": treaSurePostModel.type,
             "description": treaSurePostModel.description,
           }));
       if (response.statusCode == 201) {
@@ -374,12 +413,12 @@ class ApiProvider with ChangeNotifier {
       } else {
         final json = jsonDecode(response.body);
         log(response.body);
-        _responseTxt = json['details']['message'];
+        _responseTxt = 'Treasure post failed. Please try again.';
         _isLoading = false;
         notifyListeners();
         return ApiEnums.failed;
       }
-    } catch (e) {
+    } on HttpResponseError catch (e) {
       log(e.toString());
       _responseTxt = e.toString();
       _isLoading = false;
@@ -438,16 +477,20 @@ class ApiProvider with ChangeNotifier {
     _isLoading = true;
     notifyListeners();
     try {
-      final uri = Uri.parse('$baseUrl/treasures/all').replace(
-        queryParameters: {
-          'page': '$page',
-          'limit': '$limit',
-          'scope': treasureScope,
-          'longitude': longitude,
-          'latitude': latitude,
-          'distance': distancePerKm,
-        },
-      );
+      final uri = longitude != '0.0'
+          ? Uri.parse('$baseUrl/treasures/all').replace(queryParameters: {
+              'page': '$page',
+              'limit': '$limit',
+              'scope': treasureScope,
+              'longitude': longitude,
+              'latitude': latitude,
+              'distance': distancePerKm,
+            })
+          : Uri.parse('$baseUrl/treasures/all').replace(queryParameters: {
+              'page': '$page',
+              'limit': '$limit',
+              'scope': treasureScope,
+            });
 
       final response = await https.post(
         uri,
@@ -463,14 +506,14 @@ class ApiProvider with ChangeNotifier {
         _getAllTreasuresModel = GetAllTreasuresModel.fromJson(json);
         _isLoading = false;
         notifyListeners();
-        return json;
+        return response.reasonPhrase ?? response.statusCode.toString();
       } else {
         log(response.body);
         _isLoading = false;
         notifyListeners();
         return response.reasonPhrase ?? response.statusCode.toString();
       }
-    } catch (e) {
+    } on HttpResponseError catch (e) {
       log(e.toString());
       _isLoading = false;
       notifyListeners();
@@ -637,6 +680,50 @@ class ApiProvider with ChangeNotifier {
     }
   }
 
+  Future<ApiEnums> collectTreasure(
+    String token,
+    String uid,
+    treasureId,
+  ) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final uri = Uri.parse('$baseUrl/treasures/collect');
+
+      final response = await https.post(
+        uri,
+        body: {
+          'userId': uid,
+          'treasureId': treasureId,
+        },
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        log(response.body);
+        _responseTxt = json['message'];
+        _isLoading = false;
+        notifyListeners();
+        return ApiEnums.success;
+      } else {
+        log(response.body);
+        _isLoading = false;
+        _responseTxt = 'Treasure collection failed. Please try again.';
+        notifyListeners();
+        return ApiEnums.failed;
+      }
+    } catch (e) {
+      log(e.toString());
+      _isLoading = false;
+      _responseTxt = e.toString();
+      notifyListeners();
+      return ApiEnums.failed;
+    }
+  }
+
   // Tips
   Future<ApiEnums> createTips(
       GiveTipsModel tipsModel, String accessToken) async {
@@ -650,7 +737,7 @@ class ApiProvider with ChangeNotifier {
         "givenUser": tipsModel.senderId,
         "receivedUser": tipsModel.receiverId,
         "treasure": tipsModel.treasureId,
-        "amount": tipsModel.amount,
+        "amount": tipsModel.amount.toString(),
       });
       if (response.statusCode == 201) {
         final json = jsonDecode(response.body);
@@ -661,12 +748,14 @@ class ApiProvider with ChangeNotifier {
         return ApiEnums.success;
       } else {
         log(response.body);
+        _responseTxt = 'Tips sending failed. Please try again.';
         _isLoading = false;
         notifyListeners();
         return ApiEnums.failed;
       }
     } catch (e) {
       log(e.toString());
+      _responseTxt = e.toString();
       _isLoading = false;
       notifyListeners();
       return ApiEnums.failed;
@@ -839,6 +928,43 @@ class ApiProvider with ChangeNotifier {
         return ApiEnums.failed;
       }
     } on HttpResponseError catch (e) {
+      log(e.toString());
+      _isLoading = false;
+      notifyListeners();
+      return ApiEnums.failed;
+    }
+  }
+
+  Future<ApiEnums> createRating(
+      String userId, String treasureId, String accessToken, int rating) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final response =
+          await https.post(Uri.parse('$baseUrl/ratings/create'), headers: {
+        'Authorization': 'Bearer $accessToken',
+      }, body: {
+        'userId': userId,
+        'treasureId': treasureId,
+        'rate': rating.toString()
+      });
+      if (response.statusCode == 201) {
+        log(response.body);
+        final jsonData = jsonDecode(response.body);
+        _responseTxt = jsonData['message'];
+        _isLoading = false;
+        notifyListeners();
+        return ApiEnums.success;
+      } else {
+        log(response.body);
+        final jsonData = jsonDecode(response.body);
+        _responseTxt = jsonData['details']['message'];
+        _isLoading = false;
+        notifyListeners();
+        return ApiEnums.failed;
+      }
+    } catch (e) {
+      _responseTxt = e.toString();
       log(e.toString());
       _isLoading = false;
       notifyListeners();

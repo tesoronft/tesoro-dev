@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
@@ -7,8 +5,8 @@ import 'package:tesoro_nft_app/consts/app_colors.dart';
 import 'package:tesoro_nft_app/consts/app_strings.dart';
 import 'package:tesoro_nft_app/consts/app_text_styles.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_scaffold.dart';
-import 'package:tesoro_nft_app/custom_widgets/popup_button.dart';
 import 'package:tesoro_nft_app/custom_widgets/tips_info.dart';
+import 'package:tesoro_nft_app/custom_widgets/treasures/empty_view.dart';
 
 import '../../../providers/api_provider.dart';
 import '../../../providers/preferences_provider.dart';
@@ -40,37 +38,24 @@ class _TipsGivenViewState extends State<TipsGivenView> {
   Widget build(BuildContext context) {
     return Consumer2<ApiProvider, PreferencesProvider>(
       builder: (context, apis, prefs, child) => CustomScaffold(
-          backgroundColor:
-              apis.isLoading ? AppColors.light.withAlpha(60) : AppColors.light,
+          isAppbarRequired: true,
+          appBarTitle: AppStrings.tipsGiven,
+          backgroundColor: AppColors.light,
           child: SafeArea(
             minimum: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             child: apis.isLoading
                 ? Center(
-                    child: SpinKitChasingDots(
+                    child: SpinKitCircle(
                       color: AppColors.primary,
                     ),
                   )
-                : Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                : apis.givenTipsModel?.data.isEmpty ?? true
+                    ? EmptyView(
+                        title: 'Explore treasures to tip',
+                      )
+                    : Column(
                         children: [
-                          PopupButton(),
-                          Text(
-                            AppStrings.tipsGiven,
-                            style: AppTextStyles.headingMedium,
-                          ),
-                          SizedBox.shrink()
-                        ],
-                      ),
-                      apis.givenTipsModel == null
-                          ? Center(
-                              child: Text(
-                                'No tips given yet',
-                                style: AppTextStyles.bodyMedium,
-                              ),
-                            )
-                          : Expanded(
+                          Expanded(
                               child: ListView.builder(
                                   itemCount: apis.givenTipsModel?.data.length,
                                   itemBuilder: (context, index) {
@@ -91,8 +76,8 @@ class _TipsGivenViewState extends State<TipsGivenView> {
                                                   'N/A'),
                                     );
                                   }))
-                    ],
-                  ),
+                        ],
+                      ),
           )),
     );
   }

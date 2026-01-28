@@ -37,7 +37,7 @@ dependencies:
 
   #subscriptions
   purchases_flutter: ^9.9.9
-  flutter_stripe: ^12.1.1
+ 
   flutter_launcher_icons: ^0.14.4
 
   #maps
@@ -67,6 +67,8 @@ dependencies:
   webview_flutter: ^4.13.0
   geocoding: ^4.0.0
   firebase_core: ^4.3.0
+  lottie: ^3.3.2
+  internet_connection_checker: ^1.0.0+1
  
 
 
@@ -104,6 +106,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/lottie/
 #- images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

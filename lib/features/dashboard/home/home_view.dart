@@ -1,17 +1,20 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter/services.dart';
 import 'package:google_navigation_flutter/google_navigation_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tesoro_nft_app/consts/app_colors.dart';
 import 'package:tesoro_nft_app/consts/app_images.dart';
 import 'package:tesoro_nft_app/consts/app_text_styles.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_snackbar.dart';
+import 'package:tesoro_nft_app/custom_widgets/dialogs/treasure_preview.dart';
+import 'package:tesoro_nft_app/custom_widgets/home_center_arrow.dart';
 import 'package:tesoro_nft_app/custom_widgets/loader_widget.dart';
 import 'package:tesoro_nft_app/enums/api_enums.dart';
 import 'package:tesoro_nft_app/enums/snack_bar_enums.dart';
 import 'package:tesoro_nft_app/providers/api_provider.dart';
+import 'package:tesoro_nft_app/providers/dashboard_provider.dart';
 import 'package:tesoro_nft_app/providers/preferences_provider.dart';
 import 'package:tesoro_nft_app/routes/routes.dart';
 import '../../../custom_widgets/permission_enable_component.dart';
@@ -24,23 +27,33 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
+class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   double? longitude, latitude;
+  final ValueNotifier<List<Marker?>?> allmarkers =
+      ValueNotifier<List<Marker?>?>([]);
+  GoogleMapViewController? _controller;
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final geoLocation = Provider.of<AppPermissions>(context, listen: false);
       final markers = Provider.of<ApiProvider>(context, listen: false);
       final prefs = Provider.of<PreferencesProvider>(context, listen: false);
       if (markers.userProfile == null) {
-        final result = await markers.getUserData(prefs.accessToken ?? '');
+        await markers.getUserData(prefs.accessToken ?? '');
       }
+      // final isGranted = geoLocation.isLocationAllowed;
 
+      // if (!isGranted) {
+      //   log("Permission denied → waiting for user");
+      //   return;
+      // }
       final lat = await geoLocation.getCurrentPosition();
       log(lat?.latitude.toString() ?? '');
       log(lat?.longitude.toString() ?? '');
       await geoLocation.getCurrentPlacemark();
+
       await markers.getMarkers(
           context.read<PreferencesProvider>().accessToken ?? '',
           1,
@@ -50,9 +63,32 @@ class _HomeViewState extends State<HomeView> {
     });
   }
 
-  final ValueNotifier<List<Marker?>?> allmarkers =
-      ValueNotifier<List<Marker?>?>([]);
-  GoogleMapViewController? _controller;
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state != AppLifecycleState.resumed) return;
+
+    final geoLocation = Provider.of<AppPermissions>(context, listen: false);
+
+    final position = await geoLocation.getCurrentPosition();
+    await geoLocation.getCurrentPlacemark();
+
+    if (!mounted) return;
+
+    await _controller?.animateCamera(
+      CameraUpdate.newLatLng(
+        LatLng(
+          latitude: position?.latitude ?? 0.0,
+          longitude: position?.longitude ?? 0.0,
+        ),
+      ),
+    );
+  }
 
 //AIzaSyCFTwfbaMCWckrykb-e5U4ki0Wm4RFm6po
   @override
@@ -71,28 +107,40 @@ class _HomeViewState extends State<HomeView> {
           centerTitle: true,
           automaticallyImplyLeading: false,
           leadingWidth: 100,
-          leading: Container(
-            decoration: BoxDecoration(
-                border: Border.all(
-                    color: Color(
-                      0xff666666,
-                    ),
-                    width: 0)),
-            alignment: Alignment.center,
-            padding: const EdgeInsets.symmetric(vertical: 2),
-            margin: EdgeInsets.symmetric(vertical: 25, horizontal: 5),
-            child: Text(
-              '\$ ${api.userProfile?.tipReceived}',
-              style: AppTextStyles.bodyLarge.copyWith(color: Color(0xff666666)),
+          leading: InkWell(
+            onTap: () => context.read<DashboardProvider>().updateIndex(2),
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border.all(
+                      color: Color(
+                        0xff666666,
+                      ),
+                      width: 0)),
+              alignment: Alignment.center,
+              padding: const EdgeInsets.symmetric(vertical: 2),
+              margin: EdgeInsets.symmetric(vertical: 25, horizontal: 5),
+              child: Text(
+                '\$ ${api.userProfile?.tipReceived}',
+                style:
+                    AppTextStyles.bodyLarge.copyWith(color: Color(0xff666666)),
+              ),
             ),
           ),
           actions: [
             InkWell(
-                onTap: () =>
-                    _controller?.moveCamera(CameraUpdate.newLatLng(LatLng(
-                      longitude: permissions.position?.longitude ?? 0.0,
-                      latitude: permissions.position?.latitude ?? 0.0,
-                    ))),
+                onTap: () async {
+                  await api.getMarkers(
+                      prefs.accessToken ?? '',
+                      1,
+                      permissions.position?.longitude ?? 0.0,
+                      permissions.position?.latitude ?? 0.0,
+                      10);
+                  await _controller
+                      ?.animateCamera(CameraUpdate.newLatLng(LatLng(
+                    longitude: permissions.position?.longitude ?? 0.0,
+                    latitude: permissions.position?.latitude ?? 0.0,
+                  )));
+                },
                 child: Card(
                     color: AppColors.light,
                     elevation: 2,
@@ -128,55 +176,80 @@ class _HomeViewState extends State<HomeView> {
                       initialMaxZoomPreference: 21.0,
                       onMarkerClicked: (markerId) async {
                         log(markerId);
-                        // final marker = allmarkers.value?.firstWhere(
-                        //     (marker) => markerId == marker?.markerId);
+
                         String numericId =
                             markerId.replaceAll(RegExp(r'[^0-9]'), '');
                         int index = int.parse(numericId);
 
                         final clickedMarker =
                             api.allMarkers?.markersModel?[index];
+
                         final result = await api.getTreasureData(
                             clickedMarker?.id ?? '', prefs.accessToken ?? '');
                         if (result == ApiEnums.success) {
                           CustomSnackbar().showSnackbar(
-                              SnackBarEnums.success, api.responseTxt, context);
-                          context.push(Routes.treasureDetails,
-                              extra: api.treasureGetModel);
+                              SnackBarEnums.success,
+                              api.responseTxt,
+                              navigatorKey.currentContext ?? context);
+
+                          showDialog(
+                              context: navigatorKey.currentContext ?? context,
+                              builder: (context) => TreasurePreview(
+                                  treasure: api.treasureGetModel!));
                         } else {
                           CustomSnackbar().showSnackbar(
-                              SnackBarEnums.failed, api.responseTxt, context);
+                              SnackBarEnums.failed,
+                              api.responseTxt,
+                              navigatorKey.currentContext ?? context);
                         }
                       },
                       onMyLocationButtonClicked: (events) => false,
                       onViewCreated: (controller) async {
-                        _controller = controller;
-
-                        await _controller?.setMyLocationEnabled(true);
-
-                        allmarkers.value = await _controller?.addMarkers(
-                            List.generate(
-                                api.allMarkers?.markersModel?.length ?? 0,
-                                (index) => MarkerOptions(
-                                    icon: ImageDescriptor(
-                                        registeredImageId: AppImages.mark),
-                                    position: LatLng(
-                                      latitude: api
-                                              .allMarkers
-                                              ?.markersModel?[index]
-                                              .coordinated?[1] ??
-                                          31.5357,
-                                      longitude: api
-                                              .allMarkers
-                                              ?.markersModel?[index]
-                                              .coordinated?[0] ??
-                                          74.2985,
-                                    ))));
+                        Future.delayed(Duration(seconds: 6), () async {
+                          _controller = controller;
+                          await _controller?.setMyLocationEnabled(true);
+                          final customMarker = await registerBitmapImage(
+                              bitmap: await rootBundle.load(AppImages.mark),
+                              height: 30,
+                              width: 30);
+                          allmarkers.value = await _controller?.addMarkers(
+                              List.generate(
+                                  api.allMarkers?.markersModel?.length ?? 0,
+                                  (index) => MarkerOptions(
+                                      icon: ImageDescriptor(
+                                          registeredImageId:
+                                              customMarker.registeredImageId,
+                                          imagePixelRatio: 46,
+                                          width: 30,
+                                          height: 30),
+                                      position: LatLng(
+                                        latitude: api
+                                                .allMarkers
+                                                ?.markersModel?[index]
+                                                .coordinated?[1] ??
+                                            31.5357,
+                                        longitude: api
+                                                .allMarkers
+                                                ?.markersModel?[index]
+                                                .coordinated?[0] ??
+                                            74.2985,
+                                      ))));
+                          await _controller
+                              ?.moveCamera(CameraUpdate.newLatLng(LatLng(
+                            longitude: permissions.position?.longitude ?? 0.0,
+                            latitude: permissions.position?.latitude ?? 0.0,
+                          )));
+                        });
                       },
                     ),
                   );
                 }),
-            permissions.placemark == null || permissions.position == null
+            Align(
+                alignment: Alignment.centerRight,
+                child: HomeCenterArrow(
+                  isForHome: true,
+                )),
+            !permissions.isLocationAllowed
                 ? Align(
                     alignment: Alignment.bottomCenter,
                     child: PermissionEnableComponent())

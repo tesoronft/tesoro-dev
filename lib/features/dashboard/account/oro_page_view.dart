@@ -14,10 +14,10 @@ class OroPageView extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScaffold(
       child: SafeArea(
-        minimum: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+        minimum: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 20,
+          spacing: 15,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -79,12 +79,12 @@ class TreasureDetailsView extends StatelessWidget {
                       images: treasureGetModel.photos ?? [],
                     ),
                     Text(
-                      'Posted ${ConvertTimeToMinutes.convertTimeToMinutes(treasureGetModel.createdAt ?? DateTime.now().toString())} mins ago - ${treasureGetModel.location?.address}',
+                      'Posted ${ConvertTimeToMinutes.formatTimeAgo(treasureGetModel.createdAt ?? DateTime.now().toString())} - ${treasureGetModel.location?.address}',
                       style: AppTextStyles.bodySmall
                           .copyWith(color: AppColors.error),
                     ),
                     ItemHeader(
-                        condition: treasureGetModel.condition ?? 'Bad',
+                        condition: treasureGetModel.condition?.name ?? 'Bad',
                         itemName: treasureGetModel.title ?? 'N/A',
                         price: treasureGetModel.price.toString()),
                     if (treasureGetModel.postedBy?.id !=
@@ -95,21 +95,23 @@ class TreasureDetailsView extends StatelessWidget {
                             Icons.arrow_forward,
                             color: AppColors.light,
                           ),
-                          onBtnTap: () => context.go(Routes.navigationView,
-                              extra: treasureGetModel.location?.coordinates)),
+                          onBtnTap: () => context.push(Routes.navigationView,
+                              extra: treasureGetModel)),
                     const Divider(),
-                    Text(
-                      'Description:',
-                      style: AppTextStyles.bodyLarge
-                          .copyWith(color: AppColors.dark),
-                    ),
-                    Text(
-                      treasureGetModel.description ?? 'N/A',
-                      textAlign: TextAlign.start,
-                      style: AppTextStyles.bodySmall
-                          .copyWith(color: const Color(0xff666666)),
-                    ),
-                    const Divider(),
+                    if (treasureGetModel.description != '')
+                      Text(
+                        'Description:',
+                        style: AppTextStyles.bodyLarge
+                            .copyWith(color: AppColors.dark),
+                      ),
+                    if (treasureGetModel.description != '')
+                      Text(
+                        treasureGetModel.description ?? 'N/A',
+                        textAlign: TextAlign.start,
+                        style: AppTextStyles.bodySmall
+                            .copyWith(color: const Color(0xff666666)),
+                      ),
+                    if (treasureGetModel.description != '') const Divider(),
                     Text(
                       'Address:',
                       style: AppTextStyles.bodyLarge
@@ -128,7 +130,8 @@ class TreasureDetailsView extends StatelessWidget {
                           .copyWith(color: AppColors.dark),
                     ),
                     PostedByCard(
-                      imageUrl: treasureGetModel.postedBy?.profileImage ?? '',
+                      imageUrl: treasureGetModel.postedBy?.profileImage ??
+                          'https://e7.pngegg.com/pngimages/371/667/png-clipart-computer-icons-user-profile-encapsulated-postscript-icon-black-rectangle-black.png',
                       name: treasureGetModel.postedBy?.name ?? "N/A",
                       rating: treasureGetModel.postedBy?.rating ?? 1,
                     ),

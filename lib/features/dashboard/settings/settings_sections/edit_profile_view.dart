@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tesoro_nft_app/consts/app_colors.dart';
 import 'package:tesoro_nft_app/consts/app_strings.dart';
+import 'package:tesoro_nft_app/consts/app_text_styles.dart';
 import 'package:tesoro_nft_app/controllers/auth_controller.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_avatar.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_btn.dart';
@@ -13,6 +15,7 @@ import 'package:tesoro_nft_app/enums/api_enums.dart';
 import 'package:tesoro_nft_app/enums/snack_bar_enums.dart';
 import 'package:tesoro_nft_app/providers/api_provider.dart';
 import 'package:tesoro_nft_app/providers/preferences_provider.dart';
+import 'package:tesoro_nft_app/routes/routes.dart';
 import 'package:tesoro_nft_app/utils/device_image_picker.dart';
 
 class EditProfileView extends StatelessWidget {
@@ -53,7 +56,7 @@ class EditProfileView extends StatelessWidget {
                                   CustomAvatar(
                                       profileImage: _profileImage.value ??
                                           api.userProfile?.profileImage ??
-                                          'https://www.vectorstock.com/royalty-free-vector/default-avatar-profile-icon-social-media-user-vector-49816613'),
+                                          'https://e7.pngegg.com/pngimages/371/667/png-clipart-computer-icons-user-profile-encapsulated-postscript-icon-black-rectangle-black.png'),
                                   Positioned(
                                     bottom: 5,
                                     right: 15,
@@ -73,27 +76,29 @@ class EditProfileView extends StatelessWidget {
                                 ],
                               ),
                             ),
+
                             CustomTextField(
                                 hintText: AppStrings.name,
                                 keyboardType: TextInputType.text,
                                 editingController:
                                     _authController.nameController),
-                            CustomTextField(
-                              hintText: AppStrings.password,
-                              keyboardType: TextInputType.visiblePassword,
-                              editingController:
-                                  _authController.passwordController,
-                              isPassword: true,
-                              isVissible: false,
-                            ),
-                            CustomTextField(
-                              hintText: AppStrings.confirmPassword,
-                              keyboardType: TextInputType.visiblePassword,
-                              editingController:
-                                  _authController.confirmPasswordController,
-                              isPassword: true,
-                              isVissible: false,
-                            ),
+
+                            // CustomTextField(
+                            //   hintText: AppStrings.password,
+                            //   keyboardType: TextInputType.visiblePassword,
+                            //   editingController:
+                            //       _authController.passwordController,
+                            //   isPassword: true,
+                            //   // isVissible: false,
+                            // ),
+                            // CustomTextField(
+                            //   hintText: AppStrings.confirmPassword,
+                            //   keyboardType: TextInputType.visiblePassword,
+                            //   editingController:
+                            //       _authController.confirmPasswordController,
+                            //   isPassword: true,
+                            //   //isVissible: false,
+                            // ),
                             CustomBtn(
                                 text: 'Update',
                                 onBtnTap: () async {
@@ -120,7 +125,33 @@ class EditProfileView extends StatelessWidget {
                                         api.responseTxt,
                                         context);
                                   }
-                                })
+                                }),
+                            SizedBox(
+                              height: 30,
+                            ),
+                            ListTile(
+                              title: Text('Update Password'),
+                              onTap: () => context.push(Routes.updatePassword),
+                              // tileColor: AppColors.lightPrimary,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  side: BorderSide(color: Color(0xff9EA1A8))),
+                              titleTextStyle: AppTextStyles.bodyMedium,
+                              trailing: Icon(Icons.arrow_forward_ios,
+                                  color: AppColors.dark, size: 16),
+                            ),
+                            ListTile(
+                              title: Text('Delete Account'),
+                              onTap: () => context.push(Routes.updatePassword),
+                              tileColor: AppColors.error,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  side: BorderSide(color: Color(0xff9EA1A8))),
+                              titleTextStyle: AppTextStyles.bodyMedium
+                                  .copyWith(color: AppColors.light),
+                              trailing: Icon(Icons.arrow_forward_ios,
+                                  color: AppColors.light, size: 16),
+                            ),
                           ],
                         ),
                       );

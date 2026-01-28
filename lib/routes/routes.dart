@@ -27,6 +27,8 @@ import '../features/dashboard/dashboard_view.dart';
 import '../features/dashboard/settings/settings_view.dart';
 import '../features/onboarding/onboarding2_view.dart';
 import '../features/onboarding/splash.dart';
+import '../features/others/offline_view.dart';
+import '../features/others/update_password.dart';
 import '../models/treasures/treasure_get_model.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -65,7 +67,10 @@ class Routes {
       '/subscriptions/mainSubscriptionView';
   static const String navigationView = '/treasures/navigation';
   static const String cameraView = '/dashboard/cameraView';
-  static GoRouter router = GoRouter(initialLocation: splash, routes: [
+  static const String offlineView = '/others/offlineView';
+  static const String updatePassword = '/others/updatePassword';
+  static GoRouter router =
+      GoRouter(initialLocation: splash, navigatorKey: navigatorKey, routes: [
     GoRoute(path: splash, builder: (context, state) => const SplashView()),
     GoRoute(
         path: onboarding1,
@@ -98,7 +103,27 @@ class Routes {
     GoRoute(path: oroPage, builder: (context, state) => const OroPageView()),
     GoRoute(
       path: allTreasures,
-      builder: (context, state) => const AllTreasuresView(),
+      pageBuilder: (context, state) {
+        // Extract your extra variable
+        final isFromHome = state.extra as bool? ?? false;
+
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: AllTreasuresView(isFromHome: isFromHome),
+          transitionDuration: const Duration(milliseconds: 1000),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position: animation.drive(
+                Tween<Offset>(
+                  begin: const Offset(1.0, 0.0),
+                  end: Offset.zero,
+                ).chain(CurveTween(curve: Curves.easeInOut)),
+              ),
+              child: child,
+            );
+          },
+        );
+      },
     ),
     GoRoute(
         path: itemDetails,
@@ -147,14 +172,22 @@ class Routes {
     GoRoute(
         path: navigationView,
         builder: (context, state) {
-          final lating = state.extra;
+          final treasure = state.extra as TreasureGetModel;
           return TreasureNavigation(
-            lating: lating as List<dynamic>,
+            treasureGetModel: treasure,
           );
         }),
     GoRoute(
       path: updateProfile,
       builder: (context, state) => EditProfileView(),
+    ),
+    GoRoute(
+      path: offlineView,
+      builder: (context, state) => OfflineView(),
+    ),
+    GoRoute(
+      path: updatePassword,
+      builder: (context, state) => UpdatePassword(),
     ),
     GoRoute(
         path: confirmDetails,

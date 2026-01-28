@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:tesoro_nft_app/consts/app_text_styles.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_btn.dart';
@@ -25,7 +26,7 @@ class CameraUnavailableView extends StatelessWidget {
           builder: (context, permissions, child) => CustomBtn(
               text: 'Allow Camera',
               onBtnTap: () async {
-                await permissions.getCameraPermission();
+                await openAppSettings();
               }),
         )
       ],

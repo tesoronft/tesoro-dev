@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:tesoro_nft_app/consts/app_colors.dart';
+import 'package:tesoro_nft_app/consts/app_images.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_scaffold.dart';
+import 'package:tesoro_nft_app/custom_widgets/loader_widget.dart';
 import 'package:tesoro_nft_app/enums/api_enums.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -50,20 +51,17 @@ class _WebViewState extends State<WebView> {
         builder: (context, api, child) => SafeArea(
           minimum: EdgeInsets.all(10),
           child: api.isLoading
-              ? Center(
-                  child: Container(
-                    height: 100,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.black38,
-                    ),
-                    child: SpinKitCircle(
-                      color: AppColors.primary,
-                    ),
-                  ),
-                )
-              : WebViewWidget(controller: controller!),
+              ? LoaderWidget()
+              : controller == null
+                  ? Center(
+                      child: Image.asset(
+                        AppImages.error404,
+                        height: 200,
+                        width: 200,
+                        fit: BoxFit.contain,
+                      ),
+                    )
+                  : WebViewWidget(controller: controller!),
         ),
       ),
     );

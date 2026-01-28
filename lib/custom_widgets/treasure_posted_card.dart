@@ -25,13 +25,21 @@ class TreasurePostedCard extends StatelessWidget {
         spacing: 4,
         children: [
           Expanded(
-            child: Image.file(
-              File(imagePath),
-              // height: 150,
-              width: double.infinity,
-              filterQuality: FilterQuality.high,
-              fit: BoxFit.cover,
-            ),
+            child: imagePath.contains('https')
+                ? Image.network(
+                    imagePath,
+                    // height: 150,
+                    width: double.infinity,
+                    filterQuality: FilterQuality.high,
+                    fit: BoxFit.cover,
+                  )
+                : Image.file(
+                    File(imagePath),
+                    // height: 150,
+                    width: double.infinity,
+                    filterQuality: FilterQuality.high,
+                    fit: BoxFit.cover,
+                  ),
           ),
           Padding(
             padding: const EdgeInsets.only(left: 5),

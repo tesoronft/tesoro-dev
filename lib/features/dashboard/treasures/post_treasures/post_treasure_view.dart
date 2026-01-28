@@ -10,13 +10,19 @@ import 'package:tesoro_nft_app/consts/app_text_styles.dart';
 import 'package:tesoro_nft_app/controllers/post_treasure_controller.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_btn.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_scaffold.dart';
+import 'package:tesoro_nft_app/custom_widgets/custom_snackbar.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_text_field.dart';
+import 'package:tesoro_nft_app/custom_widgets/dialogs/treasure_properties.dart';
 import 'package:tesoro_nft_app/custom_widgets/go_to_camera.dart';
+import 'package:tesoro_nft_app/custom_widgets/loader_widget.dart';
 import 'package:tesoro_nft_app/custom_widgets/permission_enable_component.dart';
+import 'package:tesoro_nft_app/enums/snack_bar_enums.dart';
 import 'package:tesoro_nft_app/models/treasures/treasure_post_model.dart';
 import 'package:tesoro_nft_app/providers/camera_provider.dart';
 import 'package:tesoro_nft_app/routes/routes.dart';
 
+import '../../../../providers/api_provider.dart';
+import '../../../../providers/preferences_provider.dart';
 import '../../../../utils/app_permissions.dart';
 
 class PostTreasureView extends StatefulWidget {
@@ -34,13 +40,15 @@ class _PostTreasureViewState extends State<PostTreasureView>
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final geoLocation = Provider.of<AppPermissions>(context, listen: false);
+      final apis = Provider.of<ApiProvider>(context, listen: false);
+      final prefs = Provider.of<PreferencesProvider>(context, listen: false);
+      await apis.getCategories(prefs.accessToken ?? '');
+      await apis.getConditions(prefs.accessToken ?? '');
       await geoLocation.getCurrentPosition();
       geoLocation.getCurrentPlacemark();
 
       _postTreasureController.location.text =
           '${geoLocation.placemark?.street} ${geoLocation.placemark?.subLocality}, ${geoLocation.placemark?.locality}, ${geoLocation.placemark?.administrativeArea}, ${geoLocation.placemark?.country}, ${geoLocation.placemark?.postalCode}';
-
-      // _postTreasureController.location.text = 'Samanabad, Lahore, Pakistan';
     });
   }
 
@@ -58,14 +66,12 @@ class _PostTreasureViewState extends State<PostTreasureView>
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.resumed) {
       log("App Resumed: Re-checking location permissions...");
-      final geoLocation = Provider.of<AppPermissions>(context);
+      final geoLocation = Provider.of<AppPermissions>(context, listen: false);
       await geoLocation.getCurrentPosition();
       geoLocation.getCurrentPlacemark();
 
       _postTreasureController.location.text =
           '${geoLocation.placemark?.street} ${geoLocation.placemark?.subLocality}, ${geoLocation.placemark?.locality}, ${geoLocation.placemark?.administrativeArea}, ${geoLocation.placemark?.country}, ${geoLocation.placemark?.postalCode}';
-
-      //_postTreasureController.location.text = 'Samanabad, Lahore, Pakistan';
     }
   }
 
@@ -76,7 +82,6 @@ class _PostTreasureViewState extends State<PostTreasureView>
       appBarTitle: AppStrings.postYourItem,
       backgroundColor: AppColors.light,
       child: Stack(
-        alignment: Alignment.bottomCenter,
         children: [
           SafeArea(
             minimum: EdgeInsets.symmetric(horizontal: 10),
@@ -157,49 +162,71 @@ class _PostTreasureViewState extends State<PostTreasureView>
                             ),
                           ),
                         Expanded(
-                          child: GoToCamera(onWidgetTap: () {
-                            context.push(Routes.cameraView);
+                          child: GoToCamera(onWidgetTap: () async {
+                            final result = await showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              builder: (context) => TreasureProperties(),
+                            );
+                            if (result == true) {
+                              context.push(Routes.cameraView);
+                            }
                           }),
                         ),
                       ],
                     ),
                   ),
-                  CustomBtn(
-                    text: AppStrings.next,
-                    // isDisabled: _postTreasureController.location.text.isEmpty ||
-                    //     _postTreasureController.title.text.isEmpty,
-                    onBtnTap: () {
-                      if (_postTreasureController.location.text.isNotEmpty &&
-                          _postTreasureController.title.text.isNotEmpty) {
-                        treasurePostModel.location ??= Location();
-                        treasurePostModel.photos ??= [];
+                  Consumer<AppPermissions>(
+                    builder: (context, permission, child) => CustomBtn(
+                      text: AppStrings.next,
+                      onBtnTap: () {
+                        if (_postTreasureController.location.text.isNotEmpty &&
+                            _postTreasureController.title.text.isNotEmpty) {
+                          treasurePostModel.location ??= Location();
+                          treasurePostModel.photos ??= [];
 
-                        treasurePostModel.location!.coordinates = [
-                          longitude ?? 0.0,
-                          latitude ?? 0.0,
-                          // 74.2985,
-                          // 31.5357,
-                        ];
+                          treasurePostModel.location?.coordinates = [
+                            permission.position?.longitude ?? 0.0,
+                            permission.position?.latitude ?? 0.0,
+                          ];
 
-                        treasurePostModel.location!.address =
-                            _postTreasureController.location.text;
-                        treasurePostModel.title =
-                            _postTreasureController.title.text;
-                        treasurePostModel.photos!.addAll(
-                            context.read<CameraProvider>().cameraImages);
-                        context.push(Routes.itemDetails,
-                            extra: treasurePostModel);
-                      }
-                    },
+                          treasurePostModel.location!.address =
+                              _postTreasureController.location.text;
+                          treasurePostModel.title =
+                              _postTreasureController.title.text;
+                          treasurePostModel.photos!.addAll(
+                              context.read<CameraProvider>().cameraImages);
+                          log(longitude.toString());
+                          log(latitude.toString());
+
+                          if (permission.isLocationAllowed) {
+                            context.push(Routes.itemDetails,
+                                extra: treasurePostModel);
+                          } else {
+                            CustomSnackbar().showSnackbar(
+                                SnackBarEnums.processing,
+                                'Please allow us to access your location',
+                                context);
+                          }
+                        }
+                      },
+                    ),
                   ),
                 ],
               ),
             ),
           ),
+          Consumer<ApiProvider>(
+            builder: (context, apis, child) => apis.isLoading
+                ? Align(alignment: Alignment.center, child: LoaderWidget())
+                : SizedBox.shrink(),
+          ),
           Consumer<AppPermissions>(
               builder: (context, permission, child) =>
-                  permission.placemark == null || permission.position == null
-                      ? PermissionEnableComponent()
+                  !permission.isLocationAllowed
+                      ? Align(
+                          alignment: Alignment.bottomCenter,
+                          child: PermissionEnableComponent())
                       : SizedBox.shrink())
         ],
       ),

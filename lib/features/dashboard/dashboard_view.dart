@@ -13,64 +13,68 @@ class DashboardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<DashboardProvider>(
-      builder: (context, dashboardValue, child) => Scaffold(
-        body: DashboardData.dashboardScreens[dashboardValue.currentIndex],
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            context.push(Routes.postTreasure);
-          },
-          backgroundColor: AppColors.primary,
-          clipBehavior: Clip.antiAlias,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
-          child: Icon(
-            Icons.add,
-            color: AppColors.light,
+      builder: (context, dashboardValue, child) => PopScope(
+        canPop: false,
+        child: Scaffold(
+          body: DashboardData.dashboardScreens[dashboardValue.currentIndex],
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              context.push(Routes.postTreasure);
+            },
+            backgroundColor: AppColors.primary,
+            clipBehavior: Clip.antiAlias,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(100)),
+            child: Icon(
+              Icons.add,
+              color: AppColors.light,
+            ),
           ),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        bottomNavigationBar: BottomAppBar(
-          elevation: 2,
-          shadowColor: Colors.black,
-          clipBehavior: Clip.antiAlias,
-          color: AppColors.light,
-          shape: CircularNotchedRectangle(),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              InkWell(
-                  onTap: () => dashboardValue.updateIndex(0),
-                  child: SvgPicture.asset(
-                    DashboardData.dashboardIcons[0],
-                    color: dashboardValue.currentIndex == 0
-                        ? AppColors.primary
-                        : AppColors.dark,
-                  )),
-              InkWell(
-                  onTap: () => dashboardValue.updateIndex(1),
-                  child: SvgPicture.asset(
-                    DashboardData.dashboardIcons[1],
-                    color: dashboardValue.currentIndex == 1
-                        ? AppColors.primary
-                        : AppColors.dark,
-                  )),
-              InkWell(
-                  onTap: () => dashboardValue.updateIndex(2),
-                  child: SvgPicture.asset(
-                    DashboardData.dashboardIcons[2],
-                    color: dashboardValue.currentIndex == 2
-                        ? AppColors.primary
-                        : AppColors.dark,
-                  )),
-              InkWell(
-                  onTap: () => dashboardValue.updateIndex(3),
-                  child: SvgPicture.asset(
-                    DashboardData.dashboardIcons[3],
-                    color: dashboardValue.currentIndex == 3
-                        ? AppColors.primary
-                        : AppColors.dark,
-                  )),
-            ],
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          bottomNavigationBar: BottomAppBar(
+            elevation: 2,
+            shadowColor: Colors.black,
+            clipBehavior: Clip.antiAlias,
+            color: AppColors.light,
+            shape: CircularNotchedRectangle(),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                InkWell(
+                    onTap: () => dashboardValue.updateIndex(0),
+                    child: SvgPicture.asset(
+                      DashboardData.dashboardIcons[0],
+                      color: dashboardValue.currentIndex == 0
+                          ? AppColors.primary
+                          : AppColors.dark,
+                    )),
+                InkWell(
+                    onTap: () => dashboardValue.updateIndex(1),
+                    child: SvgPicture.asset(
+                      DashboardData.dashboardIcons[1],
+                      color: dashboardValue.currentIndex == 1
+                          ? AppColors.primary
+                          : AppColors.dark,
+                    )),
+                InkWell(
+                    onTap: () => dashboardValue.updateIndex(2),
+                    child: SvgPicture.asset(
+                      DashboardData.dashboardIcons[2],
+                      color: dashboardValue.currentIndex == 2
+                          ? AppColors.primary
+                          : AppColors.dark,
+                    )),
+                InkWell(
+                    onTap: () => dashboardValue.updateIndex(3),
+                    child: SvgPicture.asset(
+                      DashboardData.dashboardIcons[3],
+                      color: dashboardValue.currentIndex == 3
+                          ? AppColors.primary
+                          : AppColors.dark,
+                    )),
+              ],
+            ),
           ),
         ),
       ),

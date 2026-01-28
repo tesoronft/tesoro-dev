@@ -2,6 +2,8 @@ class TreasurePostModel {
   String? title;
   String? category;
   String? condition;
+  String? categoryId;
+  String? conditionId;
   String? brand;
   String? itemModel;
   String? type;
@@ -12,6 +14,8 @@ class TreasurePostModel {
 
   TreasurePostModel({
     this.title,
+    this.categoryId,
+    this.conditionId,
     this.category,
     this.condition,
     this.brand,
@@ -26,6 +30,8 @@ class TreasurePostModel {
     String? title,
     String? category,
     String? condition,
+    String? categoryId,
+    String? conditionId,
     String? brand,
     String? itemModel,
     String? type,
@@ -38,6 +44,8 @@ class TreasurePostModel {
       title: title ?? this.title,
       category: category ?? this.category,
       condition: condition ?? this.condition,
+      categoryId: categoryId ?? this.categoryId,
+      conditionId: conditionId ?? this.conditionId,
       brand: brand ?? this.brand,
       itemModel: itemModel ?? this.itemModel,
       type: type ?? this.type,

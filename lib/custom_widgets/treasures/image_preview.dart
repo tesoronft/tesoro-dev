@@ -26,14 +26,21 @@ class ImagePreview extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                         color: AppColors.currency),
                     clipBehavior: Clip.antiAlias,
-                    child: Image.file(
-                      File(
-                        images[currentIndex.value],
-                      ),
-                      height: MediaQuery.sizeOf(context).height / 3,
-                      width: MediaQuery.sizeOf(context).width / 1,
-                      fit: BoxFit.cover,
-                    ),
+                    child: images.first.toString().contains('https')
+                        ? Image.network(
+                            images[currentIndex.value],
+                            height: MediaQuery.sizeOf(context).height / 3,
+                            width: MediaQuery.sizeOf(context).width / 1,
+                            fit: BoxFit.cover,
+                          )
+                        : Image.file(
+                            File(
+                              images[currentIndex.value],
+                            ),
+                            height: MediaQuery.sizeOf(context).height / 3,
+                            width: MediaQuery.sizeOf(context).width / 1,
+                            fit: BoxFit.cover,
+                          ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -53,7 +60,9 @@ class ImagePreview extends StatelessWidget {
                             child: Icon(
                               Icons.arrow_back_ios,
                               size: 26,
-                              color: AppColors.dark.withAlpha(90),
+                              color: currentIndex.value == 0
+                                  ? AppColors.dark.withAlpha(90)
+                                  : AppColors.currency,
                             ),
                           ),
                         ),
@@ -72,7 +81,9 @@ class ImagePreview extends StatelessWidget {
                             child: Icon(
                               Icons.arrow_forward_ios,
                               size: 26,
-                              color: AppColors.dark.withAlpha(90),
+                              color: currentIndex.value == images.length - 1
+                                  ? AppColors.dark.withAlpha(90)
+                                  : AppColors.currency,
                             ),
                           ),
                         )
@@ -97,10 +108,15 @@ class ImagePreview extends StatelessWidget {
                                     ? AppColors.error
                                     : Colors.transparent)),
                         alignment: Alignment.center,
-                        child: Image.file(
-                          File(images[index]),
-                          fit: BoxFit.cover,
-                        ),
+                        child: images.first.toString().contains('https')
+                            ? Image.network(
+                                images[index],
+                                fit: BoxFit.cover,
+                              )
+                            : Image.file(
+                                File(images[index]),
+                                fit: BoxFit.cover,
+                              ),
                       ),
                     ),
                   ),

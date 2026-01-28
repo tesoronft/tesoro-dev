@@ -36,7 +36,7 @@ class AppStrings {
   static const String categories = 'Categories';
   static const String treasureDetails = 'Treasure Details';
   static const String huntForThisItem = 'Hunt for This Item';
-  static const String condition = 'Condition: ';
+  static const String condition = 'Condition ';
   static const String free = 'Free';
   static const String description = 'Description (Optional)';
   static const String address = 'Address';
@@ -76,6 +76,7 @@ class AppStrings {
   static const String upgradeToPremium = 'Upgrade to Premium';
   static const String privacyPolicy = 'Privacy Policy';
   static const String rateUs = 'Rate Us';
+  static const String aboutUs = 'About Us';
   static const String termsAndConditions = 'Terms and Conditions';
   static const String feedback = 'Feedback';
   static const String contactUs = 'Contact Us';
@@ -93,14 +94,15 @@ class AppStrings {
   static const String itemIsFree = 'Item is 100% free.';
   static const String itemDetails = 'Item Details';
   static const String price = 'Price';
+  static const String estimatePrice = 'Estimated Price';
   static const String setPrice = 'Set Price';
   static const String category = 'Category';
   static const String selectCategory = 'Select Category';
   static const String selectCondition = 'Select Condition';
-  static const String brand = 'Brand (Optional)';
-  static const String selectBrand = 'Select Brand';
-  static const String model = 'Model (Optional)';
-  static const String selectModel = 'Select Model';
+  static const String brand = 'Brand';
+  static const String selectBrand = 'Add Brand';
+  static const String model = 'Model';
+  static const String selectModel = 'Add Model';
   static const String type = 'Type (Optional)';
   static const String selectType = 'Select Type';
   static const String enterItemDesc = 'Enter Item Description';
@@ -115,7 +117,6 @@ class AppStrings {
   static const String unavailable = 'Unavailable';
   static const String myTreasureDetails = 'My Treasure Details';
   static const String distance = 'Distance';
-  static const String estimatePrice = 'Estimated Price';
 
   //Paywall screen
   static const String yourFreeTrial = 'Your Free Trial With Tesoro';

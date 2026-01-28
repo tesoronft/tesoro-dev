@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:tesoro_nft_app/consts/app_colors.dart';
 import 'package:tesoro_nft_app/consts/app_strings.dart';
-import 'package:tesoro_nft_app/consts/app_text_styles.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_scaffold.dart';
-import 'package:tesoro_nft_app/custom_widgets/popup_button.dart';
 import 'package:tesoro_nft_app/custom_widgets/treasure_collected_card.dart';
+import 'package:tesoro_nft_app/custom_widgets/treasures/empty_view.dart';
 import 'package:tesoro_nft_app/providers/api_provider.dart';
 import 'package:tesoro_nft_app/providers/preferences_provider.dart';
+
+import '../../../custom_widgets/permission_enable_component.dart';
+import '../../../custom_widgets/shimmer_effect.dart';
+import '../../../utils/app_permissions.dart';
 
 class TreasureCollectedView extends StatefulWidget {
   const TreasureCollectedView({super.key});
@@ -23,7 +25,7 @@ class _TreasureCollectedViewState extends State<TreasureCollectedView> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final apis = Provider.of<ApiProvider>(context, listen: false);
-      if (apis.allCollectedTreasure == null) {
+      if (apis.allCollectedTreasure?.listOfPostedTreasures?.isEmpty ?? true) {
         await apis.getTreasureCollectedByUser(
             1,
             context.read<PreferencesProvider>().accessToken ?? '',
@@ -34,65 +36,58 @@ class _TreasureCollectedViewState extends State<TreasureCollectedView> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ApiProvider>(
-      builder: (context, apis, child) => CustomScaffold(
-        backgroundColor:
-            apis.isLoading ? AppColors.light.withAlpha(60) : AppColors.light,
+    return Consumer2<ApiProvider, AppPermissions>(
+      builder: (context, apis, permissions, child) => CustomScaffold(
+        isAppbarRequired: true,
+        appBarTitle: AppStrings.treasureCollected,
+        backgroundColor: AppColors.light,
         child: SafeArea(
           minimum: EdgeInsets.all(10),
           child: apis.isLoading
-              ? Center(
-                  child: SpinKitCircle(
-                    color: AppColors.primary,
-                  ),
-                )
-              : Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              ? ShimmerEffect()
+              : apis.allCollectedTreasure?.listOfPostedTreasures?.isEmpty ??
+                      true
+                  ? EmptyView()
+                  : Stack(
                       children: [
-                        PopupButton(),
-                        Text(
-                          AppStrings.treasureCollected,
-                          style: AppTextStyles.headingMedium,
+                        Column(
+                          children: [
+                            Expanded(
+                              child: ListView.builder(
+                                itemCount: apis.allCollectedTreasure
+                                    ?.listOfPostedTreasures?.length,
+                                itemBuilder: (context, index) {
+                                  final thisCollection = apis
+                                      .allCollectedTreasure
+                                      ?.listOfPostedTreasures?[index];
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10),
+                                    child: TreasureCollectedCard(
+                                      date:
+                                          thisCollection?.collectedAt ?? 'N/A',
+                                      imageUrl: thisCollection?.photos?.first,
+                                      itemName: thisCollection?.title ?? 'N/A',
+                                      location: thisCollection
+                                              ?.locationModel?.address ??
+                                          'N/A',
+                                      personName:
+                                          thisCollection?.postedBy?.userName ??
+                                              'N/A',
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
                         ),
-                        SizedBox.shrink()
+                        !permissions.isLocationAllowed
+                            ? Align(
+                                alignment: Alignment.bottomCenter,
+                                child: PermissionEnableComponent())
+                            : SizedBox.shrink(),
                       ],
                     ),
-                    apis.allCollectedTreasure?.listOfPostedTreasures == []
-                        ? Center(
-                            child: Text(
-                              'No treasure collected yet',
-                              style: AppTextStyles.bodyMedium,
-                            ),
-                          )
-                        : Expanded(
-                            child: ListView.builder(
-                              itemCount: apis.allCollectedTreasure
-                                  ?.listOfPostedTreasures?.length,
-                              itemBuilder: (context, index) {
-                                final thisCollection = apis.allCollectedTreasure
-                                    ?.listOfPostedTreasures?[index];
-                                return Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 10),
-                                  child: TreasureCollectedCard(
-                                    date: thisCollection?.collectedAt ?? 'N/A',
-                                    imageUrl: thisCollection?.photos?.first,
-                                    itemName: thisCollection?.title ?? 'N/A',
-                                    location: thisCollection
-                                            ?.locationModel?.address ??
-                                        'N/A',
-                                    personName:
-                                        thisCollection?.postedBy?.userName ??
-                                            'N/A',
-                                  ),
-                                );
-                              },
-                            ),
-                          )
-                  ],
-                ),
         ),
       ),
     );

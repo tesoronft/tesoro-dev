@@ -57,12 +57,18 @@ class _SettingsViewState extends State<SettingsView> {
                         return InkWell(
                           onTap: () {
                             final privacyPolicy = api.contentInfoModel?.items
+                                ?.where((data) => data.name == 'Privacy Policy')
+                                .first;
+                            final termsAndConditions = api
+                                .contentInfoModel?.items
                                 ?.where((data) =>
                                     data.name == 'Terms and Conditions')
                                 .first;
                             SettingsController.performNavigation(
                                 index,
-                                privacyPolicy?.id ?? '694259439b4544bc2d874689',
+                                privacyPolicy?.id ?? '69498e250d8e23bd58b570a7',
+                                termsAndConditions?.id ??
+                                    '694259439b4544bc2d874689',
                                 context);
                           },
                           child: Padding(

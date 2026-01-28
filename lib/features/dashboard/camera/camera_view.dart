@@ -20,10 +20,11 @@ class CameraView extends StatefulWidget {
   State<CameraView> createState() => _CameraViewState();
 }
 
-class _CameraViewState extends State<CameraView> {
+class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final camera = Provider.of<CameraProvider>(context, listen: false);
       final permissions = Provider.of<AppPermissions>(context, listen: false);
@@ -34,6 +35,26 @@ class _CameraViewState extends State<CameraView> {
       }
     });
   }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  // @override
+  // void didChangeAppLifecycleState(AppLifecycleState state) async {
+  //   if (state == AppLifecycleState.resumed) {
+  //     log("App Resumed: Re-checking camera permissions...");
+  //     final camera = Provider.of<CameraProvider>(context, listen: false);
+  //     final permissions = Provider.of<AppPermissions>(context, listen: false);
+  //     final result = await permissions.getCameraPermission();
+
+  //     if (result == true) {
+  //       await camera.initializeCamera();
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

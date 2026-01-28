@@ -2,14 +2,13 @@ class TreasureGetModel {
   String? productId,
       userId,
       title,
-      category,
-      condition,
       brand,
       itemModel,
       type,
       description,
       createdAt;
-
+  CategoryData? category;
+  ConditionData? condition;
   dynamic price, collectedBy, collectedAt;
   dynamic distance;
   List<dynamic>? photos;
@@ -36,8 +35,8 @@ class TreasureGetModel {
   factory TreasureGetModel.fromJson(Map<String, dynamic> jsonData) {
     return TreasureGetModel(
         brand: jsonData['brand'],
-        category: jsonData['category'],
-        condition: jsonData['condition'],
+        category: CategoryData.fromJson(jsonData['category']),
+        condition: ConditionData.fromJson(jsonData['condition']),
         createdAt: jsonData['createdAt'],
         collectedAt: jsonData['collectedAt'],
         collectedBy: jsonData['collectedBy'],
@@ -52,6 +51,42 @@ class TreasureGetModel {
         type: jsonData['type'],
         userId: jsonData['_id'],
         postedBy: PostedBy.fromJson(jsonData['postedBy']));
+  }
+}
+
+class CategoryData {
+  String? id, name;
+  CategoryData({this.id, this.name});
+  factory CategoryData.fromJson(Map<String, dynamic> jsonData) {
+    return CategoryData(
+      id: jsonData['_id']?.toString(),
+      name: jsonData['name']?.toString(),
+    );
+  }
+  @override
+  String toString() {
+    return '''
+id:$id,
+name:$name, 
+''';
+  }
+}
+
+class ConditionData {
+  String? id, name;
+  ConditionData({this.id, this.name});
+  factory ConditionData.fromJson(Map<String, dynamic> jsonData) {
+    return ConditionData(
+      id: jsonData['_id']?.toString(),
+      name: jsonData['name']?.toString(),
+    );
+  }
+  @override
+  String toString() {
+    return '''
+id:$id,
+name:$name, 
+''';
   }
 }
 

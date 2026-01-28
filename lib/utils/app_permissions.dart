@@ -11,19 +11,31 @@ class AppPermissions with ChangeNotifier {
   Position? get position => _position;
   bool _isCameraPermitted = false;
   bool get isCameraPermitted => _isCameraPermitted;
+  bool _isLocationAllowed = false;
+  bool get isLocationAllowed => _isLocationAllowed;
   Future<Placemark?> getCurrentPlacemark() async {
     LocationPermission permission;
 
     permission = await Geolocator.checkPermission();
+
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         log('Location permissions are denied');
+        _isLocationAllowed = false;
+        notifyListeners();
         return Future.error('Location permissions are denied');
       }
     }
     if (permission == LocationPermission.deniedForever) {
+      _isLocationAllowed = false;
+      notifyListeners();
       return Future.error('Location permissions are denied forever');
+    }
+    if (permission != LocationPermission.denied ||
+        permission != LocationPermission.deniedForever) {
+      _isLocationAllowed = true;
+      notifyListeners();
     }
 
     final position = await Geolocator.getCurrentPosition(
@@ -31,17 +43,9 @@ class AppPermissions with ChangeNotifier {
     final placeMarks =
         await placemarkFromCoordinates(position.latitude, position.longitude);
     _placemark = placeMarks[0];
-    // log(place.name ?? '');
-    // log(place.administrativeArea ?? '');
-    // log(place.street ?? '');
-    // log(place.country ?? '');
-    // log(place.postalCode ?? '');
-    // log(place.subLocality ?? '');
-    // log(place.locality ?? '');
+
     notifyListeners();
     return _placemark;
-
-    // return '${place.street}, ${place.subLocality}, ${place.locality}, ${place.administrativeArea}, ${place.country}';
   }
 
   Future<Position?> getCurrentPosition() async {
@@ -53,12 +57,20 @@ class AppPermissions with ChangeNotifier {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         log('Location permissions are denied');
-        return null;
+        _isLocationAllowed = false;
+        notifyListeners();
+        return Future.error('Location permissions are denied');
       }
     }
     if (permission == LocationPermission.deniedForever) {
-      log('Location permissions are denied forever');
-      return null;
+      _isLocationAllowed = false;
+      notifyListeners();
+      return Future.error('Location permissions are denied forever');
+    }
+    if (permission != LocationPermission.denied ||
+        permission != LocationPermission.deniedForever) {
+      _isLocationAllowed = true;
+      notifyListeners();
     }
 
     _position = await Geolocator.getCurrentPosition(

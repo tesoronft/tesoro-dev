@@ -25,170 +25,180 @@ class ConfirmDetailsView extends StatelessWidget {
   final TreasurePostModel treasurePostModel;
   @override
   Widget build(BuildContext buildContext) {
-    return Consumer2<ApiProvider, PreferencesProvider>(
-      builder: (context, apis, prefs, child) => AbsorbPointer(
-        absorbing: apis.isLoading,
-        child: CustomScaffold(
-          isAppbarRequired: true,
-          backgroundColor: AppColors.light,
-          appBarTitle: AppStrings.itemDetails,
-          child: SingleChildScrollView(
-            child: SafeArea(
-              minimum: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 10,
-                children: [
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 0.6,
-                        crossAxisSpacing: 10),
-                    itemCount: treasurePostModel.photos?.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        clipBehavior: Clip.antiAlias,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: AppColors.light,
+    return PopScope(
+      onPopInvoked: (didPop) => false,
+      child: Consumer2<ApiProvider, PreferencesProvider>(
+        builder: (context, apis, prefs, child) => AbsorbPointer(
+          absorbing: apis.isLoading,
+          child: CustomScaffold(
+            isAppbarRequired: true,
+            backgroundColor: AppColors.light,
+            appBarTitle: AppStrings.itemDetails,
+            child: SingleChildScrollView(
+              child: SafeArea(
+                minimum: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 10,
+                  children: [
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 0.6,
+                          crossAxisSpacing: 10),
+                      itemCount: treasurePostModel.photos?.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          clipBehavior: Clip.antiAlias,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: AppColors.light,
+                          ),
+                          child: Image.file(
+                            File(treasurePostModel.photos?[index] ?? ''),
+                            fit: BoxFit.fill,
+                          ),
+                        );
+                      },
+                    ),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      padding: EdgeInsets.zero,
+                      itemCount: 3,
+                      itemBuilder: (context, index) => ListTile(
+                        leading: Icon(Icons.check),
+                        title: Text(
+                          PostTreasureData.labels[index],
+                          style: AppTextStyles.bodyLarge
+                              .copyWith(color: AppColors.dark),
                         ),
-                        child: Image.file(
-                          File(treasurePostModel.photos?[index] ?? ''),
-                          fit: BoxFit.fill,
-                        ),
-                      );
-                    },
-                  ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    padding: EdgeInsets.zero,
-                    itemCount: 3,
-                    itemBuilder: (context, index) => ListTile(
-                      leading: Icon(Icons.check),
-                      title: Text(
-                        PostTreasureData.labels[index],
-                        style: AppTextStyles.bodyLarge
-                            .copyWith(color: AppColors.dark),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 20, child: Divider()),
-                  Text(
-                    '${AppStrings.title}:',
-                    style: AppTextStyles.headingMedium
-                        .copyWith(color: AppColors.dialogBtn),
-                  ),
-                  Text(
-                    treasurePostModel.title ?? 'N/A',
-                    style: AppTextStyles.bodyMedium
-                        .copyWith(fontWeight: FontWeight.normal),
-                  ),
-                  Text(
-                    AppStrings.location,
-                    style: AppTextStyles.headingMedium
-                        .copyWith(color: AppColors.dialogBtn),
-                  ),
-                  Text(
-                    treasurePostModel.location?.address ?? '',
-                    style: AppTextStyles.bodyMedium
-                        .copyWith(fontWeight: FontWeight.normal),
-                  ),
-                  Text(
-                    '${AppStrings.estimatePrice}:',
-                    style: AppTextStyles.headingMedium
-                        .copyWith(color: AppColors.dialogBtn),
-                  ),
-                  RichText(
-                      text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: treasurePostModel.price.toString(),
-                        style: AppTextStyles.bodyMedium.copyWith(
-                            color: AppColors.dark,
-                            fontWeight: FontWeight.normal,
-                            decoration: TextDecoration.lineThrough,
-                            decorationColor: AppColors.dark),
-                      ),
-                      TextSpan(
-                        text: ' Free',
-                        style: AppTextStyles.bodyLarge
-                            .copyWith(color: AppColors.currency),
-                      ),
-                    ],
-                  )),
-                  Text(
-                    AppStrings.category,
-                    style: AppTextStyles.headingMedium
-                        .copyWith(color: AppColors.dialogBtn),
-                  ),
-                  Text(
-                    treasurePostModel.category ?? 'N/A',
-                    style: AppTextStyles.bodyMedium
-                        .copyWith(fontWeight: FontWeight.normal),
-                  ),
-                  Text(
-                    AppStrings.condition,
-                    style: AppTextStyles.headingMedium
-                        .copyWith(color: AppColors.dialogBtn),
-                  ),
-                  Text(
-                    treasurePostModel.condition ?? 'N/A',
-                    style: AppTextStyles.bodyMedium
-                        .copyWith(fontWeight: FontWeight.normal),
-                  ),
-                  Text(
-                    AppStrings.description,
-                    style: AppTextStyles.headingMedium
-                        .copyWith(color: AppColors.dialogBtn),
-                  ),
-                  Text(
-                    treasurePostModel.description ?? 'N/A',
-                    style: AppTextStyles.bodyMedium
-                        .copyWith(fontWeight: FontWeight.normal),
-                  ),
-                  apis.isLoading
-                      ? Center(
-                          child: SpinKitCircle(
-                            color: AppColors.primary,
-                          ),
-                        )
-                      : Consumer<PreferencesProvider>(
-                          builder: (context, prefs, child) => CustomBtn(
-                              text: AppStrings.postItem,
-                              trailingIcon: Icon(
-                                Icons.arrow_forward,
-                                color: AppColors.light,
-                              ),
-                              onBtnTap: () async {
-                                final result = await apis.createTreasure(
-                                    treasurePostModel, prefs.accessToken ?? '');
-                                if (result == ApiEnums.success) {
-                                  showDialog(
-                                    context: buildContext,
-                                    barrierDismissible: false,
-                                    builder: (context) => MessageDialog(
-                                        btnTapped: () =>
-                                            context.goNamed(Routes.dashboard),
-                                        btnTxt: 'Back to Home',
-                                        imageUrl: AppImages.achievment,
-                                        subtitle: AppStrings
-                                            .yourListingItemIsVissible,
-                                        title:
-                                            AppStrings.itemPostedSuccessfully),
-                                  );
-                                } else {
-                                  CustomSnackbar().showSnackbar(
-                                    SnackBarEnums.failed,
-                                    apis.responseTxt,
-                                    buildContext,
-                                  );
-                                }
-                              }),
+                    SizedBox(height: 20, child: Divider()),
+                    Text(
+                      '${AppStrings.title}:',
+                      style: AppTextStyles.headingMedium
+                          .copyWith(color: AppColors.dialogBtn),
+                    ),
+                    Text(
+                      treasurePostModel.title ?? 'N/A',
+                      style: AppTextStyles.bodyMedium
+                          .copyWith(fontWeight: FontWeight.normal),
+                    ),
+                    Text(
+                      AppStrings.location,
+                      style: AppTextStyles.headingMedium
+                          .copyWith(color: AppColors.dialogBtn),
+                    ),
+                    Text(
+                      treasurePostModel.location?.address ?? '',
+                      style: AppTextStyles.bodyMedium
+                          .copyWith(fontWeight: FontWeight.normal),
+                    ),
+                    Text(
+                      '${AppStrings.estimatePrice}:',
+                      style: AppTextStyles.headingMedium
+                          .copyWith(color: AppColors.dialogBtn),
+                    ),
+                    RichText(
+                        text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: treasurePostModel.price.toString(),
+                          style: AppTextStyles.bodyMedium.copyWith(
+                              color: AppColors.dark,
+                              fontWeight: FontWeight.normal,
+                              decoration: TextDecoration.lineThrough,
+                              decorationColor: AppColors.dark),
                         ),
-                ],
+                        TextSpan(
+                          text: ' Free',
+                          style: AppTextStyles.bodyLarge
+                              .copyWith(color: AppColors.currency),
+                        ),
+                      ],
+                    )),
+                    Text(
+                      AppStrings.category,
+                      style: AppTextStyles.headingMedium
+                          .copyWith(color: AppColors.dialogBtn),
+                    ),
+                    Text(
+                      treasurePostModel.categoryId ?? 'N/A',
+                      style: AppTextStyles.bodyMedium
+                          .copyWith(fontWeight: FontWeight.normal),
+                    ),
+                    Text(
+                      AppStrings.condition,
+                      style: AppTextStyles.headingMedium
+                          .copyWith(color: AppColors.dialogBtn),
+                    ),
+                    Text(
+                      treasurePostModel.conditionId ?? 'N/A',
+                      style: AppTextStyles.bodyMedium
+                          .copyWith(fontWeight: FontWeight.normal),
+                    ),
+                    if (treasurePostModel.description != '')
+                      Text(
+                        AppStrings.description,
+                        style: AppTextStyles.headingMedium
+                            .copyWith(color: AppColors.dialogBtn),
+                      ),
+                    if (treasurePostModel.description != '')
+                      Text(
+                        treasurePostModel.description ?? 'N/A',
+                        style: AppTextStyles.bodyMedium
+                            .copyWith(fontWeight: FontWeight.normal),
+                      ),
+                    apis.isLoading
+                        ? Center(
+                            child: SpinKitCircle(
+                              color: AppColors.primary,
+                            ),
+                          )
+                        : Consumer<PreferencesProvider>(
+                            builder: (context, prefs, child) => CustomBtn(
+                                text: AppStrings.postItem,
+                                trailingIcon: Icon(
+                                  Icons.arrow_forward,
+                                  color: AppColors.light,
+                                ),
+                                onBtnTap: () async {
+                                  final result = await apis.createTreasure(
+                                      treasurePostModel,
+                                      prefs.accessToken ?? '');
+                                  if (result == ApiEnums.success) {
+                                    await apis
+                                        .getUserData(prefs.accessToken ?? '');
+                                    showDialog(
+                                      context: buildContext,
+                                      barrierDismissible: false,
+                                      builder: (context) => MessageDialog(
+                                          btnTapped: () {
+                                            Navigator.of(buildContext).pop();
+                                            context.go(Routes.dashboard);
+                                          },
+                                          btnTxt: 'Back to Home',
+                                          imageUrl: AppImages.achievment,
+                                          subtitle: AppStrings
+                                              .yourListingItemIsVissible,
+                                          title: AppStrings
+                                              .itemPostedSuccessfully),
+                                    );
+                                  } else {
+                                    CustomSnackbar().showSnackbar(
+                                      SnackBarEnums.failed,
+                                      apis.responseTxt,
+                                      buildContext,
+                                    );
+                                  }
+                                }),
+                          ),
+                  ],
+                ),
               ),
             ),
           ),

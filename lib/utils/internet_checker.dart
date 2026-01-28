@@ -1,26 +1,36 @@
 import 'dart:async';
 import 'dart:developer';
-
-import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:flutter/widgets.dart';
 
-class InternetChecker with ChangeNotifier {
+class InternetChecker extends ChangeNotifier {
   bool _isConnected = true;
   bool get isConnected => _isConnected;
-  late StreamSubscription _subscription;
+
+  late final InternetConnectionChecker _checker;
+  StreamSubscription<InternetConnectionStatus>? _subscription;
+
   InternetChecker() {
-    log('Internet connection checking started');
-    _initConnectivity();
+    log('InternetChecker constructor');
+    _checker = InternetConnectionChecker.createInstance();
+    _init();
   }
 
-  Future<void> _initConnectivity() async {
-    _subscription = Connectivity().onConnectivityChanged.listen((result) async {
-      bool previous = _isConnected;
-      _isConnected = result.first != ConnectivityResult.none;
+  Future<void> _init() async {
+    _isConnected = await _checker.hasConnection;
+    notifyListeners();
 
-      if (previous != _isConnected) {
-        notifyListeners();
-      }
+    _subscription = _checker.onStatusChange.listen((status) {
+      log('Internet status: $status');
+
+      _isConnected = status == InternetConnectionStatus.connected;
+      notifyListeners();
     });
+  }
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
   }
 }

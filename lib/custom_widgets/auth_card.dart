@@ -74,8 +74,7 @@ class AuthCard extends StatelessWidget {
                       hintText: AppStrings.password,
                       keyboardType: TextInputType.visiblePassword,
                       isPassword: true,
-                      isVissible: true,
-                      onVisibilityTap: () {},
+                      // onVisibilityTap: () {},
                     ),
                     if (!issSignin)
                       CustomTextField(
@@ -84,8 +83,7 @@ class AuthCard extends StatelessWidget {
                         hintText: AppStrings.confirmPassword,
                         keyboardType: TextInputType.visiblePassword,
                         isPassword: true,
-                        isVissible: true,
-                        onVisibilityTap: () {},
+                        //  onVisibilityTap: () {},
                       ),
                     TextButton(
                         onPressed: () {},

@@ -15,6 +15,9 @@ class AppImages {
   static const String user = 'assets/images/User.svg';
   static const String world = 'assets/images/world.png';
   static const String mark = 'assets/images/mark.png';
+  static const String diamondChest = 'assets/images/diamondChest.png';
+  static const String empty = 'assets/images/empty.jpg';
+  static const String error404 = 'assets/images/error404.jpg';
   // Settings
   static const String profile = 'assets/images/profileIcon.svg';
   static const String star = 'assets/images/star.svg';
@@ -49,4 +52,12 @@ class AppImages {
   static const String cameraClick = 'assets/images/cameraClick.png';
   static const String flash = 'assets/images/flash.png';
   static const String gallery = 'assets/images/gallery.png';
+
+  //lottie
+  static const String coins = 'assets/lottie/coin.json';
+  static const String dollarchest = 'assets/lottie/dollar_chest.json';
+  static const String mapBrowsing = 'assets/lottie/map_browsing.json';
+  static const String mapDotted = 'assets/lottie/map_dotted.json';
+  static const String money = 'assets/lottie/money.json';
+  static const String takePhotos = 'assets/lottie/take_photo.json';
 }

@@ -14,7 +14,9 @@ class DashboardData {
   ];
   static List<Widget> dashboardScreens = [
     HomeView(),
-    AllTreasuresView(),
+    AllTreasuresView(
+      isFromHome: false,
+    ),
     UserAccountView(),
     SettingsView()
   ];

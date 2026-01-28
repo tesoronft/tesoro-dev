@@ -1,0 +1,137 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tesoro_nft_app/consts/app_colors.dart';
+import 'package:tesoro_nft_app/consts/app_strings.dart';
+import 'package:tesoro_nft_app/consts/app_text_styles.dart';
+import 'package:tesoro_nft_app/custom_widgets/custom_btn.dart';
+import 'package:tesoro_nft_app/routes/routes.dart';
+
+import '../../enums/dialog_enums.dart';
+import '../../models/treasures/treasure_get_model.dart';
+
+class TreasurePreview extends StatelessWidget {
+  TreasurePreview(
+      {super.key, required this.treasure, this.isConfirmation = false});
+  final TreasureGetModel treasure;
+  bool isConfirmation = false;
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(isConfirmation ? 10 : 0),
+      ),
+      backgroundColor: AppColors.light,
+      title: treasure.photos!.first.toString().contains('https')
+          ? SizedBox(
+              height: 200,
+              width: double.infinity,
+              child: Image.network(
+                treasure.photos!.first,
+                fit: BoxFit.cover,
+              ),
+            )
+          : SizedBox(
+              height: 200,
+              width: double.infinity,
+              child: Image.file(
+                File(
+                  treasure.photos!.first,
+                ),
+                fit: BoxFit.cover,
+              ),
+            ),
+      titlePadding: EdgeInsets.all(6),
+      contentPadding: EdgeInsets.all(6),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                treasure.title ?? 'No Title',
+                style: AppTextStyles.bodySmall
+                    .copyWith(fontWeight: FontWeight.bold),
+              ),
+              !isConfirmation
+                  ? CustomBtn(
+                      text: 'View',
+                      btnColor: AppColors.light,
+                      width: 50,
+                      height: 30,
+                      textStyle: AppTextStyles.labelMedium.copyWith(
+                          color: AppColors.dialogBtn,
+                          fontWeight: FontWeight.bold),
+                      onBtnTap: () =>
+                          context.push(Routes.treasureDetails, extra: treasure),
+                    )
+                  : RichText(
+                      text: TextSpan(children: [
+                      TextSpan(
+                        text: '${treasure.price ?? '0'}',
+                        style: AppTextStyles.bodySmall.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.dark,
+                            decoration: TextDecoration.lineThrough),
+                      ),
+                      TextSpan(
+                        text: '  Free',
+                        style: AppTextStyles.bodySmall
+                            .copyWith(color: AppColors.currency),
+                      )
+                    ]))
+            ],
+          ),
+          if (isConfirmation)
+            RichText(
+                text: TextSpan(
+                    text: '${AppStrings.condition}: ',
+                    style: AppTextStyles.bodySmall.copyWith(
+                        fontWeight: FontWeight.bold, color: AppColors.dark),
+                    children: [
+                  TextSpan(
+                    text: treasure.condition?.name ?? 'No Condition',
+                    style: AppTextStyles.bodySmall
+                        .copyWith(color: AppColors.error),
+                  )
+                ])),
+          if (isConfirmation) Divider()
+        ],
+      ),
+      actionsPadding: EdgeInsets.all(6),
+      actions: !isConfirmation
+          ? []
+          : [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(AppStrings.isTheItemStillThere,
+                    style: AppTextStyles.bodySmall
+                        .copyWith(fontWeight: FontWeight.bold)),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  CustomBtn(
+                    btnColor: AppColors.dialogBtn,
+                    width: 150,
+                    text: AppStrings.yes,
+                    onBtnTap: () =>
+                        Navigator.of(context).pop(DialogEnums.treasureTaken),
+                  ),
+                  CustomBtn(
+                    btnColor: AppColors.dialogBtn,
+                    width: 150,
+                    text: AppStrings.no,
+                    onBtnTap: () {
+                      Navigator.of(context).pop(DialogEnums.treasureNotTaken);
+                    },
+                  )
+                ],
+              ),
+            ],
+    );
+  }
+}

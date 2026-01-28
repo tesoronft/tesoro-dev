@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tesoro_nft_app/consts/app_colors.dart';
 import 'package:tesoro_nft_app/consts/app_strings.dart';
-import 'package:tesoro_nft_app/consts/app_text_styles.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_scaffold.dart';
-import 'package:tesoro_nft_app/custom_widgets/popup_button.dart';
 import 'package:tesoro_nft_app/custom_widgets/tips_info.dart';
+import 'package:tesoro_nft_app/custom_widgets/treasures/empty_view.dart';
 import 'package:tesoro_nft_app/providers/api_provider.dart';
+import 'package:tesoro_nft_app/routes/routes.dart';
 
 import '../../../providers/preferences_provider.dart';
 
@@ -37,8 +38,9 @@ class _TipsReceivedViewState extends State<TipsReceivedView> {
   Widget build(BuildContext context) {
     return Consumer<ApiProvider>(
       builder: (context, apis, child) => CustomScaffold(
-          backgroundColor:
-              apis.isLoading ? AppColors.light.withAlpha(60) : AppColors.light,
+          isAppbarRequired: true,
+          appBarTitle: AppStrings.tipsReceived,
+          backgroundColor: AppColors.light,
           child: SafeArea(
             minimum: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             child: apis.isLoading
@@ -47,25 +49,14 @@ class _TipsReceivedViewState extends State<TipsReceivedView> {
                       color: AppColors.primary,
                     ),
                   )
-                : Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                : apis.receivedTipsModel?.data.isNotEmpty ?? true
+                    ? EmptyView(
+                        title: 'Add more items to receive tips',
+                        onTap: () => context.push(Routes.postTreasure),
+                      )
+                    : Column(
                         children: [
-                          PopupButton(),
-                          Text(
-                            AppStrings.tipsReceived,
-                            style: AppTextStyles.headingMedium,
-                          ),
-                          SizedBox.shrink()
-                        ],
-                      ),
-                      apis.receivedTipsModel == null
-                          ? Text(
-                              'No tips received yet',
-                              style: AppTextStyles.bodyMedium,
-                            )
-                          : Expanded(
+                          Expanded(
                               child: ListView.builder(
                                   itemCount:
                                       apis.receivedTipsModel?.data.length,
@@ -81,15 +72,19 @@ class _TipsReceivedViewState extends State<TipsReceivedView> {
                                               'N/A',
                                           amountTitle:
                                               AppStrings.amountReceived,
-                                          date: thisTip?.createdAt ?? 'N/A',
+                                          date: DateTime.tryParse(
+                                                      thisTip?.createdAt ?? '')
+                                                  ?.toLocal()
+                                                  .toString() ??
+                                              'N/A',
                                           totalAmount: '\$${thisTip?.amount}',
                                           userName:
                                               thisTip?.receiverData?.name ??
                                                   'N/A'),
                                     );
                                   }))
-                    ],
-                  ),
+                        ],
+                      ),
           )),
     );
   }

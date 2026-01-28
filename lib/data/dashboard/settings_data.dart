@@ -2,9 +2,11 @@ import 'package:tesoro_nft_app/consts/app_images.dart';
 import 'package:tesoro_nft_app/consts/app_strings.dart';
 
 class SettingsData {
-  static const List<String> settingsTitle = [
+  static List<String> settingsTitle = [
     AppStrings.myAccount,
-    AppStrings.upgradeToPremium,
+    //AppStrings.upgradeToPremium,
+    AppStrings.aboutUs,
+    AppStrings.privacyPolicy,
     AppStrings.termsAndConditions,
     AppStrings.rateUs,
     AppStrings.feedback,
@@ -13,7 +15,8 @@ class SettingsData {
   ];
   static const List<String> settingsIcon = [
     AppImages.profile,
-    AppImages.diamond,
+    AppImages.profile,
+    AppImages.doc,
     AppImages.doc,
     AppImages.star,
     AppImages.chat,

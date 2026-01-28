@@ -7,7 +7,6 @@ import 'package:tesoro_nft_app/consts/app_images.dart';
 import 'package:tesoro_nft_app/consts/app_strings.dart';
 import 'package:tesoro_nft_app/consts/app_text_styles.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_scaffold.dart';
-import 'package:tesoro_nft_app/enums/api_enums.dart';
 import 'package:tesoro_nft_app/providers/preferences_provider.dart';
 import 'package:tesoro_nft_app/routes/splash_navigation.dart';
 
