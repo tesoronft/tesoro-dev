@@ -56,24 +56,24 @@ class _AllTreasuresViewState extends State<AllTreasuresView>
   }
 
   GetAllTreasuresModel? allTreasuresModel;
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
-    if (state != AppLifecycleState.resumed) return;
+  // @override
+  // void didChangeAppLifecycleState(AppLifecycleState state) async {
+  //   if (state != AppLifecycleState.resumed) return;
 
-    final geoLocation = Provider.of<AppPermissions>(context, listen: false);
-    final positions = await geoLocation.getCurrentPosition();
-    if (!mounted) return;
-    final apis = Provider.of<ApiProvider>(context, listen: false);
+  //   final geoLocation = Provider.of<AppPermissions>(context, listen: false);
+  //   final positions = await geoLocation.getCurrentPosition();
+  //   if (!mounted) return;
+  //   final apis = Provider.of<ApiProvider>(context, listen: false);
 
-    await apis.getAllTreasuresData(
-        1,
-        5,
-        'all',
-        positions != null ? positions.longitude.toString() : '0.0',
-        positions != null ? positions.latitude.toString() : '0.0',
-        '10',
-        context.read<PreferencesProvider>().accessToken ?? '');
-  }
+  //   await apis.getAllTreasuresData(
+  //       1,
+  //       5,
+  //       'all',
+  //       positions != null ? positions.longitude.toString() : '0.0',
+  //       positions != null ? positions.latitude.toString() : '0.0',
+  //       '10',
+  //       context.read<PreferencesProvider>().accessToken ?? '');
+  // }
 
   ValueNotifier<int> rangeNotifier = ValueNotifier<int>(10);
   @override
@@ -212,6 +212,9 @@ class _AllTreasuresViewState extends State<AllTreasuresView>
                                                           extra: thisTreasure);
                                                     },
                                                     child: TreasurePostedCard(
+                                                        collectedBy:
+                                                            thisTreasure
+                                                                ?.collectedBy,
                                                         condition: thisTreasure
                                                                 ?.condition
                                                                 ?.name ??

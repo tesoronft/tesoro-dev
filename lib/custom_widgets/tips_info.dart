@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tesoro_nft_app/consts/app_colors.dart';
 import 'package:tesoro_nft_app/consts/app_strings.dart';
 import 'package:tesoro_nft_app/consts/app_text_styles.dart';
+import 'package:tesoro_nft_app/utils/covert_time_to_minutes.dart';
 
 class TipsInfo extends StatelessWidget {
   const TipsInfo(
@@ -17,9 +18,17 @@ class TipsInfo extends StatelessWidget {
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-          color: AppColors.light,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [BoxShadow(color: AppColors.dark, blurRadius: 2)]),
+        color: AppColors.light,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 3,
+            blurRadius: 8,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -30,13 +39,15 @@ class TipsInfo extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  userName,
-                  style:
-                      AppTextStyles.bodyLarge.copyWith(color: AppColors.dark),
+                Expanded(
+                  child: Text(
+                    userName,
+                    style:
+                        AppTextStyles.bodyLarge.copyWith(color: AppColors.dark),
+                  ),
                 ),
                 Text(
-                  date,
+                  ConvertTimeToMinutes.formatDate(date),
                   style: AppTextStyles.labelMedium
                       .copyWith(color: Color(0xff666666)),
                 )
@@ -56,17 +67,21 @@ class TipsInfo extends StatelessWidget {
                 ],
               ),
             ),
-            RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: AppStrings.location,
-                    style: AppTextStyles.labelMedium.copyWith(
-                      fontWeight: FontWeight.w900,
+            SizedBox(
+              width: 350,
+              child: RichText(
+                softWrap: true,
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: AppStrings.location,
+                      style: AppTextStyles.labelMedium.copyWith(
+                        fontWeight: FontWeight.w900,
+                      ),
                     ),
-                  ),
-                  TextSpan(text: address, style: AppTextStyles.labelMedium),
-                ],
+                    TextSpan(text: address, style: AppTextStyles.labelMedium),
+                  ],
+                ),
               ),
             ),
           ],

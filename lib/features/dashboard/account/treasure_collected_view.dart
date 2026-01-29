@@ -1,3 +1,4 @@
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tesoro_nft_app/consts/app_colors.dart';
@@ -53,47 +54,62 @@ class _TreasureCollectedViewState extends State<TreasureCollectedView> {
                                 ?.isEmpty ??
                             true
                         ? EmptyView()
-                        : Stack(
-                            children: [
-                              Column(
-                                children: [
-                                  Expanded(
-                                    child: ListView.builder(
-                                      itemCount: apis.allCollectedTreasure
-                                          ?.listOfPostedTreasures?.length,
-                                      itemBuilder: (context, index) {
-                                        final thisCollection = apis
-                                            .allCollectedTreasure
-                                            ?.listOfPostedTreasures?[index];
-                                        return Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 10),
-                                          child: TreasureCollectedCard(
-                                            date: thisCollection?.collectedAt ??
-                                                'N/A',
-                                            imageUrl:
-                                                thisCollection?.photos?.first,
-                                            itemName:
-                                                thisCollection?.title ?? 'N/A',
-                                            location: thisCollection
-                                                    ?.locationModel?.address ??
-                                                'N/A',
-                                            personName: thisCollection
-                                                    ?.postedBy?.userName ??
-                                                'N/A',
-                                          ),
-                                        );
-                                      },
+                        : EasyRefresh.builder(
+                            onRefresh: () async {
+                              await apis.getTreasureCollectedByUser(
+                                  1,
+                                  context
+                                          .read<PreferencesProvider>()
+                                          .accessToken ??
+                                      '',
+                                  context.read<PreferencesProvider>().userId ??
+                                      '');
+                            },
+                            childBuilder: (context, physics) => Stack(
+                              children: [
+                                Column(
+                                  children: [
+                                    Expanded(
+                                      child: ListView.builder(
+                                        physics: physics,
+                                        itemCount: apis.allCollectedTreasure
+                                            ?.listOfPostedTreasures?.length,
+                                        itemBuilder: (context, index) {
+                                          final thisCollection = apis
+                                              .allCollectedTreasure
+                                              ?.listOfPostedTreasures?[index];
+                                          return Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 10),
+                                            child: TreasureCollectedCard(
+                                              date:
+                                                  thisCollection?.collectedAt ??
+                                                      'N/A',
+                                              imageUrl:
+                                                  thisCollection?.photos?.first,
+                                              itemName: thisCollection?.title ??
+                                                  'N/A',
+                                              location: thisCollection
+                                                      ?.locationModel
+                                                      ?.address ??
+                                                  'N/A',
+                                              personName: thisCollection
+                                                      ?.postedBy?.userName ??
+                                                  'N/A',
+                                            ),
+                                          );
+                                        },
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              !permissions.isLocationAllowed
-                                  ? Align(
-                                      alignment: Alignment.bottomCenter,
-                                      child: PermissionEnableComponent())
-                                  : SizedBox.shrink(),
-                            ],
+                                  ],
+                                ),
+                                !permissions.isLocationAllowed
+                                    ? Align(
+                                        alignment: Alignment.bottomCenter,
+                                        child: PermissionEnableComponent())
+                                    : SizedBox.shrink(),
+                              ],
+                            ),
                           ),
               ),
       ),

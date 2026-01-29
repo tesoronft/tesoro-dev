@@ -380,7 +380,7 @@ class ApiProvider with ChangeNotifier {
         final json = jsonDecode(response.body);
         log(response.body);
         _conditionsList = ConditionsModelList.fromJson(json);
-        _responseTxt = json['message'];
+
         _isLoading = false;
         notifyListeners();
         return json;
@@ -445,7 +445,7 @@ class ApiProvider with ChangeNotifier {
       } else {
         final json = jsonDecode(response.body);
         log(response.body);
-        _responseTxt = 'Treasure post failed. Please try again.';
+        _responseTxt = json['details']['message'][0];
         _isLoading = false;
         notifyListeners();
         return ApiEnums.failed;
@@ -636,7 +636,7 @@ class ApiProvider with ChangeNotifier {
     }
   }
 
-  Future<String> deleteTreasure(String treasureId, String accessToken) async {
+  Future<ApiEnums> deleteTreasure(String treasureId, String accessToken) async {
     _isLoading = true;
     notifyListeners();
     try {
@@ -649,20 +649,24 @@ class ApiProvider with ChangeNotifier {
       if (response.statusCode == 201) {
         final json = jsonDecode(response.body);
         log(json);
+        _responseTxt = json['message'];
         _isLoading = false;
         notifyListeners();
-        return json;
+        return ApiEnums.success;
       } else {
         log(response.body);
+        final json = jsonDecode(response.body);
         _isLoading = false;
+        _responseTxt = json['output']['message'];
         notifyListeners();
-        return response.reasonPhrase ?? response.statusCode.toString();
+        return ApiEnums.failed;
       }
     } catch (e) {
       log(e.toString());
+      _responseTxt = e.toString();
       _isLoading = false;
       notifyListeners();
-      return e.toString();
+      return ApiEnums.failed;
     }
   }
 
@@ -677,7 +681,7 @@ class ApiProvider with ChangeNotifier {
       final uri = Uri.parse('$baseUrl/treasures/collected/user').replace(
         queryParameters: {
           'page': '$page',
-          'limit': '10',
+          'limit': '5',
         },
       );
 

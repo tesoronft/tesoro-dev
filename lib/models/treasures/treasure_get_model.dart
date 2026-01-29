@@ -6,10 +6,12 @@ class TreasureGetModel {
       itemModel,
       type,
       description,
+      collectedBy,
+      collectedAt,
       createdAt;
   CategoryData? category;
   ConditionData? condition;
-  dynamic price, collectedBy, collectedAt;
+  dynamic price;
   dynamic distance;
   List<dynamic>? photos;
   LocationModel? location;

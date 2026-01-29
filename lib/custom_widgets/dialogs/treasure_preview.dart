@@ -2,10 +2,16 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:tesoro_nft_app/consts/app_colors.dart';
 import 'package:tesoro_nft_app/consts/app_strings.dart';
 import 'package:tesoro_nft_app/consts/app_text_styles.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_btn.dart';
+import 'package:tesoro_nft_app/custom_widgets/custom_snackbar.dart';
+import 'package:tesoro_nft_app/enums/api_enums.dart';
+import 'package:tesoro_nft_app/enums/snack_bar_enums.dart';
+import 'package:tesoro_nft_app/providers/api_provider.dart';
+import 'package:tesoro_nft_app/providers/preferences_provider.dart';
 import 'package:tesoro_nft_app/routes/routes.dart';
 
 import '../../enums/dialog_enums.dart';
@@ -111,25 +117,38 @@ class TreasurePreview extends StatelessWidget {
                     style: AppTextStyles.bodySmall
                         .copyWith(fontWeight: FontWeight.bold)),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  CustomBtn(
-                    btnColor: AppColors.dialogBtn,
-                    width: 150,
-                    text: AppStrings.yes,
-                    onBtnTap: () =>
-                        Navigator.of(context).pop(DialogEnums.treasureTaken),
-                  ),
-                  CustomBtn(
-                    btnColor: AppColors.dialogBtn,
-                    width: 150,
-                    text: AppStrings.no,
-                    onBtnTap: () {
-                      Navigator.of(context).pop(DialogEnums.treasureNotTaken);
-                    },
-                  )
-                ],
+              Consumer2<ApiProvider, PreferencesProvider>(
+                builder: (context, apiProvider, preferencesProvider, child) =>
+                    Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    CustomBtn(
+                      btnColor: AppColors.dialogBtn,
+                      width: 150,
+                      text: AppStrings.yes,
+                      onBtnTap: () =>
+                          Navigator.of(context).pop(DialogEnums.treasureTaken),
+                    ),
+                    CustomBtn(
+                      btnColor: AppColors.dialogBtn,
+                      width: 150,
+                      text: AppStrings.no,
+                      onBtnTap: () async {
+                        final result = await apiProvider.deleteTreasure(
+                            treasure.productId ?? "",
+                            preferencesProvider.accessToken ?? "");
+                        if (result == ApiEnums.failed) {
+                          CustomSnackbar().showSnackbar(SnackBarEnums.failed,
+                              apiProvider.responseTxt, context);
+                        } else {
+                          CustomSnackbar().showSnackbar(SnackBarEnums.success,
+                              apiProvider.responseTxt, context);
+                        }
+                        Navigator.of(context).pop(DialogEnums.treasureNotTaken);
+                      },
+                    )
+                  ],
+                ),
               ),
             ],
     );

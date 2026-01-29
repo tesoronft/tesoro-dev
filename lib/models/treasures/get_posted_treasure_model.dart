@@ -13,6 +13,10 @@ class GetAllCollectedTreasure {
       pagination: Pagination.fromJson(jsonData['pagination']),
     );
   }
+  @override
+  String toString() {
+    return 'GetAllCollectedTreasure(listOfPostedTreasures: $listOfPostedTreasures, pagination: $pagination)';
+  }
 }
 
 class GetCollectedTreasureModel {
@@ -32,14 +36,18 @@ class GetCollectedTreasureModel {
   });
   factory GetCollectedTreasureModel.fromJson(Map<String, dynamic> jsonData) {
     return GetCollectedTreasureModel(
-      category: jsonData['category'],
+      category: Category.fromJson(jsonData['category'] ?? {}),
       collectedAt: jsonData['collectedAt'],
-      locationModel: jsonData['location'],
+      locationModel: LocationModel.fromJson(jsonData['location']),
       photos: jsonData['photos'],
-      postedBy: jsonData['postedBy'],
+      postedBy: PostedBy.fromJson(jsonData['postedBy']),
       title: jsonData['title'],
       treasureId: jsonData['_id'],
     );
+  }
+  @override
+  String toString() {
+    return 'GetCollectedTreasureModel(treasureId: $treasureId, title: $title, collectedAt: $collectedAt, photos: $photos, category: $category, postedBy: $postedBy, locationModel: $locationModel)';
   }
 }
 
@@ -52,6 +60,10 @@ class Category {
       cayegoryName: jsonData['name'],
     );
   }
+  @override
+  String toString() {
+    return 'Category(categoryId: $categoryId, cayegoryName: $cayegoryName)';
+  }
 }
 
 class PostedBy {
@@ -63,5 +75,9 @@ class PostedBy {
       userId: jsonData['_id'],
       userName: jsonData['name'],
     );
+  }
+  @override
+  String toString() {
+    return 'PostedBy(userId: $userId, userName: $userName, userEmail: $userEmail)';
   }
 }

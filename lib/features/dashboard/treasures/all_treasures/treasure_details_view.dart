@@ -89,7 +89,8 @@ class TreasureDetailsView extends StatelessWidget {
                         itemName: treasureGetModel.title ?? 'N/A',
                         price: treasureGetModel.price.toString()),
                     if (treasureGetModel.postedBy?.id !=
-                        context.read<PreferencesProvider>().userId)
+                            context.read<PreferencesProvider>().userId &&
+                        treasureGetModel.collectedBy == null)
                       CustomBtn(
                           text: AppStrings.huntForThisItem,
                           trailingIcon: Icon(
@@ -133,18 +134,24 @@ class TreasureDetailsView extends StatelessWidget {
                       style: AppTextStyles.bodyLarge
                           .copyWith(color: const Color(0xff0D5C63)),
                     ),
-                    const Divider(),
-                    Text(
-                      'Posted By:',
-                      style: AppTextStyles.bodyLarge
-                          .copyWith(color: AppColors.dark),
-                    ),
-                    PostedByCard(
-                      imageUrl: treasureGetModel.postedBy?.profileImage ??
-                          'https://e7.pngegg.com/pngimages/371/667/png-clipart-computer-icons-user-profile-encapsulated-postscript-icon-black-rectangle-black.png',
-                      name: treasureGetModel.postedBy?.name ?? "N/A",
-                      rating: treasureGetModel.postedBy?.rating ?? 1,
-                    ),
+                    if (treasureGetModel.postedBy?.id !=
+                        context.read<PreferencesProvider>().userId)
+                      const Divider(),
+                    if (treasureGetModel.postedBy?.id !=
+                        context.read<PreferencesProvider>().userId)
+                      Text(
+                        'Posted By:',
+                        style: AppTextStyles.bodyLarge
+                            .copyWith(color: AppColors.dark),
+                      ),
+                    if (treasureGetModel.postedBy?.id !=
+                        context.read<PreferencesProvider>().userId)
+                      PostedByCard(
+                        imageUrl: treasureGetModel.postedBy?.profileImage ??
+                            'https://e7.pngegg.com/pngimages/371/667/png-clipart-computer-icons-user-profile-encapsulated-postscript-icon-black-rectangle-black.png',
+                        name: treasureGetModel.postedBy?.name ?? "N/A",
+                        rating: treasureGetModel.postedBy?.rating ?? 1,
+                      ),
                   ],
                 ),
               ),

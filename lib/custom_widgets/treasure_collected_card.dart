@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tesoro_nft_app/consts/app_colors.dart';
 import 'package:tesoro_nft_app/consts/app_strings.dart';
 import 'package:tesoro_nft_app/consts/app_text_styles.dart';
+import 'package:tesoro_nft_app/utils/covert_time_to_minutes.dart';
 
 class TreasureCollectedCard extends StatelessWidget {
   const TreasureCollectedCard(
@@ -14,10 +15,20 @@ class TreasureCollectedCard extends StatelessWidget {
   final String imageUrl, itemName, date, personName, location;
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: AppColors.light,
+    return Container(
       clipBehavior: Clip.antiAlias,
-      elevation: 2,
+      decoration: BoxDecoration(
+        color: AppColors.light,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 3,
+            blurRadius: 8,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
@@ -51,7 +62,7 @@ class TreasureCollectedCard extends StatelessWidget {
                       style: AppTextStyles.labelMedium
                           .copyWith(fontWeight: FontWeight.bold)),
                   TextSpan(
-                      text: date,
+                      text: ConvertTimeToMinutes.formatDate(date),
                       style: AppTextStyles.labelMedium
                           .copyWith(color: Color(0xff666666))),
                 ])),
@@ -66,17 +77,21 @@ class TreasureCollectedCard extends StatelessWidget {
                       style: AppTextStyles.labelMedium
                           .copyWith(color: AppColors.primary)),
                 ])),
-                RichText(
-                    text: TextSpan(children: [
-                  TextSpan(
-                      text: AppStrings.location,
-                      style: AppTextStyles.labelMedium
-                          .copyWith(fontWeight: FontWeight.bold)),
-                  TextSpan(
-                      text: location,
-                      style: AppTextStyles.labelMedium
-                          .copyWith(color: Color(0xff666666))),
-                ]))
+                SizedBox(
+                  width: 200,
+                  child: RichText(
+                      softWrap: true,
+                      text: TextSpan(children: [
+                        TextSpan(
+                            text: AppStrings.location,
+                            style: AppTextStyles.labelMedium
+                                .copyWith(fontWeight: FontWeight.bold)),
+                        TextSpan(
+                            text: location,
+                            style: AppTextStyles.labelMedium
+                                .copyWith(color: Color(0xff666666))),
+                      ])),
+                )
               ],
             )
           ],

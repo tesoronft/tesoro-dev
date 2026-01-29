@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class ConvertTimeToMinutes {
   static String formatTimeAgo(String date) {
     final DateTime fetchTime = DateTime.parse(date).toLocal();
@@ -16,5 +18,11 @@ class ConvertTimeToMinutes {
       final weeks = (difference.inDays / 7).floor();
       return '$weeks ${weeks == 1 ? "week" : "weeks"} ago';
     }
+  }
+
+  static String formatDate(String date) {
+    final DateTime fetchDate = DateTime.parse(date).toLocal();
+    final DateFormat formatter = DateFormat('MMM dd, yyyy');
+    return formatter.format(fetchDate);
   }
 }

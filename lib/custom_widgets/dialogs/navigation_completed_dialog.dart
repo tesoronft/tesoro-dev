@@ -59,7 +59,7 @@ class NavigationCompletedDialog extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Please rate ${name} treasure',
+                  'Please rate $name\'s treasure',
                   textAlign: TextAlign.center,
                   style: AppTextStyles.bodyMedium
                       .copyWith(fontWeight: FontWeight.bold),

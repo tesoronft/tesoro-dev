@@ -55,109 +55,114 @@ class AuthCard extends StatelessWidget {
                 height: 75,
               ),
               Form(
-                child: Column(
-                  spacing: 20,
-                  children: [
-                    if (!issSignin)
+                child: SingleChildScrollView(
+                  child: Column(
+                    spacing: 20,
+                    children: [
+                      if (!issSignin)
+                        CustomTextField(
+                          editingController: _authController.nameController,
+                          hintText: AppStrings.name,
+                          keyboardType: TextInputType.name,
+                        ),
                       CustomTextField(
-                        editingController: _authController.nameController,
-                        hintText: AppStrings.name,
-                        keyboardType: TextInputType.name,
+                        editingController: _authController.emailController,
+                        hintText: AppStrings.exampleEmail,
+                        keyboardType: TextInputType.emailAddress,
                       ),
-                    CustomTextField(
-                      editingController: _authController.emailController,
-                      hintText: AppStrings.exampleEmail,
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-                    CustomTextField(
-                      editingController: _authController.passwordController,
-                      hintText: AppStrings.password,
-                      keyboardType: TextInputType.visiblePassword,
-                      isPassword: true,
-                      // onVisibilityTap: () {},
-                    ),
-                    if (!issSignin)
                       CustomTextField(
-                        editingController:
-                            _authController.confirmPasswordController,
-                        hintText: AppStrings.confirmPassword,
+                        editingController: _authController.passwordController,
+                        hintText: AppStrings.password,
                         keyboardType: TextInputType.visiblePassword,
                         isPassword: true,
-                        //  onVisibilityTap: () {},
+                        // onVisibilityTap: () {},
                       ),
-                    TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          AppStrings.forgotPassword,
-                          style: AppTextStyles.bodySmall.copyWith(
-                              color: AppColors.dark,
-                              fontWeight: FontWeight.w900),
-                        )),
-                    apis.isLoading
-                        ? SpinKitCircle(
-                            color: AppColors.primary,
-                          )
-                        : CustomBtn(
-                            text: issSignin
-                                ? AppStrings.signin
-                                : AppStrings.signup,
-                            onBtnTap: () async {
-                              final result = issSignin
-                                  ? await apis.signInUser(
-                                      _authController.emailController.text,
-                                      _authController.passwordController.text)
-                                  : await apis.createAccount(
-                                      _authController.nameController.text,
-                                      _authController.emailController.text,
-                                      _authController.passwordController.text);
-                              if (!apis.isLoading &&
-                                  result == ApiEnums.success) {
-                                CustomSnackbar().showSnackbar(
-                                    SnackBarEnums.success,
-                                    apis.responseTxt,
-                                    context);
-                                await prefs.setUserId(
-                                    apis.authModel?.user?.userId ?? '');
-                                await prefs.setAccessToken(
-                                    apis.authModel?.accessToken ?? '');
-                                await prefs.setRefreshToken(
-                                    apis.authModel?.refreshToken ?? '');
-                                context.go(Routes.dashboard);
-                              } else {
-                                CustomSnackbar().showSnackbar(
-                                    SnackBarEnums.failed,
-                                    apis.responseTxt,
-                                    context);
-                              }
-                            },
-                          ),
-                    RichText(
-                      text: TextSpan(
-                        text: issSignin
-                            ? AppStrings.dontHaveAnAccount
-                            : AppStrings.alreadyHaveAnAccount,
-                        style: AppTextStyles.bodySmall
-                            .copyWith(color: Colors.black),
-                        children: [
-                          TextSpan(
+                      if (!issSignin)
+                        CustomTextField(
+                          editingController:
+                              _authController.confirmPasswordController,
+                          hintText: AppStrings.confirmPassword,
+                          keyboardType: TextInputType.visiblePassword,
+                          isPassword: true,
+                          //  onVisibilityTap: () {},
+                        ),
+                      TextButton(
+                          onPressed: () {},
+                          child: Text(
+                            AppStrings.forgotPassword,
+                            style: AppTextStyles.bodySmall.copyWith(
+                                color: AppColors.dark,
+                                fontWeight: FontWeight.w900),
+                          )),
+                      apis.isLoading
+                          ? SpinKitCircle(
+                              color: AppColors.primary,
+                            )
+                          : CustomBtn(
                               text: issSignin
-                                  ? ' ${AppStrings.signup}'
-                                  : ' ${AppStrings.signin}',
-                              style: AppTextStyles.bodySmall.copyWith(
-                                color: AppColors.primary,
-                                decorationColor: AppColors.primary,
-                                decoration: TextDecoration.underline,
-                              ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  context.push(
-                                    !issSignin ? Routes.signin : Routes.signup,
-                                  );
-                                }),
-                        ],
-                      ),
-                    )
-                  ],
+                                  ? AppStrings.signin
+                                  : AppStrings.signup,
+                              onBtnTap: () async {
+                                final result = issSignin
+                                    ? await apis.signInUser(
+                                        _authController.emailController.text,
+                                        _authController.passwordController.text)
+                                    : await apis.createAccount(
+                                        _authController.nameController.text,
+                                        _authController.emailController.text,
+                                        _authController
+                                            .passwordController.text);
+                                if (!apis.isLoading &&
+                                    result == ApiEnums.success) {
+                                  CustomSnackbar().showSnackbar(
+                                      SnackBarEnums.success,
+                                      apis.responseTxt,
+                                      context);
+                                  await prefs.setUserId(
+                                      apis.authModel?.user?.userId ?? '');
+                                  await prefs.setAccessToken(
+                                      apis.authModel?.accessToken ?? '');
+                                  await prefs.setRefreshToken(
+                                      apis.authModel?.refreshToken ?? '');
+                                  context.go(Routes.dashboard);
+                                } else {
+                                  CustomSnackbar().showSnackbar(
+                                      SnackBarEnums.failed,
+                                      apis.responseTxt,
+                                      context);
+                                }
+                              },
+                            ),
+                      RichText(
+                        text: TextSpan(
+                          text: issSignin
+                              ? AppStrings.dontHaveAnAccount
+                              : AppStrings.alreadyHaveAnAccount,
+                          style: AppTextStyles.bodySmall
+                              .copyWith(color: Colors.black),
+                          children: [
+                            TextSpan(
+                                text: issSignin
+                                    ? ' ${AppStrings.signup}'
+                                    : ' ${AppStrings.signin}',
+                                style: AppTextStyles.bodySmall.copyWith(
+                                  color: AppColors.primary,
+                                  decorationColor: AppColors.primary,
+                                  decoration: TextDecoration.underline,
+                                ),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    context.push(
+                                      !issSignin
+                                          ? Routes.signin
+                                          : Routes.signup,
+                                    );
+                                  }),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ],

@@ -152,7 +152,7 @@ Future<void> showAllDialogs(
           SnackBarEnums.processing, 'Collecting treasure...', context);
       final result = await context.read<ApiProvider>().collectTreasure(
           context.read<PreferencesProvider>().accessToken ?? '',
-          treasure.postedBy?.id ?? treasure.userId ?? '',
+          senderId,
           treasure.productId ?? '');
       if (result == ApiEnums.success) {
         CustomSnackbar().showSnackbar(SnackBarEnums.success,
@@ -178,8 +178,14 @@ Future<void> showAllDialogs(
     context,
     lottie: AppImages.mapBrowsing,
     btn1: AppStrings.next,
+    btn1Tap: () => Navigator.of(context).pop(DialogEnums.treasureNotTaken),
     title: AppStrings.congratsOnYourTesoroAppFinds,
   );
+  if (!context.mounted) return;
+  if (result2 == DialogEnums.treasureNotTaken) {
+    context.go(Routes.dashboard);
+    return;
+  }
   if (!context.mounted) return;
   final result3 = await showActionDialog(
     context,

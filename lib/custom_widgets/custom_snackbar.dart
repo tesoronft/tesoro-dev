@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:tesoro_nft_app/consts/app_colors.dart';
 import 'package:tesoro_nft_app/consts/app_text_styles.dart';
 import 'package:tesoro_nft_app/enums/snack_bar_enums.dart';
-import 'package:tesoro_nft_app/routes/routes.dart';
 
 class CustomSnackbar {
   void showSnackbar(

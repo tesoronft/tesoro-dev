@@ -13,6 +13,7 @@ class CustomScaffold extends StatelessWidget {
       this.backgroundColor,
       this.isAppbarRequired = false,
       this.appBarTitle,
+      this.resizeToBottomAllowed,
       this.appBarTitleColor});
   final Widget child;
   final PreferredSizeWidget? appBar;
@@ -21,11 +22,11 @@ class CustomScaffold extends StatelessWidget {
   bool isAppbarRequired = false;
   final Color? backgroundColor, appBarTitleColor;
   final String? appBarTitle;
-
+  final bool? resizeToBottomAllowed;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: resizeToBottomAllowed ?? false,
       backgroundColor: backgroundColor ?? AppColors.primary,
       extendBody: extendBody ?? true,
       appBar: isAppbarRequired == false

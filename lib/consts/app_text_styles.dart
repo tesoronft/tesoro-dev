@@ -29,7 +29,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w400,
     color: AppColors.dark,
   );
-  static TextStyle labelMedium = GoogleFonts.raleway(
+  static TextStyle labelMedium = GoogleFonts.poppins(
     fontSize: 12,
     fontWeight: FontWeight.w400,
     color: AppColors.dark,
