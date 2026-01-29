@@ -1,44 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:tesoro_nft_app/consts/app_colors.dart';
+import 'package:tesoro_nft_app/consts/app_images.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_btn.dart';
-import 'package:tesoro_nft_app/custom_widgets/custom_scaffold.dart';
+import 'package:tesoro_nft_app/custom_widgets/custom_snackbar.dart';
+import 'package:tesoro_nft_app/enums/snack_bar_enums.dart';
+import 'package:tesoro_nft_app/routes/routes.dart';
 import 'package:tesoro_nft_app/utils/internet_checker.dart';
 
 class OfflineView extends StatelessWidget {
-  const OfflineView({super.key});
-
+  const OfflineView({super.key, this.btn1Tap});
+  final Function()? btn1Tap;
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      onPopInvoked: (didPop) => false,
-      child: CustomScaffold(
-          backgroundColor: AppColors.light,
-          child: SafeArea(
-              minimum: EdgeInsets.all(8),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Center(
-                      child: Text(
-                    'You are offline. Please check your internet connection.',
-                    style: TextStyle(fontSize: 18),
-                    textAlign: TextAlign.center,
-                  )),
-                  Consumer<InternetChecker>(
-                    builder: (context, internet, child) => CustomBtn(
-                      text: 'Refresh',
-                      onBtnTap: () async {
-                        // final isConnected = await internet.initConnectivity();
-                        // if (isConnected) {
-                        //   Navigator.of(context).pop();
-                        // }
-                      },
-                    ),
-                  )
-                ],
-              ))),
-    );
+    return SafeArea(
+        minimum: EdgeInsets.all(8),
+        child: Column(
+          spacing: 10,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image.asset(AppImages.offline, height: 250),
+            Text(
+              'You are offline. Please check your internet connection.',
+              style: TextStyle(fontSize: 18),
+              textAlign: TextAlign.center,
+            ),
+            Consumer<InternetChecker>(
+              builder: (context, internet, child) => CustomBtn(
+                text: 'Refresh',
+                onBtnTap: () async {
+                  final isConnected = await internet.checkConnection();
+                  if (isConnected) {
+                    btn1Tap?.call() ?? context.go(Routes.splash);
+                  } else {
+                    CustomSnackbar().showSnackbar(
+                        SnackBarEnums.failed,
+                        'Connection is still offline. Please check your network.',
+                        context);
+                  }
+                },
+              ),
+            )
+          ],
+        ));
   }
 }

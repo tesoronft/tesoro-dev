@@ -13,6 +13,7 @@ import 'package:tesoro_nft_app/custom_widgets/treasures/posted_by_card.dart';
 import 'package:tesoro_nft_app/models/treasures/treasure_get_model.dart';
 import 'package:tesoro_nft_app/providers/preferences_provider.dart';
 import 'package:tesoro_nft_app/routes/routes.dart';
+import 'package:tesoro_nft_app/services/analytics_service.dart';
 import 'package:tesoro_nft_app/utils/covert_time_to_minutes.dart';
 
 class TreasureDetailsView extends StatelessWidget {
@@ -95,8 +96,17 @@ class TreasureDetailsView extends StatelessWidget {
                             Icons.arrow_forward,
                             color: AppColors.light,
                           ),
-                          onBtnTap: () => context.push(Routes.navigationView,
-                              extra: treasureGetModel)),
+                          onBtnTap: () {
+                            AnalyticsService.logEvent('hunt_treasure_clicked',
+                                parameters: {
+                                  'treasure_id':
+                                      treasureGetModel.productId ?? '',
+                                  'treasure_title':
+                                      treasureGetModel.title ?? '',
+                                });
+                            context.push(Routes.navigationView,
+                                extra: treasureGetModel);
+                          }),
                     const Divider(),
                     if (treasureGetModel.description != '')
                       Text(

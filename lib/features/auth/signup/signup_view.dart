@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tesoro_nft_app/consts/app_colors.dart';
 import 'package:tesoro_nft_app/consts/app_images.dart';
@@ -10,6 +11,12 @@ import 'package:tesoro_nft_app/custom_widgets/custom_scaffold.dart';
 import 'package:tesoro_nft_app/providers/api_provider.dart';
 
 import '../../../consts/app_text_styles.dart';
+import '../../../controllers/platforms_signin_controller.dart';
+import '../../../custom_widgets/custom_snackbar.dart';
+import '../../../enums/api_enums.dart';
+import '../../../enums/snack_bar_enums.dart';
+import '../../../providers/preferences_provider.dart';
+import '../../../routes/routes.dart';
 
 class SignupView extends StatelessWidget {
   const SignupView({super.key});
@@ -31,13 +38,37 @@ class SignupView extends StatelessWidget {
                 spacing: 20,
                 children: [
                   AuthCard(issSignin: false, onBtnTap: () async {}),
-                  CustomBtn(
-                    text: AppStrings.continueWithGoogle,
-                    textStyle: AppTextStyles.bodyMedium
-                        .copyWith(color: AppColors.dark),
-                    onBtnTap: () {},
-                    btnColor: AppColors.light,
-                    leadingIcon: SvgPicture.asset(AppImages.google),
+                  Consumer2<ApiProvider, PreferencesProvider>(
+                    builder: (context, apiProvider, prefs, child) => CustomBtn(
+                      text: AppStrings.continueWithGoogle,
+                      textStyle: AppTextStyles.bodyMedium
+                          .copyWith(color: AppColors.dark),
+                      onBtnTap: () async {
+                        final result =
+                            await PlatformsSigninController.signinWithGoogle();
+                        if (result != null) {
+                          final response =
+                              await apiProvider.googleSignin(result);
+                          if (!apiProvider.isLoading &&
+                              response == ApiEnums.success) {
+                            CustomSnackbar().showSnackbar(SnackBarEnums.success,
+                                apiProvider.responseTxt, context);
+                            await prefs.setUserId(
+                                apiProvider.authModel?.user?.userId ?? '');
+                            await prefs.setAccessToken(
+                                apiProvider.authModel?.accessToken ?? '');
+                            await prefs.setRefreshToken(
+                                apiProvider.authModel?.refreshToken ?? '');
+                            context.go(Routes.dashboard);
+                          } else {
+                            CustomSnackbar().showSnackbar(SnackBarEnums.failed,
+                                apiProvider.responseTxt, context);
+                          }
+                        }
+                      },
+                      btnColor: AppColors.light,
+                      leadingIcon: SvgPicture.asset(AppImages.google),
+                    ),
                   ),
                 ],
               ),

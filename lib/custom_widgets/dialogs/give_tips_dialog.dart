@@ -95,6 +95,7 @@ class GiveTipsDialog extends StatelessWidget {
         CustomTextField(
             hintText: AppStrings.enterCustomAmount,
             keyboardType: TextInputType.number,
+            helperTxt: 'Amount should not be more than \$100',
             editingController: amount),
         SizedBox(
           height: 10,
@@ -108,7 +109,8 @@ class GiveTipsDialog extends StatelessWidget {
               : CustomBtn(
                   text: 'Next',
                   onBtnTap: () async {
-                    if (amount.text.isEmpty) {
+                    if (amount.text.isEmpty ||
+                        double.parse(amount.text) > 100) {
                       return;
                     }
                     final result = await apis.createTips(

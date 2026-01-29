@@ -18,9 +18,12 @@ import '../../consts/app_colors.dart';
 
 class NavigationCompletedDialog extends StatelessWidget {
   NavigationCompletedDialog(
-      {super.key, required this.treasureId, required this.userId});
+      {super.key,
+      required this.treasureId,
+      required this.userId,
+      required this.name});
   final ValueNotifier<int> rating = ValueNotifier<int>(3);
-  final String userId, treasureId;
+  final String userId, treasureId, name;
   final List<String> ratingsText = [
     'Alright',
     'Good',
@@ -56,7 +59,7 @@ class NavigationCompletedDialog extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  AppStrings.pleaseRateStevenTreasure,
+                  'Please rate ${name} treasure',
                   textAlign: TextAlign.center,
                   style: AppTextStyles.bodyMedium
                       .copyWith(fontWeight: FontWeight.bold),

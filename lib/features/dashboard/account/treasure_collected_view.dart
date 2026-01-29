@@ -5,8 +5,10 @@ import 'package:tesoro_nft_app/consts/app_strings.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_scaffold.dart';
 import 'package:tesoro_nft_app/custom_widgets/treasure_collected_card.dart';
 import 'package:tesoro_nft_app/custom_widgets/treasures/empty_view.dart';
+import 'package:tesoro_nft_app/features/others/offline_view.dart';
 import 'package:tesoro_nft_app/providers/api_provider.dart';
 import 'package:tesoro_nft_app/providers/preferences_provider.dart';
+import 'package:tesoro_nft_app/utils/internet_checker.dart';
 
 import '../../../custom_widgets/permission_enable_component.dart';
 import '../../../custom_widgets/shimmer_effect.dart';
@@ -36,59 +38,64 @@ class _TreasureCollectedViewState extends State<TreasureCollectedView> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<ApiProvider, AppPermissions>(
-      builder: (context, apis, permissions, child) => CustomScaffold(
+    return Consumer3<ApiProvider, AppPermissions, InternetChecker>(
+      builder: (context, apis, permissions, internet, child) => CustomScaffold(
         isAppbarRequired: true,
         appBarTitle: AppStrings.treasureCollected,
         backgroundColor: AppColors.light,
-        child: SafeArea(
-          minimum: EdgeInsets.all(10),
-          child: apis.isLoading
-              ? ShimmerEffect()
-              : apis.allCollectedTreasure?.listOfPostedTreasures?.isEmpty ??
-                      true
-                  ? EmptyView()
-                  : Stack(
-                      children: [
-                        Column(
-                          children: [
-                            Expanded(
-                              child: ListView.builder(
-                                itemCount: apis.allCollectedTreasure
-                                    ?.listOfPostedTreasures?.length,
-                                itemBuilder: (context, index) {
-                                  final thisCollection = apis
-                                      .allCollectedTreasure
-                                      ?.listOfPostedTreasures?[index];
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 10),
-                                    child: TreasureCollectedCard(
-                                      date:
-                                          thisCollection?.collectedAt ?? 'N/A',
-                                      imageUrl: thisCollection?.photos?.first,
-                                      itemName: thisCollection?.title ?? 'N/A',
-                                      location: thisCollection
-                                              ?.locationModel?.address ??
-                                          'N/A',
-                                      personName:
-                                          thisCollection?.postedBy?.userName ??
-                                              'N/A',
+        child: !internet.isConnected
+            ? OfflineView()
+            : SafeArea(
+                minimum: EdgeInsets.all(10),
+                child: apis.isLoading
+                    ? ShimmerEffect()
+                    : apis.allCollectedTreasure?.listOfPostedTreasures
+                                ?.isEmpty ??
+                            true
+                        ? EmptyView()
+                        : Stack(
+                            children: [
+                              Column(
+                                children: [
+                                  Expanded(
+                                    child: ListView.builder(
+                                      itemCount: apis.allCollectedTreasure
+                                          ?.listOfPostedTreasures?.length,
+                                      itemBuilder: (context, index) {
+                                        final thisCollection = apis
+                                            .allCollectedTreasure
+                                            ?.listOfPostedTreasures?[index];
+                                        return Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 10),
+                                          child: TreasureCollectedCard(
+                                            date: thisCollection?.collectedAt ??
+                                                'N/A',
+                                            imageUrl:
+                                                thisCollection?.photos?.first,
+                                            itemName:
+                                                thisCollection?.title ?? 'N/A',
+                                            location: thisCollection
+                                                    ?.locationModel?.address ??
+                                                'N/A',
+                                            personName: thisCollection
+                                                    ?.postedBy?.userName ??
+                                                'N/A',
+                                          ),
+                                        );
+                                      },
                                     ),
-                                  );
-                                },
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
-                        !permissions.isLocationAllowed
-                            ? Align(
-                                alignment: Alignment.bottomCenter,
-                                child: PermissionEnableComponent())
-                            : SizedBox.shrink(),
-                      ],
-                    ),
-        ),
+                              !permissions.isLocationAllowed
+                                  ? Align(
+                                      alignment: Alignment.bottomCenter,
+                                      child: PermissionEnableComponent())
+                                  : SizedBox.shrink(),
+                            ],
+                          ),
+              ),
       ),
     );
   }

@@ -3,18 +3,20 @@ import 'package:tesoro_nft_app/consts/app_colors.dart';
 import 'package:tesoro_nft_app/consts/app_text_styles.dart';
 
 class CustomTextField extends StatefulWidget {
-  CustomTextField(
-      {super.key,
-      required this.hintText,
-      this.isPassword = false,
-      this.fillColors,
-      required this.keyboardType,
-      this.maxLength,
-      required this.editingController});
+  CustomTextField({
+    super.key,
+    required this.hintText,
+    this.isPassword = false,
+    this.fillColors,
+    required this.keyboardType,
+    this.maxLength,
+    required this.editingController,
+    this.helperTxt,
+  });
   final String hintText;
   final bool isPassword;
   bool isVissible = false;
-  //final VoidCallback? onVisibilityTap;
+  final String? helperTxt;
   final TextInputType keyboardType;
   final TextEditingController editingController;
   Color? fillColors;
@@ -44,6 +46,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       keyboardType: widget.keyboardType,
       decoration: InputDecoration(
         fillColor: widget.fillColors ?? AppColors.light,
+        helperText: widget.helperTxt,
         filled: true,
         enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(10)),

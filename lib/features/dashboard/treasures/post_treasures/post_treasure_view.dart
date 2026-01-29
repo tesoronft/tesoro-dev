@@ -23,6 +23,7 @@ import 'package:tesoro_nft_app/routes/routes.dart';
 
 import '../../../../providers/api_provider.dart';
 import '../../../../providers/preferences_provider.dart';
+import '../../../../services/analytics_service.dart';
 import '../../../../utils/app_permissions.dart';
 
 class PostTreasureView extends StatefulWidget {
@@ -163,12 +164,16 @@ class _PostTreasureViewState extends State<PostTreasureView>
                           ),
                         Expanded(
                           child: GoToCamera(onWidgetTap: () async {
+                            await AnalyticsService.logEvent(
+                                'treasure_properties_dialog');
                             final result = await showDialog(
                               barrierDismissible: false,
                               context: context,
                               builder: (context) => TreasureProperties(),
                             );
                             if (result == true) {
+                              await AnalyticsService.logEvent(
+                                  'go_to_camera_view');
                               context.push(Routes.cameraView);
                             }
                           }),

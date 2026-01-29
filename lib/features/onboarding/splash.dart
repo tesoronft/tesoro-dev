@@ -9,6 +9,7 @@ import 'package:tesoro_nft_app/consts/app_text_styles.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_scaffold.dart';
 import 'package:tesoro_nft_app/providers/preferences_provider.dart';
 import 'package:tesoro_nft_app/routes/splash_navigation.dart';
+import 'package:tesoro_nft_app/services/analytics_service.dart';
 
 import '../../providers/api_provider.dart';
 
@@ -25,7 +26,9 @@ class _SplashViewState extends State<SplashView> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await AnalyticsService.analytics.logAppOpen();
       final prefs = Provider.of<PreferencesProvider>(context, listen: false);
+
       final apis = Provider.of<ApiProvider>(context, listen: false);
       if (!await GoogleMapsNavigator.areTermsAccepted()) {
         GoogleMapsNavigator.showTermsAndConditionsDialog(
@@ -33,8 +36,12 @@ class _SplashViewState extends State<SplashView> {
       }
       Future.delayed(
           Duration(seconds: 2),
-          () async => await SplashNavigation().appNavigation(context,
-              prefs.accessToken ?? '', prefs.refreshToken ?? '', apis));
+          () async => await SplashNavigation().appNavigation(
+                context,
+                prefs.accessToken ?? '',
+                prefs.refreshToken ?? '',
+                apis,
+              ));
     });
   }
 

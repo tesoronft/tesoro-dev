@@ -115,7 +115,7 @@ class AppStrings {
   static const String myTreasures = 'My Treasures';
   static const String available = 'Available';
   static const String unavailable = 'Unavailable';
-  static const String myTreasureDetails = 'My Treasure Details';
+  static const String myTreasureDetails = 'Treasure Details';
   static const String distance = 'Distance';
 
   //Paywall screen

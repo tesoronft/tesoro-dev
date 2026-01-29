@@ -15,6 +15,12 @@ class InternetChecker extends ChangeNotifier {
     _checker = InternetConnectionChecker.createInstance();
     _init();
   }
+  Future<bool> checkConnection() async {
+    _isConnected = await _checker.hasConnection;
+    log('Manual check - Internet connected: $_isConnected');
+    notifyListeners();
+    return _isConnected;
+  }
 
   Future<void> _init() async {
     _isConnected = await _checker.hasConnection;

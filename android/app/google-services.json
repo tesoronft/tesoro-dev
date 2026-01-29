@@ -12,7 +12,20 @@
           "package_name": "com.tesoro.nft.application"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "498406490238-lq4091i1mv5p8t0a1ade1pgk03h0j859.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tesoro.nft.application",
+            "certificate_hash": "c5c45509a1359a76ecffacb00bfe20c3930b7387"
+          }
+        },
+        {
+          "client_id": "498406490238-ooucift9ll6q12iehoi89relpgnskuo4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyA6-FktFq7PoqThhr0BsXvX4wsuT7Ceb8c"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "498406490238-ooucift9ll6q12iehoi89relpgnskuo4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "498406490238-58psv9r98c8aa2ru1ef0fm7gsi0gu73l.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.tesoro.nft.application"
+              }
+            }
+          ]
         }
       }
     }

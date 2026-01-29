@@ -36,31 +36,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final geoLocation = Provider.of<AppPermissions>(context, listen: false);
-      final markers = Provider.of<ApiProvider>(context, listen: false);
-      final prefs = Provider.of<PreferencesProvider>(context, listen: false);
-      if (markers.userProfile == null) {
-        await markers.getUserData(prefs.accessToken ?? '');
-      }
-      // final isGranted = geoLocation.isLocationAllowed;
-
-      // if (!isGranted) {
-      //   log("Permission denied → waiting for user");
-      //   return;
-      // }
-      final lat = await geoLocation.getCurrentPosition();
-      log(lat?.latitude.toString() ?? '');
-      log(lat?.longitude.toString() ?? '');
-      await geoLocation.getCurrentPlacemark();
-
-      await markers.getMarkers(
-          context.read<PreferencesProvider>().accessToken ?? '',
-          1,
-          lat?.longitude ?? 0.0,
-          lat?.latitude ?? 0.0,
-          10);
-    });
+    WidgetsBinding.instance.addPostFrameCallback((_) async {});
   }
 
   @override
@@ -174,6 +150,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                       //  initialMapType: MapType.hybrid,
                       initialMinZoomPreference: 2.0,
                       initialMaxZoomPreference: 21.0,
+
                       onMarkerClicked: (markerId) async {
                         log(markerId);
 
@@ -205,41 +182,65 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                       },
                       onMyLocationButtonClicked: (events) => false,
                       onViewCreated: (controller) async {
-                        Future.delayed(Duration(seconds: 6), () async {
+                        try {
+                          await permissions.getCurrentPosition();
+
+                          await Future.wait([
+                            api.getMarkers(
+                              prefs.accessToken ?? '',
+                              1,
+                              permissions.position?.longitude ?? 0.0,
+                              permissions.position?.latitude ?? 0.0,
+                              10,
+                            ),
+                            rootBundle.load(AppImages.mark),
+                          ]);
+
                           _controller = controller;
                           await _controller?.setMyLocationEnabled(true);
+
                           final customMarker = await registerBitmapImage(
-                              bitmap: await rootBundle.load(AppImages.mark),
-                              height: 30,
-                              width: 30);
+                            bitmap: await rootBundle.load(AppImages.mark),
+                            height: 30,
+                            width: 30,
+                          );
+
                           allmarkers.value = await _controller?.addMarkers(
-                              List.generate(
-                                  api.allMarkers?.markersModel?.length ?? 0,
-                                  (index) => MarkerOptions(
-                                      icon: ImageDescriptor(
-                                          registeredImageId:
-                                              customMarker.registeredImageId,
-                                          imagePixelRatio: 46,
-                                          width: 30,
-                                          height: 30),
-                                      position: LatLng(
-                                        latitude: api
-                                                .allMarkers
-                                                ?.markersModel?[index]
-                                                .coordinated?[1] ??
-                                            31.5357,
-                                        longitude: api
-                                                .allMarkers
-                                                ?.markersModel?[index]
-                                                .coordinated?[0] ??
-                                            74.2985,
-                                      ))));
-                          await _controller
-                              ?.moveCamera(CameraUpdate.newLatLng(LatLng(
-                            longitude: permissions.position?.longitude ?? 0.0,
-                            latitude: permissions.position?.latitude ?? 0.0,
-                          )));
-                        });
+                            List.generate(
+                              api.allMarkers?.markersModel?.length ?? 0,
+                              (index) => MarkerOptions(
+                                icon: ImageDescriptor(
+                                  registeredImageId:
+                                      customMarker.registeredImageId,
+                                  imagePixelRatio: 46,
+                                  width: 30,
+                                  height: 30,
+                                ),
+                                position: LatLng(
+                                  latitude: api.allMarkers?.markersModel?[index]
+                                          .coordinated?[1] ??
+                                      31.5357,
+                                  longitude: api
+                                          .allMarkers
+                                          ?.markersModel?[index]
+                                          .coordinated?[0] ??
+                                      74.2985,
+                                ),
+                              ),
+                            ),
+                          );
+
+                          await _controller?.moveCamera(CameraUpdate.newLatLng(
+                            LatLng(
+                              longitude: permissions.position?.longitude ?? 0.0,
+                              latitude: permissions.position?.latitude ?? 0.0,
+                            ),
+                          ));
+                        } catch (e) {
+                          debugPrint("Error initializing map: $e");
+                          CustomSnackbar().showSnackbar(
+                              SnackBarEnums.failed, e.toString(), context);
+                        }
                       },
                     ),
                   );

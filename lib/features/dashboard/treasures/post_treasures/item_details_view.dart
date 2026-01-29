@@ -12,6 +12,7 @@ import 'package:tesoro_nft_app/custom_widgets/custom_text_field.dart';
 import 'package:tesoro_nft_app/models/treasures/treasure_post_model.dart';
 import 'package:tesoro_nft_app/providers/api_provider.dart';
 import 'package:tesoro_nft_app/routes/routes.dart';
+import 'package:tesoro_nft_app/services/analytics_service.dart';
 
 class ItemDetailsView extends StatefulWidget {
   const ItemDetailsView({super.key, required this.treasurePostModel});
@@ -26,10 +27,7 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      // final apis = Provider.of<ApiProvider>(context, listen: false);
-      // final prefs = Provider.of<PreferencesProvider>(context, listen: false);
-      // await apis.getCategories(prefs.accessToken ?? '');
-      // await apis.getConditions(prefs.accessToken ?? '');
+      await AnalyticsService.logEvent('item_details_view');
     });
   }
 
@@ -205,7 +203,7 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
               Consumer<ApiProvider>(
                 builder: (context, apis, child) => CustomBtn(
                   text: AppStrings.next,
-                  onBtnTap: () {
+                  onBtnTap: () async {
                     widget.treasurePostModel.categoryId = apis
                         .categoryModelList?.categoryModel
                         ?.firstWhere(
@@ -228,6 +226,7 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                     widget.treasurePostModel.category = categoryId.value;
                     widget.treasurePostModel.price =
                         int.parse(_postTreasureController.price.text);
+                    await AnalyticsService.logEvent('confirm_details_view');
                     context.push(Routes.confirmDetails,
                         extra: widget.treasurePostModel);
                   },

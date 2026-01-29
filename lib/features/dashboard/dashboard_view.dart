@@ -6,6 +6,7 @@ import 'package:tesoro_nft_app/consts/app_colors.dart';
 import 'package:tesoro_nft_app/data/dashboard/dashboard_data.dart';
 import 'package:tesoro_nft_app/providers/dashboard_provider.dart';
 import 'package:tesoro_nft_app/routes/routes.dart';
+import 'package:tesoro_nft_app/services/analytics_service.dart';
 
 class DashboardView extends StatelessWidget {
   const DashboardView({super.key});
@@ -18,7 +19,8 @@ class DashboardView extends StatelessWidget {
         child: Scaffold(
           body: DashboardData.dashboardScreens[dashboardValue.currentIndex],
           floatingActionButton: FloatingActionButton(
-            onPressed: () {
+            onPressed: () async {
+              await AnalyticsService.logEvent('post_treasure_view');
               context.push(Routes.postTreasure);
             },
             backgroundColor: AppColors.primary,
@@ -42,7 +44,10 @@ class DashboardView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 InkWell(
-                    onTap: () => dashboardValue.updateIndex(0),
+                    onTap: () async {
+                      await AnalyticsService.logEvent('home_view');
+                      dashboardValue.updateIndex(0);
+                    },
                     child: SvgPicture.asset(
                       DashboardData.dashboardIcons[0],
                       color: dashboardValue.currentIndex == 0
@@ -50,7 +55,10 @@ class DashboardView extends StatelessWidget {
                           : AppColors.dark,
                     )),
                 InkWell(
-                    onTap: () => dashboardValue.updateIndex(1),
+                    onTap: () async {
+                      await AnalyticsService.logEvent('all_treasures_view');
+                      dashboardValue.updateIndex(1);
+                    },
                     child: SvgPicture.asset(
                       DashboardData.dashboardIcons[1],
                       color: dashboardValue.currentIndex == 1
@@ -58,7 +66,10 @@ class DashboardView extends StatelessWidget {
                           : AppColors.dark,
                     )),
                 InkWell(
-                    onTap: () => dashboardValue.updateIndex(2),
+                    onTap: () async {
+                      await AnalyticsService.logEvent('user_account_view');
+                      dashboardValue.updateIndex(2);
+                    },
                     child: SvgPicture.asset(
                       DashboardData.dashboardIcons[2],
                       color: dashboardValue.currentIndex == 2
@@ -66,7 +77,10 @@ class DashboardView extends StatelessWidget {
                           : AppColors.dark,
                     )),
                 InkWell(
-                    onTap: () => dashboardValue.updateIndex(3),
+                    onTap: () async {
+                      await AnalyticsService.logEvent('settings_view');
+                      dashboardValue.updateIndex(3);
+                    },
                     child: SvgPicture.asset(
                       DashboardData.dashboardIcons[3],
                       color: dashboardValue.currentIndex == 3

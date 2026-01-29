@@ -20,6 +20,8 @@ import 'package:tesoro_nft_app/providers/api_provider.dart';
 import 'package:tesoro_nft_app/providers/preferences_provider.dart';
 import 'package:tesoro_nft_app/routes/routes.dart';
 
+import '../../../../services/analytics_service.dart';
+
 class ConfirmDetailsView extends StatelessWidget {
   const ConfirmDetailsView({super.key, required this.treasurePostModel});
   final TreasurePostModel treasurePostModel;
@@ -173,6 +175,8 @@ class ConfirmDetailsView extends StatelessWidget {
                                   if (result == ApiEnums.success) {
                                     await apis
                                         .getUserData(prefs.accessToken ?? '');
+                                    await AnalyticsService.logEvent(
+                                        'item_posted_successfully');
                                     showDialog(
                                       context: buildContext,
                                       barrierDismissible: false,
@@ -189,6 +193,8 @@ class ConfirmDetailsView extends StatelessWidget {
                                               .itemPostedSuccessfully),
                                     );
                                   } else {
+                                    await AnalyticsService.logEvent(
+                                        'item_posting_failed');
                                     CustomSnackbar().showSnackbar(
                                       SnackBarEnums.failed,
                                       apis.responseTxt,

@@ -79,10 +79,11 @@ class JustActionsDialogs extends StatelessWidget {
             width: btn2Txt == null ? double.infinity : 100,
             text: btn1Txt!,
             btnColor: AppColors.dialogBtn,
-            onBtnTap: () {
-              Navigator.of(context).pop(DialogEnums.treasureTaken);
-              // btn1Tap?.call();
-            },
+            onBtnTap: btn1Tap ??
+                () {
+                  Navigator.of(context).pop(DialogEnums.treasureTaken);
+                  // btn1Tap?.call();
+                },
           ),
         if (btn2Txt != null)
           CustomBtn(
@@ -105,7 +106,7 @@ Future<DialogEnums?> showActionDialog(
   String? subtitle,
   required String lottie,
   required String btn1,
-  VoidCallback? btn1Tap,
+  Function()? btn1Tap,
   String? btn2,
 }) {
   return showDialog<DialogEnums>(
@@ -117,8 +118,8 @@ Future<DialogEnums?> showActionDialog(
       lottieImage: lottie,
       btn1Txt: btn1,
       btn2Txt: btn2,
-      btn1Tap:
-          btn1Tap ?? () => Navigator.pop(context, DialogEnums.treasureTaken),
+      btn1Tap: () =>
+          btn1Tap?.call() ?? Navigator.pop(context, DialogEnums.treasureTaken),
       btn2Tap: btn2 == null
           ? null
           : () => Navigator.pop(context, DialogEnums.treasureNotTaken),
@@ -130,8 +131,16 @@ Future<void> showAllDialogs(
     BuildContext context, String senderId, TreasureGetModel treasure) async {
   final startResult = await showDialog(
     context: context,
-    builder: (context) => TreasurePreview(treasure: treasure),
+    builder: (context) => TreasurePreview(
+      treasure: treasure,
+      isConfirmation: true,
+    ),
   );
+  if (!context.mounted) return;
+  if (startResult == DialogEnums.treasureNotTaken) {
+    context.go(Routes.dashboard);
+    return;
+  }
   final firstResult = await showActionDialog(
     context,
     title: AppStrings.didYouTakeTheItem,
@@ -139,9 +148,11 @@ Future<void> showAllDialogs(
     btn1: AppStrings.yes,
     btn2: AppStrings.no,
     btn1Tap: () async {
+      CustomSnackbar().showSnackbar(
+          SnackBarEnums.processing, 'Collecting treasure...', context);
       final result = await context.read<ApiProvider>().collectTreasure(
           context.read<PreferencesProvider>().accessToken ?? '',
-          treasure.userId ?? '',
+          treasure.postedBy?.id ?? treasure.userId ?? '',
           treasure.productId ?? '');
       if (result == ApiEnums.success) {
         CustomSnackbar().showSnackbar(SnackBarEnums.success,
@@ -175,7 +186,7 @@ Future<void> showAllDialogs(
     lottie: AppImages.money,
     btn1: AppStrings.yes,
     btn2: AppStrings.no,
-    title: AppStrings.wouldYouLikeToTip,
+    title: 'Would you like to give a tip ${treasure.postedBy?.name ?? ''}',
   );
   if (!context.mounted) return;
   if (result3 == DialogEnums.treasureNotTaken) {
@@ -187,7 +198,7 @@ Future<void> showAllDialogs(
     context: context,
     barrierDismissible: false,
     builder: (context) => GiveTipsDialog(
-      receiverId: treasure.userId ?? '',
+      receiverId: treasure.postedBy?.id ?? treasure.userId ?? '',
       senderId: senderId,
       treasureId: treasure.productId ?? '',
     ),
@@ -214,10 +225,13 @@ Future<void> showAllDialogs(
     barrierDismissible: false,
     context: context,
     builder: (context) => NavigationCompletedDialog(
-        treasureId: treasure.productId ?? '', userId: senderId),
+      treasureId: treasure.productId ?? '',
+      userId: senderId,
+      name: treasure.postedBy?.name ?? "",
+    ),
   );
   if (!context.mounted) return;
-  if (result6 == DialogEnums.treasureNotTaken) {
+  if (result6 == DialogEnums.treasureTaken) {
     context.go(Routes.dashboard);
     return;
   }

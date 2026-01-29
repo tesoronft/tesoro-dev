@@ -29,7 +29,7 @@ class ReceivedTipsModel {
     return ReceivedTipsModel(
         amount: jsonData['amount'],
         createdAt: jsonData['createdAt'],
-        receiverData: ReceiverData.fromJson(jsonData['receivedUser']),
-        treasureData: TreasureData.fromJson(jsonData['treasure']));
+        receiverData: ReceiverData.fromJson(jsonData['receivedUser'] ?? {}),
+        treasureData: TreasureData.fromJson(jsonData['treasure'] ?? {}));
   }
 }

@@ -13,6 +13,8 @@ import 'package:tesoro_nft_app/providers/preferences_provider.dart';
 import 'package:tesoro_nft_app/utils/app_permissions.dart';
 import 'package:tesoro_nft_app/utils/device_image_picker.dart';
 
+import '../../../services/analytics_service.dart';
+
 class CameraView extends StatefulWidget {
   const CameraView({super.key});
 
@@ -82,12 +84,15 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
                 children: [
                   PopupButton(
                     onTap: () async {
+                      await AnalyticsService.logEvent('camera_closed');
                       await camera.disposeCamera();
                       context.pop();
                     },
                   ),
                   CameraComponents(
                     onGalleryTap: () async {
+                      await AnalyticsService.logEvent(
+                          'user_picked_image_from_gallery');
                       final result = await DeviceImagePicker().pickImage();
                       camera.setImages(
                         result?.map((path) => path.path).toList() ?? [],
@@ -96,11 +101,14 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
                       context.pop();
                     },
                     onCameraClickTap: () async {
+                      await AnalyticsService.logEvent(
+                          'user_clicked_image_from_camera');
                       await camera.clickImage();
                       await camera.disposeCamera();
                       context.pop();
                     },
                     onFlashTap: () async {
+                      await AnalyticsService.logEvent('user_toggled_flash');
                       camera.toggleFlash();
                     },
                   ),

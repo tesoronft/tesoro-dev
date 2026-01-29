@@ -82,6 +82,38 @@ class ApiProvider with ChangeNotifier {
     }
   }
 
+  Future<ApiEnums> googleSignin(String token) async {
+    log('Google Sign-In Token: $token');
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final response = await https
+          .post(Uri.parse('$baseUrl/auth/google'), body: {"token": token});
+      if (response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        log(response.body);
+        _authModel = AuthModel.fromJson(json['data']);
+        _responseTxt = json['message'];
+        _isLoading = false;
+        notifyListeners();
+        return ApiEnums.success;
+      } else {
+        log(response.body);
+        final json = jsonDecode(response.body);
+        _responseTxt = json['details']['message'];
+        _isLoading = false;
+        notifyListeners();
+        return ApiEnums.failed;
+      }
+    } catch (e) {
+      log(e.toString());
+      _isLoading = false;
+      _responseTxt = e.toString();
+      notifyListeners();
+      return ApiEnums.failed;
+    }
+  }
+
   Future<ApiEnums> signInUser(String email, String password) async {
     _isLoading = true;
     notifyListeners();
@@ -418,7 +450,7 @@ class ApiProvider with ChangeNotifier {
         notifyListeners();
         return ApiEnums.failed;
       }
-    } on HttpResponseError catch (e) {
+    } catch (e) {
       log(e.toString());
       _responseTxt = e.toString();
       _isLoading = false;
@@ -513,7 +545,7 @@ class ApiProvider with ChangeNotifier {
         notifyListeners();
         return response.reasonPhrase ?? response.statusCode.toString();
       }
-    } on HttpResponseError catch (e) {
+    } catch (e) {
       log(e.toString());
       _isLoading = false;
       notifyListeners();
@@ -822,7 +854,7 @@ class ApiProvider with ChangeNotifier {
         notifyListeners();
         return ApiEnums.failed;
       }
-    } catch (e) {
+    } on HttpResponseError catch (e) {
       log(e.toString());
       _isLoading = false;
       notifyListeners();
@@ -927,7 +959,7 @@ class ApiProvider with ChangeNotifier {
         notifyListeners();
         return ApiEnums.failed;
       }
-    } on HttpResponseError catch (e) {
+    } catch (e) {
       log(e.toString());
       _isLoading = false;
       notifyListeners();

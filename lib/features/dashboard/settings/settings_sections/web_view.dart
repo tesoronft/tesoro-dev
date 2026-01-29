@@ -56,9 +56,6 @@ class _WebViewState extends State<WebView> {
                   ? Center(
                       child: Image.asset(
                         AppImages.error404,
-                        height: 200,
-                        width: 200,
-                        fit: BoxFit.contain,
                       ),
                     )
                   : WebViewWidget(controller: controller!),

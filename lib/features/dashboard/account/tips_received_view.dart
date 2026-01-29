@@ -9,8 +9,10 @@ import 'package:tesoro_nft_app/custom_widgets/tips_info.dart';
 import 'package:tesoro_nft_app/custom_widgets/treasures/empty_view.dart';
 import 'package:tesoro_nft_app/providers/api_provider.dart';
 import 'package:tesoro_nft_app/routes/routes.dart';
+import 'package:tesoro_nft_app/utils/internet_checker.dart';
 
 import '../../../providers/preferences_provider.dart';
+import '../../others/offline_view.dart';
 
 class TipsReceivedView extends StatefulWidget {
   const TipsReceivedView({super.key});
@@ -36,56 +38,62 @@ class _TipsReceivedViewState extends State<TipsReceivedView> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ApiProvider>(
-      builder: (context, apis, child) => CustomScaffold(
+    return Consumer2<ApiProvider, InternetChecker>(
+      builder: (context, apis, internet, child) => CustomScaffold(
           isAppbarRequired: true,
           appBarTitle: AppStrings.tipsReceived,
           backgroundColor: AppColors.light,
-          child: SafeArea(
-            minimum: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            child: apis.isLoading
-                ? Center(
-                    child: SpinKitCircle(
-                      color: AppColors.primary,
-                    ),
-                  )
-                : apis.receivedTipsModel?.data.isNotEmpty ?? true
-                    ? EmptyView(
-                        title: 'Add more items to receive tips',
-                        onTap: () => context.push(Routes.postTreasure),
-                      )
-                    : Column(
-                        children: [
-                          Expanded(
-                              child: ListView.builder(
-                                  itemCount:
-                                      apis.receivedTipsModel?.data.length,
-                                  itemBuilder: (context, index) {
-                                    final thisTip =
-                                        apis.receivedTipsModel?.data[index];
-                                    return Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 10),
-                                      child: TipsInfo(
-                                          address: thisTip?.treasureData
-                                                  ?.locationModel?.address ??
-                                              'N/A',
-                                          amountTitle:
-                                              AppStrings.amountReceived,
-                                          date: DateTime.tryParse(
-                                                      thisTip?.createdAt ?? '')
-                                                  ?.toLocal()
-                                                  .toString() ??
-                                              'N/A',
-                                          totalAmount: '\$${thisTip?.amount}',
-                                          userName:
-                                              thisTip?.receiverData?.name ??
-                                                  'N/A'),
-                                    );
-                                  }))
-                        ],
-                      ),
-          )),
+          child: !internet.isConnected
+              ? OfflineView()
+              : SafeArea(
+                  minimum: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  child: apis.isLoading
+                      ? Center(
+                          child: SpinKitCircle(
+                            color: AppColors.primary,
+                          ),
+                        )
+                      : apis.receivedTipsModel?.data.isEmpty ?? true
+                          ? EmptyView(
+                              title: 'Add more items to receive tips',
+                              onTap: () => context.push(Routes.postTreasure),
+                            )
+                          : Column(
+                              children: [
+                                Expanded(
+                                    child: ListView.builder(
+                                        itemCount:
+                                            apis.receivedTipsModel?.data.length,
+                                        itemBuilder: (context, index) {
+                                          final thisTip = apis
+                                              .receivedTipsModel?.data[index];
+                                          return Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 10),
+                                            child: TipsInfo(
+                                                address: thisTip
+                                                        ?.treasureData
+                                                        ?.locationModel
+                                                        ?.address ??
+                                                    'N/A',
+                                                amountTitle:
+                                                    AppStrings.amountReceived,
+                                                date: DateTime.tryParse(thisTip
+                                                                ?.createdAt ??
+                                                            '')
+                                                        ?.toLocal()
+                                                        .toString() ??
+                                                    'N/A',
+                                                totalAmount:
+                                                    '\$${thisTip?.amount}',
+                                                userName: thisTip
+                                                        ?.receiverData?.name ??
+                                                    'N/A'),
+                                          );
+                                        }))
+                              ],
+                            ),
+                )),
     );
   }
 }

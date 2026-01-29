@@ -18,6 +18,7 @@ class AppImages {
   static const String diamondChest = 'assets/images/diamondChest.png';
   static const String empty = 'assets/images/empty.jpg';
   static const String error404 = 'assets/images/error404.jpg';
+  static const String offline = 'assets/images/offline.png';
   // Settings
   static const String profile = 'assets/images/profileIcon.svg';
   static const String star = 'assets/images/star.svg';
