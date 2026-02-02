@@ -14,7 +14,7 @@ class PostedByCard extends StatelessWidget {
       required this.name,
       required this.rating});
   final String name, imageUrl;
-  final int rating;
+  final dynamic rating;
   @override
   Widget build(BuildContext context) {
     return Container(

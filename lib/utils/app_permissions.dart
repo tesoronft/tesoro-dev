@@ -4,6 +4,8 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../enums/permission_state_enums.dart';
+
 class AppPermissions with ChangeNotifier {
   Placemark? _placemark;
   Placemark? get placemark => _placemark;
@@ -11,6 +13,8 @@ class AppPermissions with ChangeNotifier {
   Position? get position => _position;
   bool _isCameraPermitted = false;
   bool get isCameraPermitted => _isCameraPermitted;
+  PermissionState permissionState = PermissionState.denied;
+
   bool _isLocationAllowed = false;
   bool get isLocationAllowed => _isLocationAllowed;
   Future<Placemark?> getCurrentPlacemark() async {
@@ -48,6 +52,54 @@ class AppPermissions with ChangeNotifier {
     return _placemark;
   }
 
+  Future<PermissionState> requestLocationPermission() async {
+    final permission = await Geolocator.requestPermission();
+
+    if (permission == LocationPermission.deniedForever) {
+      _isLocationAllowed = false;
+      notifyListeners();
+      return PermissionState.deniedForever;
+    }
+
+    if (permission == LocationPermission.denied) {
+      _isLocationAllowed = false;
+      notifyListeners();
+      return PermissionState.denied;
+    }
+
+    _isLocationAllowed = true;
+    notifyListeners();
+    return PermissionState.granted;
+  }
+
+  Future<void> openLocationSettings() async {
+    await Geolocator.openAppSettings();
+  }
+
+  Future<PermissionState> checkLocationPermission() async {
+    final permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.deniedForever) {
+      _isLocationAllowed = false;
+      permissionState = PermissionState.deniedForever;
+
+      notifyListeners();
+      return PermissionState.deniedForever;
+    }
+
+    if (permission == LocationPermission.denied) {
+      _isLocationAllowed = false;
+      permissionState = PermissionState.denied;
+      notifyListeners();
+      return PermissionState.denied;
+    }
+
+    _isLocationAllowed = true;
+    permissionState = PermissionState.granted;
+    notifyListeners();
+    return PermissionState.granted;
+  }
+
   Future<Position?> getCurrentPosition() async {
     LocationPermission permission;
 
@@ -82,31 +134,24 @@ class AppPermissions with ChangeNotifier {
     return _position;
   }
 
-  Future<bool> getCameraPermission() async {
-    final permission = Permission.camera;
-    await permission.request();
-    if (await permission.isDenied) {
-      await permission.request();
-      if (await permission.isDenied) {
-        await permission.request();
-        if (await permission.isPermanentlyDenied) {
-          _isCameraPermitted = false;
-          notifyListeners();
-          return false;
-        } else {
-          _isCameraPermitted = true;
-          notifyListeners();
-          return true;
-        }
-      } else {
-        _isCameraPermitted = true;
-        notifyListeners();
-        return true;
-      }
-    } else {
+  Future<bool> checkCameraPermission() async {
+    await Permission.camera.request();
+    final status = await Permission.camera.status;
+
+    if (status.isGranted) {
       _isCameraPermitted = true;
       notifyListeners();
       return true;
     }
+
+    if (status.isPermanentlyDenied) {
+      _isCameraPermitted = false;
+      notifyListeners();
+      return false;
+    }
+
+    _isCameraPermitted = false;
+    notifyListeners();
+    return false;
   }
 }

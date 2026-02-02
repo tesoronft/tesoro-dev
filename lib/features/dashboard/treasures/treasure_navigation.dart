@@ -42,18 +42,19 @@ class _TreasureNavigationState extends State<TreasureNavigation> {
               decoration: BoxDecoration(color: Colors.transparent),
               alignment: Alignment.bottomLeft,
               padding: EdgeInsets.only(left: 20),
-              child: SafeArea(
-                  child: IconButton(
-                      onPressed: () async {
-                        log('Button Pressed: Stopping navigation and clearing destinations.');
-                        await GoogleMapsNavigator.stopGuidance();
-                        await GoogleMapsNavigator.clearDestinations();
-                        context.pop();
-                      },
-                      icon: Icon(
-                        Icons.arrow_back,
-                        size: 28,
-                      ))),
+              child: IconButton(
+                  onPressed: () async {
+                    log('Button Pressed: Stopping navigation and clearing destinations.');
+                    await GoogleMapsNavigator.stopGuidance();
+                    await GoogleMapsNavigator.clearDestinations();
+                    context.pop();
+                  },
+                  icon: SafeArea(
+                    child: Icon(
+                      Icons.arrow_back,
+                      size: 28,
+                    ),
+                  )),
             ),
             Expanded(
               child: SafeArea(

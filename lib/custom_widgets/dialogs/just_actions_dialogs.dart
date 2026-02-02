@@ -167,11 +167,12 @@ Future<void> showAllDialogs(
     await showActionDialog(
       context,
       lottie: AppImages.mapDotted,
-      btn1: AppStrings.next,
+      btn1: 'Close',
       title: AppStrings.sorry,
       subtitle: AppStrings.bestOfLuckOnYourAdventure,
     );
-
+    if (!context.mounted) return;
+    context.go(Routes.dashboard);
     return;
   }
   final result2 = await showActionDialog(

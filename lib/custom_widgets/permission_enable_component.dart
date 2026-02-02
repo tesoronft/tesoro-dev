@@ -6,8 +6,10 @@ import '../consts/app_text_styles.dart';
 import 'custom_btn.dart';
 
 class PermissionEnableComponent extends StatelessWidget {
-  const PermissionEnableComponent({super.key, this.txt});
-  final String? txt;
+  const PermissionEnableComponent(
+      {super.key, this.txt, this.buttonText, this.onTap});
+  final String? txt, buttonText;
+  final Function()? onTap;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -27,11 +29,15 @@ class PermissionEnableComponent extends StatelessWidget {
               ),
             ),
             CustomBtn(
-              text: 'Enable',
+              text: buttonText ?? 'Enable',
               btnColor: AppColors.lightPrimary,
               textStyle: AppTextStyles.bodySmall,
               onBtnTap: () async {
-                await openAppSettings();
+                if (onTap != null) {
+                  onTap?.call();
+                } else {
+                  await openAppSettings();
+                }
               },
               width: 100,
             ),

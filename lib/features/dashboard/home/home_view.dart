@@ -50,20 +50,22 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
     if (state != AppLifecycleState.resumed) return;
 
     final geoLocation = Provider.of<AppPermissions>(context, listen: false);
+    log('Checking location permissions on app resume');
+    if (geoLocation.position == null) {
+      final position = await geoLocation.getCurrentPosition();
+      await geoLocation.getCurrentPlacemark();
 
-    final position = await geoLocation.getCurrentPosition();
-    await geoLocation.getCurrentPlacemark();
+      if (!mounted) return;
 
-    if (!mounted) return;
-
-    await _controller?.animateCamera(
-      CameraUpdate.newLatLng(
-        LatLng(
-          latitude: position?.latitude ?? 0.0,
-          longitude: position?.longitude ?? 0.0,
+      await _controller?.animateCamera(
+        CameraUpdate.newLatLng(
+          LatLng(
+            latitude: position?.latitude ?? 0.0,
+            longitude: position?.longitude ?? 0.0,
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 
 //AIzaSyCFTwfbaMCWckrykb-e5U4ki0Wm4RFm6po

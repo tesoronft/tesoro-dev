@@ -347,7 +347,7 @@ class ApiProvider with ChangeNotifier {
         // _responseTxt = json['message'];
         _isLoading = false;
         notifyListeners();
-        return json;
+        return 'Category Fetched';
       } else {
         final json = jsonDecode(response.body);
         log(response.body);
@@ -383,7 +383,7 @@ class ApiProvider with ChangeNotifier {
 
         _isLoading = false;
         notifyListeners();
-        return json;
+        return 'Conditions Fetched';
       } else {
         final json = jsonDecode(response.body);
         log(response.body);
@@ -642,14 +642,14 @@ class ApiProvider with ChangeNotifier {
     try {
       final response =
           await https.post(Uri.parse('$baseUrl/treasures/delete'), headers: {
-        'Authorization': accessToken,
+        'Authorization': 'Bearer $accessToken',
       }, body: {
         "treasureId": treasureId
       });
       if (response.statusCode == 201) {
         final json = jsonDecode(response.body);
         log(json);
-        _responseTxt = json['message'];
+        _responseTxt = 'Treasure Removed Successfully';
         _isLoading = false;
         notifyListeners();
         return ApiEnums.success;
@@ -657,7 +657,7 @@ class ApiProvider with ChangeNotifier {
         log(response.body);
         final json = jsonDecode(response.body);
         _isLoading = false;
-        _responseTxt = json['output']['message'];
+        _responseTxt = json['details']['message'];
         notifyListeners();
         return ApiEnums.failed;
       }
@@ -804,7 +804,7 @@ class ApiProvider with ChangeNotifier {
     notifyListeners();
     try {
       final response = await https.post(
-          Uri.parse('$baseUrl/tips/received?page=$page&limit=15'),
+          Uri.parse('$baseUrl/tips/received?page=$page&limit=5'),
           headers: {
             'Authorization': 'Bearer $accessToken',
           },
@@ -838,7 +838,7 @@ class ApiProvider with ChangeNotifier {
     notifyListeners();
     try {
       final response = await https
-          .post(Uri.parse('$baseUrl/tips/given?page=$page&limit=15'), headers: {
+          .post(Uri.parse('$baseUrl/tips/given?page=$page&limit=5'), headers: {
         'Authorization': 'Bearer $accessToken',
       }, body: {
         "userId": uid

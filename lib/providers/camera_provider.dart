@@ -6,9 +6,10 @@ import 'package:flutter/widgets.dart';
 class CameraProvider with ChangeNotifier {
   CameraController? _cameraController;
   CameraController? get cameraController => _cameraController;
-  bool _isLoading = false, _isInitialized = false;
+  bool _isLoading = false;
+  bool get isInitialized => cameraController?.value.isInitialized ?? false;
   bool get isLoading => _isLoading;
-  bool get isInitialized => _isInitialized;
+
   List<CameraDescription> cameras = [];
   List<String> get cameraImages => _cameraImages;
   List<String> _cameraImages = [];
@@ -31,10 +32,13 @@ class CameraProvider with ChangeNotifier {
     notifyListeners();
     try {
       cameras = await availableCameras();
+
       if (cameras.isNotEmpty) {
         _cameraController = CameraController(cameras[0], ResolutionPreset.high,
             enableAudio: false);
+
         await _cameraController?.initialize();
+        log('Camera initialized');
         _isLoading = false;
         notifyListeners();
       } else {
@@ -76,7 +80,8 @@ class CameraProvider with ChangeNotifier {
   }
 
   Future<void> disposeCamera() async {
-    _cameraController?.dispose();
+    await _cameraController?.dispose();
+    _cameraController = null;
     notifyListeners();
   }
 }

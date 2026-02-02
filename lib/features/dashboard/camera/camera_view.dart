@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -27,36 +29,41 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final camera = Provider.of<CameraProvider>(context, listen: false);
-      final permissions = Provider.of<AppPermissions>(context, listen: false);
-      final result = await permissions.getCameraPermission();
 
-      if (result == true) {
-        await camera.initializeCamera();
-      }
+    Future.microtask(() async {
+      final permissions = context.read<AppPermissions>();
+      final camera = context.read<CameraProvider>();
+
+      await permissions.checkCameraPermission();
+
+      await camera.initializeCamera();
     });
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    //context.read<CameraProvider>().disposeCamera();
     super.dispose();
   }
 
-  // @override
-  // void didChangeAppLifecycleState(AppLifecycleState state) async {
-  //   if (state == AppLifecycleState.resumed) {
-  //     log("App Resumed: Re-checking camera permissions...");
-  //     final camera = Provider.of<CameraProvider>(context, listen: false);
-  //     final permissions = Provider.of<AppPermissions>(context, listen: false);
-  //     final result = await permissions.getCameraPermission();
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (!mounted) return;
 
-  //     if (result == true) {
-  //       await camera.initializeCamera();
-  //     }
-  //   }
-  // }
+    final camera = context.read<CameraProvider>();
+
+    if (state == AppLifecycleState.resumed) {
+      log('App resumed – checking camera permission');
+
+      final isGranted =
+          await context.read<AppPermissions>().checkCameraPermission();
+
+      if (isGranted && !camera.isInitialized) {
+        await camera.initializeCamera();
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,8 +74,7 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
           fit: StackFit.expand,
           alignment: Alignment.bottomCenter,
           children: [
-            camera.cameraController == null ||
-                    !camera.cameraController!.value.isInitialized
+            camera.cameraController == null || !camera.isInitialized
                 ? Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: CameraUnavailableView(),

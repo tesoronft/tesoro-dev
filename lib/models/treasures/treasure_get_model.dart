@@ -118,14 +118,14 @@ coordinates:$coordinates,
 class PostedBy {
   String? id, name, profileImage;
 
-  int? rating;
+  dynamic rating;
   PostedBy({this.id, this.name, this.profileImage, this.rating});
   factory PostedBy.fromJson(Map<String, dynamic> jsonData) {
     return PostedBy(
       id: jsonData['_id']?.toString(),
       name: jsonData['name']?.toString() ?? "Unknown",
       profileImage: jsonData['profileImage']?.toString() ?? '',
-      rating: jsonData['rating'] is int ? jsonData['rating'] : 0,
+      rating: jsonData['rating'] ?? 0,
     );
   }
 }

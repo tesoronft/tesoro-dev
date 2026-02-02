@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tesoro_nft_app/providers/api_provider.dart';
@@ -10,6 +11,7 @@ import '../providers/dashboard_provider.dart';
 
 class AppProviders {
   static MultiProvider providers({required Widget child}) {
+    //Provider.value(value: ObserverList());
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) {

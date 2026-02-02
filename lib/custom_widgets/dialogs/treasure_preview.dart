@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tesoro_nft_app/consts/app_colors.dart';
@@ -119,36 +120,48 @@ class TreasurePreview extends StatelessWidget {
               ),
               Consumer2<ApiProvider, PreferencesProvider>(
                 builder: (context, apiProvider, preferencesProvider, child) =>
-                    Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    CustomBtn(
-                      btnColor: AppColors.dialogBtn,
-                      width: 150,
-                      text: AppStrings.yes,
-                      onBtnTap: () =>
-                          Navigator.of(context).pop(DialogEnums.treasureTaken),
-                    ),
-                    CustomBtn(
-                      btnColor: AppColors.dialogBtn,
-                      width: 150,
-                      text: AppStrings.no,
-                      onBtnTap: () async {
-                        final result = await apiProvider.deleteTreasure(
-                            treasure.productId ?? "",
-                            preferencesProvider.accessToken ?? "");
-                        if (result == ApiEnums.failed) {
-                          CustomSnackbar().showSnackbar(SnackBarEnums.failed,
-                              apiProvider.responseTxt, context);
-                        } else {
-                          CustomSnackbar().showSnackbar(SnackBarEnums.success,
-                              apiProvider.responseTxt, context);
-                        }
-                        Navigator.of(context).pop(DialogEnums.treasureNotTaken);
-                      },
-                    )
-                  ],
-                ),
+                    apiProvider.isLoading
+                        ? Center(
+                            child: SpinKitCircle(
+                            color: AppColors.primary,
+                          ))
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              CustomBtn(
+                                btnColor: AppColors.dialogBtn,
+                                width: 150,
+                                text: AppStrings.yes,
+                                onBtnTap: () => Navigator.of(context)
+                                    .pop(DialogEnums.treasureTaken),
+                              ),
+                              CustomBtn(
+                                btnColor: AppColors.dialogBtn,
+                                width: 150,
+                                text: AppStrings.no,
+                                onBtnTap: () async {
+                                  final result =
+                                      await apiProvider.deleteTreasure(
+                                          treasure.productId ?? "",
+                                          preferencesProvider.accessToken ??
+                                              "");
+                                  if (result == ApiEnums.failed) {
+                                    CustomSnackbar().showSnackbar(
+                                        SnackBarEnums.failed,
+                                        apiProvider.responseTxt,
+                                        context);
+                                  } else {
+                                    CustomSnackbar().showSnackbar(
+                                        SnackBarEnums.success,
+                                        apiProvider.responseTxt,
+                                        context);
+                                    Navigator.of(context)
+                                        .pop(DialogEnums.treasureNotTaken);
+                                  }
+                                },
+                              )
+                            ],
+                          ),
               ),
             ],
     );

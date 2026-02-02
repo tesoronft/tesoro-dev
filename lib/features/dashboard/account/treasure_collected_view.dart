@@ -54,18 +54,35 @@ class _TreasureCollectedViewState extends State<TreasureCollectedView> {
                                 ?.isEmpty ??
                             true
                         ? EmptyView()
-                        : EasyRefresh.builder(
-                            onRefresh: () async {
-                              await apis.getTreasureCollectedByUser(
-                                  1,
-                                  context
-                                          .read<PreferencesProvider>()
-                                          .accessToken ??
-                                      '',
-                                  context.read<PreferencesProvider>().userId ??
-                                      '');
-                            },
-                            childBuilder: (context, physics) => Stack(
+                        : EasyRefresh.builder(onRefresh: () async {
+                            await apis.getTreasureCollectedByUser(
+                                1,
+                                context
+                                        .read<PreferencesProvider>()
+                                        .accessToken ??
+                                    '',
+                                context.read<PreferencesProvider>().userId ??
+                                    '');
+                          }, childBuilder: (context, physics) {
+                            if (apis.isLoading) {
+                              return ShimmerEffect();
+                            }
+
+                            if (apis.allCollectedTreasure
+                                    ?.listOfPostedTreasures ==
+                                null) {
+                              return SizedBox();
+                            }
+
+                            if (apis.allCollectedTreasure?.listOfPostedTreasures
+                                    ?.isEmpty ??
+                                true) {
+                              return EmptyView();
+                            }
+                            if (internet.isConnected == false) {
+                              return OfflineView();
+                            }
+                            return Stack(
                               children: [
                                 Column(
                                   children: [
@@ -109,8 +126,8 @@ class _TreasureCollectedViewState extends State<TreasureCollectedView> {
                                         child: PermissionEnableComponent())
                                     : SizedBox.shrink(),
                               ],
-                            ),
-                          ),
+                            );
+                          }),
               ),
       ),
     );
