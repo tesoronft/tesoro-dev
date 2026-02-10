@@ -39,6 +39,14 @@ class TreasurePostedCard extends StatelessWidget {
                         width: double.infinity,
                         filterQuality: FilterQuality.high,
                         fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          color: AppColors.light,
+                          child: Icon(
+                            Icons.broken_image_outlined,
+                            color: AppColors.primary,
+                            size: 32,
+                          ),
+                        ),
                       )
                     : Image.file(
                         File(imagePath),
@@ -46,6 +54,15 @@ class TreasurePostedCard extends StatelessWidget {
                         width: double.infinity,
                         filterQuality: FilterQuality.high,
                         fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          alignment: Alignment.center,
+                          color: AppColors.light,
+                          child: Icon(
+                            Icons.broken_image_outlined,
+                            color: Colors.grey,
+                            size: 64,
+                          ),
+                        ),
                       ),
               ),
               Padding(

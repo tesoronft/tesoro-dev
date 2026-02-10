@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:tesoro_nft_app/consts/app_colors.dart';
 import 'package:tesoro_nft_app/consts/app_strings.dart';
@@ -40,10 +42,18 @@ class TreasureCollectedCard extends StatelessWidget {
               decoration:
                   BoxDecoration(borderRadius: BorderRadius.circular(10)),
               clipBehavior: Clip.antiAlias,
-              child: Image.asset(
-                imageUrl,
+              child: Image.file(
+                File(imageUrl),
                 fit: BoxFit.cover,
                 filterQuality: FilterQuality.high,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  color: AppColors.light,
+                  child: Icon(
+                    Icons.broken_image_outlined,
+                    color: AppColors.primary,
+                    size: 32,
+                  ),
+                ),
               ),
             ),
             Column(

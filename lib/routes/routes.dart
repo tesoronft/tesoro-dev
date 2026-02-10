@@ -25,6 +25,7 @@ import 'package:tesoro_nft_app/models/treasures/treasure_post_model.dart';
 
 import '../features/dashboard/dashboard_view.dart';
 import '../features/dashboard/settings/settings_view.dart';
+import '../features/dashboard/treasures/all_treasures/update_treasure_view.dart';
 import '../features/onboarding/onboarding2_view.dart';
 import '../features/onboarding/splash.dart';
 import '../features/others/offline_view.dart';
@@ -54,6 +55,8 @@ class Routes {
   static const String allTreasures = '/dashboard/allTreasures';
   static const String treasureDetails =
       '/dashboard/allTreasures/treasureDetails';
+  static const String editTreasureInfo =
+      '/dashboard/allTreasures/editTreasureInfo';
   static const String itemDetails = '/dashboard/postTreasures/itemDetails';
   static const String confirmDetails =
       '/dashboard/postTreasures/confirmDetails';
@@ -142,6 +145,14 @@ class Routes {
         builder: (context, state) {
           final data = state.extra as TreasureGetModel;
           return TreasureDetailsView(
+            treasureGetModel: data,
+          );
+        }),
+    GoRoute(
+        path: editTreasureInfo,
+        builder: (context, state) {
+          final data = state.extra as TreasureGetModel;
+          return UpdateTreasureView(
             treasureGetModel: data,
           );
         }),

@@ -25,12 +25,14 @@ class TreasureDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isUserTreasure = treasureGetModel.postedBy?.id ==
+        context.read<PreferencesProvider>().userId;
+    final isCollected = treasureGetModel.collectedBy;
     return CustomScaffold(
       backgroundColor: AppColors.light,
       child: SingleChildScrollView(
         child: Column(
           children: [
-            // 1. The Header (Top Widget)
             Container(
               height: MediaQuery.sizeOf(context).height / 3,
               width: double.infinity,
@@ -88,16 +90,29 @@ class TreasureDetailsView extends StatelessWidget {
                         condition: treasureGetModel.condition?.name ?? 'Bad',
                         itemName: treasureGetModel.title ?? 'N/A',
                         price: treasureGetModel.price.toString()),
-                    if (treasureGetModel.postedBy?.id !=
-                            context.read<PreferencesProvider>().userId &&
-                        treasureGetModel.collectedBy == null)
+                    if (isCollected == null)
                       CustomBtn(
-                          text: AppStrings.huntForThisItem,
+                          text: isUserTreasure
+                              ? 'Edit Treasure'
+                              : AppStrings.huntForThisItem,
                           trailingIcon: Icon(
-                            Icons.arrow_forward,
+                            isUserTreasure ? Icons.edit : Icons.arrow_forward,
                             color: AppColors.light,
                           ),
                           onBtnTap: () {
+                            if (isUserTreasure) {
+                              AnalyticsService.logEvent(
+                                  'update_treasure_clicked',
+                                  parameters: {
+                                    'treasure_id':
+                                        treasureGetModel.productId ?? '',
+                                    'treasure_title':
+                                        treasureGetModel.title ?? '',
+                                  });
+                              context.push(Routes.editTreasureInfo,
+                                  extra: treasureGetModel);
+                              return;
+                            }
                             AnalyticsService.logEvent('hunt_treasure_clicked',
                                 parameters: {
                                   'treasure_id':
@@ -134,24 +149,25 @@ class TreasureDetailsView extends StatelessWidget {
                       style: AppTextStyles.bodyLarge
                           .copyWith(color: const Color(0xff0D5C63)),
                     ),
-                    if (treasureGetModel.postedBy?.id !=
-                        context.read<PreferencesProvider>().userId)
+                    if (!isUserTreasure || treasureGetModel.collectedBy != null)
                       const Divider(),
-                    if (treasureGetModel.postedBy?.id !=
-                        context.read<PreferencesProvider>().userId)
+                    if (!isUserTreasure || treasureGetModel.collectedBy != null)
                       Text(
-                        'Posted By:',
+                        treasureGetModel.collectedBy != null
+                            ? 'Collected By'
+                            : 'Posted By:',
                         style: AppTextStyles.bodyLarge
                             .copyWith(color: AppColors.dark),
                       ),
-                    if (treasureGetModel.postedBy?.id !=
-                        context.read<PreferencesProvider>().userId)
-                      PostedByCard(
-                        imageUrl: treasureGetModel.postedBy?.profileImage ??
-                            'https://e7.pngegg.com/pngimages/371/667/png-clipart-computer-icons-user-profile-encapsulated-postscript-icon-black-rectangle-black.png',
-                        name: treasureGetModel.postedBy?.name ?? "N/A",
-                        rating: treasureGetModel.postedBy?.rating ?? 1,
-                      ),
+                    // if (!isUserTreasure)
+                    PostedByCard(
+                      imageUrl: treasureGetModel.postedBy?.profileImage ??
+                          'https://e7.pngegg.com/pngimages/371/667/png-clipart-computer-icons-user-profile-encapsulated-postscript-icon-black-rectangle-black.png',
+                      name: treasureGetModel.collectedBy ??
+                          treasureGetModel.postedBy?.name ??
+                          "N/A",
+                      rating: treasureGetModel.postedBy?.rating ?? 1,
+                    ),
                   ],
                 ),
               ),

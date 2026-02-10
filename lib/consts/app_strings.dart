@@ -26,6 +26,7 @@ class AppStrings {
   static const String alreadyHaveAnAccount = 'Already have an account?';
   static const String signup = 'Sign Up';
   static const String continueWithGoogle = 'Continue with Google';
+  static const String continueWithApple = 'Continue with Apple';
   static const String name = 'Name';
   static const String confirmPassword = 'Confirm Password';
   static const String login = 'Log in';

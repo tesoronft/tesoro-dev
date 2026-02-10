@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:math' as Math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -36,7 +37,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    WidgetsBinding.instance.addPostFrameCallback((_) async {});
+    //WidgetsBinding.instance.addPostFrameCallback((_) async {});
   }
 
   @override
@@ -45,30 +46,29 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
-    if (state != AppLifecycleState.resumed) return;
+  // @override
+  // void didChangeAppLifecycleState(AppLifecycleState state) async {
+  //   if (state != AppLifecycleState.resumed) return;
 
-    final geoLocation = Provider.of<AppPermissions>(context, listen: false);
-    log('Checking location permissions on app resume');
-    if (geoLocation.position == null) {
-      final position = await geoLocation.getCurrentPosition();
-      await geoLocation.getCurrentPlacemark();
+  //   final geoLocation = Provider.of<AppPermissions>(context, listen: false);
+  //   log('Checking location permissions on app resume');
+  //   if (geoLocation.position == null) {
+  //     final position = await geoLocation.getCurrentPosition();
+  //     await geoLocation.getCurrentPlacemark();
 
-      if (!mounted) return;
+  //     if (!mounted) return;
 
-      await _controller?.animateCamera(
-        CameraUpdate.newLatLng(
-          LatLng(
-            latitude: position?.latitude ?? 0.0,
-            longitude: position?.longitude ?? 0.0,
-          ),
-        ),
-      );
-    }
-  }
+  //     await _controller?.animateCamera(
+  //       CameraUpdate.newLatLng(
+  //         LatLng(
+  //           latitude: position?.latitude ?? 0.0,
+  //           longitude: position?.longitude ?? 0.0,
+  //         ),
+  //       ),
+  //     );
+  //   }
+  // }
 
-//AIzaSyCFTwfbaMCWckrykb-e5U4ki0Wm4RFm6po
   @override
   Widget build(BuildContext context) {
     return Consumer3<AppPermissions, ApiProvider, PreferencesProvider>(
@@ -147,12 +147,49 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                           longitude: permissions.position?.longitude ?? 0.0,
                           latitude: permissions.position?.latitude ?? 0.0,
                         ),
-                        zoom: 12,
+                        zoom: 20,
                       ),
-                      //  initialMapType: MapType.hybrid,
-                      initialMinZoomPreference: 2.0,
+                      initialMinZoomPreference: 2,
                       initialMaxZoomPreference: 21.0,
+                      onCameraIdle: (position) async {
+                        double currentZoom = position.zoom;
+                        final currentPage =
+                            api.allMarkers?.pagination?.page ?? 1;
 
+                        final nextPage =
+                            api.allMarkers?.pagination?.totalPages ?? 1;
+                        final latDiff =
+                            (position.target.latitude - (latitude ?? 0.0))
+                                .abs();
+                        final lngDiff =
+                            (position.target.longitude - (longitude ?? 0.0))
+                                .abs();
+                        double dynamicThreshold =
+                            0.1 / Math.pow(2, currentZoom - 10);
+
+                        if ((latDiff > dynamicThreshold ||
+                                lngDiff > dynamicThreshold) &&
+                            currentPage < nextPage) {
+                          debugPrint(
+                              "Threshold met: Moving from Gulshan-e-Ravi towards Samanabad area.");
+
+                          latitude = position.target.latitude;
+                          longitude = position.target.longitude;
+                          // await Future.wait([
+                          //   api.getMarkers(
+                          //     prefs.accessToken ?? '',
+                          //     (api.allMarkers?.pagination?.page ?? 0) + 1,
+                          //     position.target.longitude,
+                          //     position.target.latitude,
+                          //     10,
+                          //   ),
+                          //   rootBundle.load(AppImages.mark),
+                          // ]);
+
+                          // await updateMapMarkers(api, position.target.latitude,
+                          //     position.target.longitude);
+                        }
+                      },
                       onMarkerClicked: (markerId) async {
                         log(markerId);
 
@@ -201,36 +238,10 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                           _controller = controller;
                           await _controller?.setMyLocationEnabled(true);
 
-                          final customMarker = await registerBitmapImage(
-                            bitmap: await rootBundle.load(AppImages.mark),
-                            height: 30,
-                            width: 30,
-                          );
-
-                          allmarkers.value = await _controller?.addMarkers(
-                            List.generate(
-                              api.allMarkers?.markersModel?.length ?? 0,
-                              (index) => MarkerOptions(
-                                icon: ImageDescriptor(
-                                  registeredImageId:
-                                      customMarker.registeredImageId,
-                                  imagePixelRatio: 46,
-                                  width: 30,
-                                  height: 30,
-                                ),
-                                position: LatLng(
-                                  latitude: api.allMarkers?.markersModel?[index]
-                                          .coordinated?[1] ??
-                                      31.5357,
-                                  longitude: api
-                                          .allMarkers
-                                          ?.markersModel?[index]
-                                          .coordinated?[0] ??
-                                      74.2985,
-                                ),
-                              ),
-                            ),
-                          );
+                          await updateMapMarkers(
+                              api,
+                              permissions.position?.latitude,
+                              permissions.position?.longitude);
 
                           await _controller?.moveCamera(CameraUpdate.newLatLng(
                             LatLng(
@@ -262,5 +273,34 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
         ),
       ),
     );
+  }
+
+  Future<void> updateMapMarkers(
+      ApiProvider api, double? newLat, double? newLong) async {
+    final customMarker = await registerBitmapImage(
+      bitmap: await rootBundle.load(AppImages.mark),
+      height: 30,
+      width: 30,
+    );
+    if (_controller == null || customMarker.registeredImageId == null) return;
+
+    final markers = List.generate(
+      api.allMarkers?.markersModel?.length ?? 0,
+      (index) => MarkerOptions(
+        icon: ImageDescriptor(
+          registeredImageId: customMarker.registeredImageId!,
+          imagePixelRatio: 46,
+          width: 30,
+          height: 30,
+        ),
+        position: LatLng(
+          latitude: api.allMarkers?.markersModel?[index].coordinated?[1] ?? 0.0,
+          longitude:
+              api.allMarkers?.markersModel?[index].coordinated?[0] ?? 0.0,
+        ),
+      ),
+    );
+
+    allmarkers.value = await _controller?.addMarkers(markers);
   }
 }

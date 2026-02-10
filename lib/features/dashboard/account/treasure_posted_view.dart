@@ -13,9 +13,9 @@ import 'package:tesoro_nft_app/routes/routes.dart';
 import 'package:tesoro_nft_app/utils/app_permissions.dart';
 import 'package:tesoro_nft_app/utils/internet_checker.dart';
 
-import '../../../custom_widgets/permission_enable_component.dart';
 import '../../../custom_widgets/shimmer_effect.dart';
 import '../../../custom_widgets/treasures/empty_view.dart';
+import '../../../models/treasures/get_all_treasures_model.dart';
 
 class TreasurePostedView extends StatefulWidget {
   const TreasurePostedView({super.key});
@@ -34,7 +34,12 @@ class _TreasurePostedViewState extends State<TreasurePostedView> {
               .getCurrentPosition();
 
       final apis = Provider.of<ApiProvider>(context, listen: false);
-
+      if (apis.categoryModelList?.categoryModel?.isEmpty ?? true) {
+        await apis.getCategories(
+            context.read<PreferencesProvider>().accessToken ?? '');
+        await apis.getConditions(
+            context.read<PreferencesProvider>().accessToken ?? '');
+      }
       await apis.getAllTreasuresData(
           1,
           10,
@@ -43,9 +48,11 @@ class _TreasurePostedViewState extends State<TreasurePostedView> {
           positions != null ? positions.latitude.toString() : '0.0',
           '10',
           context.read<PreferencesProvider>().accessToken ?? '');
+      getAllTreasureModel = apis.getAllTreasureModel;
     });
   }
 
+  GetAllTreasuresModel? getAllTreasureModel;
   ValueNotifier<String> availability = ValueNotifier<String>('Available');
 
   @override
@@ -61,68 +68,80 @@ class _TreasurePostedViewState extends State<TreasurePostedView> {
                 onRefresh: () async {
                   await api.getAllTreasuresData(
                       1,
-                      10,
+                      5,
                       'mine',
                       permissions.position?.longitude.toString() ?? '0.0',
                       permissions.position?.latitude.toString() ?? '0.0',
                       '10',
                       context.read<PreferencesProvider>().accessToken ?? '');
+                  getAllTreasureModel = api.getAllTreasureModel;
+                },
+                onLoad: () async {
+                  final currentPage =
+                      api.getAllTreasureModel?.pagination?.page ?? 1;
+                  final totalPages = api
+                          .getAllTreasureModel?.pagination?.totalPages
+                          ?.toInt() ??
+                      1;
+                  if (currentPage < totalPages) {
+                    await api.getAllTreasuresData(
+                        currentPage + 1,
+                        4,
+                        'mine',
+                        permissions.position?.longitude.toString() ?? '0.0',
+                        permissions.position?.latitude.toString() ?? '0.0',
+                        '10',
+                        context.read<PreferencesProvider>().accessToken ?? '');
+                    getAllTreasureModel?.allTreasuresData?.addAll(
+                        api.getAllTreasureModel?.allTreasuresData ?? []);
+                  }
                 },
                 childBuilder: (context, physics) {
                   if (api.isLoading) {
                     return ShimmerEffect();
                   }
 
-                  if (api.getAllTreasureModel?.allTreasuresData == null) {
+                  if (getAllTreasureModel?.allTreasuresData == null) {
                     return SizedBox();
                   }
 
-                  if (api.getAllTreasureModel?.allTreasuresData?.isEmpty ??
-                      true) {
+                  if (getAllTreasureModel?.allTreasuresData?.isEmpty ?? true) {
                     return EmptyView();
                   }
                   if (internet.isConnected == false) {
                     return OfflineView();
                   }
-                  return Stack(
+                  return Column(
                     children: [
-                      Column(
-                        children: [
-                          Expanded(
-                            child: GridView.builder(
-                                physics: physics,
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2,
-                                        crossAxisSpacing: 10,
-                                        childAspectRatio: 0.9,
-                                        mainAxisSpacing: 10),
-                                itemCount: api.getAllTreasureModel
-                                    ?.allTreasuresData?.length,
-                                itemBuilder: (context, index) {
-                                  final thisTreasure = api.getAllTreasureModel
-                                      ?.allTreasuresData?[index];
-                                  return InkWell(
-                                    onTap: () {
-                                      context.push(Routes.treasureDetails,
-                                          extra: thisTreasure);
-                                    },
-                                    child: TreasurePostedCard(
-                                        condition:
-                                            thisTreasure?.condition?.name ??
-                                                'N/A',
-                                        imagePath: thisTreasure?.photos?.first,
-                                        itemName: thisTreasure?.title ?? ''),
-                                  );
-                                }),
-                          ),
-                        ],
+                      Expanded(
+                        child: GridView.builder(
+                            physics: physics,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing: 10,
+                                    childAspectRatio: 0.9,
+                                    mainAxisSpacing: 10),
+                            itemCount:
+                                getAllTreasureModel?.allTreasuresData?.length,
+                            itemBuilder: (context, index) {
+                              final thisTreasure =
+                                  getAllTreasureModel?.allTreasuresData?[index];
+                              return InkWell(
+                                onTap: () {
+                                  context.push(Routes.treasureDetails,
+                                      extra: thisTreasure);
+                                },
+                                child: TreasurePostedCard(
+                                  condition:
+                                      thisTreasure?.condition?.name ?? 'N/A',
+                                  imagePath: thisTreasure?.photos?.first,
+                                  itemName: thisTreasure?.title ?? '',
+                                  collectedBy: thisTreasure?.collectedBy,
+                                ),
+                              );
+                            }),
                       ),
-                      !permissions.isLocationAllowed
-                          ? Align(
-                              alignment: Alignment.bottomCenter,
-                              child: PermissionEnableComponent())
-                          : SizedBox.shrink(),
                     ],
                   );
                 },

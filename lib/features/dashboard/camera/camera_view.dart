@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -34,7 +32,7 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
       final permissions = context.read<AppPermissions>();
       final camera = context.read<CameraProvider>();
 
-      await permissions.checkCameraPermission();
+      await permissions.getCameraPermission();
 
       await camera.initializeCamera();
     });
@@ -47,23 +45,23 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
-    if (!mounted) return;
+  // @override
+  // void didChangeAppLifecycleState(AppLifecycleState state) async {
+  //   if (!mounted) return;
 
-    final camera = context.read<CameraProvider>();
+  //   final camera = context.read<CameraProvider>();
 
-    if (state == AppLifecycleState.resumed) {
-      log('App resumed – checking camera permission');
+  //   if (state == AppLifecycleState.resumed) {
+  //     log('App resumed – checking camera permission');
 
-      final isGranted =
-          await context.read<AppPermissions>().checkCameraPermission();
+  //     final isGranted =
+  //         await context.read<AppPermissions>().checkCameraPermission();
 
-      if (isGranted && !camera.isInitialized) {
-        await camera.initializeCamera();
-      }
-    }
-  }
+  //     if (isGranted && !camera.isInitialized) {
+  //       await camera.initializeCamera();
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

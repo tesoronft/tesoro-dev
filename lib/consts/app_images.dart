@@ -5,6 +5,7 @@ class AppImages {
   static const String currency = 'assets/images/currency.png';
   static const String dollarChest = 'assets/images/dollarChest.svg';
   static const String google = 'assets/images/Google.svg';
+  static const String apple = 'assets/images/apple_icon.svg';
   static const String houseHolds = 'assets/images/house_holds.png';
   static const String location = 'assets/images/location.svg';
   static const String mapNavigation = 'assets/images/mapNavigation.png';

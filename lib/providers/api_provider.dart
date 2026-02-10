@@ -227,7 +227,6 @@ class ApiProvider with ChangeNotifier {
         'Authorization': 'Bearer $token',
       });
       if (response.statusCode == 201) {
-        final json = jsonDecode(response.body);
         log(response.body);
         _isLoading = false;
         notifyListeners();
@@ -596,43 +595,62 @@ class ApiProvider with ChangeNotifier {
     }
   }
 
-  Future<String> updateTreasure(String accessToken) async {
+  Future<ApiEnums> updateTreasure(
+      String accessToken,
+      TreasurePostModel treasurePostModel,
+      TreasureGetModel treasureGetModel) async {
+    log(treasurePostModel.condition ?? 'no id');
+    log(treasurePostModel.category ?? 'no id');
+    log(treasureGetModel.productId ?? 'no id');
+    log("Type of treasureId: ${treasureGetModel.productId.runtimeType}");
+    log("Type of condition: ${treasurePostModel.condition.runtimeType}");
+    log("Type of category: ${treasurePostModel.category.runtimeType}");
     _isLoading = true;
     notifyListeners();
     try {
-      final response =
-          await https.post(Uri.parse('$baseUrl/treasures/update'), headers: {
-        'Authorization': accessToken,
-      }, body: {
-        "treasureId": "6929da9a9290a2e5c4960c90",
-        "title": "Ancient Silver Coin",
-        "price": 3500,
-        "location": {
-          "address": "456 Park Avenue, New York, NY",
-          "lat": 40.771133,
-          "lng": -73.974187
-        },
-        "photos": ["https://your-s3-bucket-url.com/photo3.jpg"],
-        "brand": "SilverMint",
-        "condition": "Good"
-      });
+      final response = await https.post(Uri.parse('$baseUrl/treasures/update'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $accessToken',
+          },
+          body: jsonEncode({
+            "treasureId": treasureGetModel.productId,
+            "title": treasurePostModel.title,
+            "price": treasurePostModel.price,
+            "location": {
+              "address": treasureGetModel.location?.address,
+              "lat": treasureGetModel.location?.coordinates![1],
+              "lng": treasureGetModel.location?.coordinates![0],
+              "placeId": "ChIJd_Y0eVIvkIARuQyDN0F1LBA"
+            },
+            "photos": treasureGetModel.photos,
+            "brand": treasurePostModel.brand,
+            "condition": treasurePostModel.condition,
+            "category": treasurePostModel.category,
+            "itemModel": treasurePostModel.itemModel,
+            "description": treasurePostModel.description,
+          }));
       if (response.statusCode == 201) {
-        final json = jsonDecode(response.body);
-        log(json);
+        log(response.body);
+        _responseTxt = response.reasonPhrase ?? 'Treasure Updated';
         _isLoading = false;
         notifyListeners();
-        return json;
+        return ApiEnums.success;
       } else {
         log(response.body);
+        final json = jsonDecode(response.body);
         _isLoading = false;
+        _responseTxt = response.reasonPhrase ??
+            'Treasure update failed. Please try again.';
         notifyListeners();
-        return response.reasonPhrase ?? response.statusCode.toString();
+        return ApiEnums.failed;
       }
     } catch (e) {
       log(e.toString());
       _isLoading = false;
+      _responseTxt = e.toString();
       notifyListeners();
-      return e.toString();
+      return ApiEnums.failed;
     }
   }
 
@@ -933,7 +951,7 @@ class ApiProvider with ChangeNotifier {
       final uri = Uri.parse('$baseUrl/treasures/markers').replace(
         queryParameters: {
           'page': '$page',
-          'limit': '5',
+          'limit': '10',
           'longitude': longitude.toString(),
           'latitude': latitude.toString(),
           'distance': distance.toString(),

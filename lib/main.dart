@@ -24,6 +24,7 @@ class MyApp extends StatelessWidget {
       ),
       // key: navigatorKey,
       routerConfig: Routes.router,
+      debugShowCheckedModeBanner: false,
     );
   }
 }

@@ -38,11 +38,26 @@ class PostedByCard extends StatelessWidget {
                 ? Image.network(
                     imageUrl,
                     fit: BoxFit.cover,
+                    filterQuality: FilterQuality.high,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      // color: AppColors.light,
+                      child: Icon(
+                        Icons.person_outline,
+                        color: Colors.grey,
+                        size: 64,
+                      ),
+                    ),
                   )
-                : Image.file(
-                    File(imageUrl),
+                : Image.file(File(imageUrl),
                     fit: BoxFit.cover,
-                  ),
+                    filterQuality: FilterQuality.high,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                            // color: AppColors.light,
+                            child: Icon(
+                          Icons.person_outline,
+                          color: Colors.grey,
+                          size: 64,
+                        ))),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,

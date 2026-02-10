@@ -154,4 +154,32 @@ class AppPermissions with ChangeNotifier {
     notifyListeners();
     return false;
   }
+
+  Future<bool> getCameraPermission() async {
+    final permission = Permission.camera;
+    await permission.request();
+    if (await permission.isDenied) {
+      await permission.request();
+      if (await permission.isDenied) {
+        await permission.request();
+        if (await permission.isPermanentlyDenied) {
+          _isCameraPermitted = false;
+          notifyListeners();
+          return false;
+        } else {
+          _isCameraPermitted = true;
+          notifyListeners();
+          return true;
+        }
+      } else {
+        _isCameraPermitted = true;
+        notifyListeners();
+        return true;
+      }
+    } else {
+      _isCameraPermitted = true;
+      notifyListeners();
+      return true;
+    }
+  }
 }

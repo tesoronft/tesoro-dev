@@ -26,7 +26,9 @@ class CustomSnackbar {
                     : snackbarEnum == SnackBarEnums.failed
                         ? Icons.close
                         : Icons.info,
-                color: AppColors.light,
+                color: snackbarEnum == SnackBarEnums.processing
+                    ? AppColors.dark
+                    : AppColors.light,
               ),
               SizedBox(
                 width: 275,

@@ -21,7 +21,6 @@ import 'package:tesoro_nft_app/models/treasures/treasure_post_model.dart';
 import 'package:tesoro_nft_app/providers/camera_provider.dart';
 import 'package:tesoro_nft_app/routes/routes.dart';
 
-import '../../../../enums/permission_state_enums.dart';
 import '../../../../providers/api_provider.dart';
 import '../../../../providers/preferences_provider.dart';
 import '../../../../services/analytics_service.dart';
@@ -46,9 +45,9 @@ class _PostTreasureViewState extends State<PostTreasureView>
       final prefs = Provider.of<PreferencesProvider>(context, listen: false);
       await apis.getCategories(prefs.accessToken ?? '');
       await apis.getConditions(prefs.accessToken ?? '');
-      // await geoLocation.getCurrentPosition();
-      // await geoLocation.getCurrentPlacemark();
-      await geoLocation.checkLocationPermission();
+      await geoLocation.getCurrentPosition();
+      await geoLocation.getCurrentPlacemark();
+      // await geoLocation.checkLocationPermission();
 
       _postTreasureController.location.text =
           '${geoLocation.placemark?.street} ${geoLocation.placemark?.subLocality}, ${geoLocation.placemark?.locality}, ${geoLocation.placemark?.administrativeArea}, ${geoLocation.placemark?.country}, ${geoLocation.placemark?.postalCode}';
@@ -63,35 +62,6 @@ class _PostTreasureViewState extends State<PostTreasureView>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
-  }
-
-  // @override
-  // void didChangeAppLifecycleState(AppLifecycleState state) async {
-  //   if (state == AppLifecycleState.resumed) {
-  //     log("App Resumed: Re-checking location permissions...");
-  //     final geoLocation = Provider.of<AppPermissions>(context, listen: false);
-  //     if (geoLocation.placemark == null || geoLocation.position == null) {
-  //       await geoLocation.getCurrentPosition();
-  //       await geoLocation.getCurrentPlacemark();
-
-  //       _postTreasureController.location.text =
-  //           '${geoLocation.placemark?.street} ${geoLocation.placemark?.subLocality}, ${geoLocation.placemark?.locality}, ${geoLocation.placemark?.administrativeArea}, ${geoLocation.placemark?.country}, ${geoLocation.placemark?.postalCode}';
-  //     }
-  //   }
-  // }
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
-    if (!mounted) return;
-
-    if (state == AppLifecycleState.resumed) {
-      final permissions = context.read<AppPermissions>();
-
-      final status = await permissions.checkLocationPermission();
-
-      if (status == PermissionState.granted) {
-        await permissions.getCurrentPosition();
-      }
-    }
   }
 
   @override
@@ -221,26 +191,35 @@ class _PostTreasureViewState extends State<PostTreasureView>
                               context.read<CameraProvider>().cameraImages);
                           log(longitude.toString());
                           log(latitude.toString());
-
-                          if (permission.permissionState ==
-                              PermissionState.granted) {
+                          if (permission.position != null) {
                             context.push(Routes.itemDetails,
                                 extra: treasurePostModel);
-                          } else if (permission.permissionState ==
-                              PermissionState.deniedForever) {
-                            CustomSnackbar().showSnackbar(
-                              SnackBarEnums.processing,
-                              'Please enable location permission from settings',
-                              context,
-                            );
-                            await permission.openLocationSettings();
                           } else {
                             CustomSnackbar().showSnackbar(
-                              SnackBarEnums.processing,
-                              'Please allow us to access your location',
+                              SnackBarEnums.failed,
+                              'Unable to get your location. Please try again.',
                               context,
                             );
                           }
+
+                          // if (permission.permissionState ==
+                          //     PermissionState.granted) {
+
+                          // } else if (permission.permissionState ==
+                          //     PermissionState.deniedForever) {
+                          //   CustomSnackbar().showSnackbar(
+                          //     SnackBarEnums.processing,
+                          //     'Please enable location permission from settings',
+                          //     context,
+                          //   );
+                          //   await permission.openLocationSettings();
+                          // } else {
+                          //   CustomSnackbar().showSnackbar(
+                          //     SnackBarEnums.processing,
+                          //     'Please allow us to access your location',
+                          //     context,
+                          //   );
+                          // }
                         }
                       },
                     ),
@@ -255,39 +234,13 @@ class _PostTreasureViewState extends State<PostTreasureView>
                 : SizedBox.shrink(),
           ),
           Consumer<AppPermissions>(
-            builder: (context, permission, child) {
-              if (permission.permissionState == PermissionState.granted) {
-                return const SizedBox.shrink();
-              }
-
-              return Align(
-                alignment: Alignment.bottomCenter,
-                child: PermissionEnableComponent(
-                  txt: permission.permissionState ==
-                          PermissionState.deniedForever
-                      ? 'Location permission is permanently denied. Please enable it from settings.'
-                      : 'We need your location to continue',
-                  buttonText: permission.permissionState ==
-                          PermissionState.deniedForever
-                      ? 'Open Settings'
-                      : 'Allow Location',
-                  onTap: () async {
-                    if (permission.permissionState ==
-                        PermissionState.deniedForever) {
-                      await permission.openLocationSettings();
-                    } else {
-                      final result =
-                          await permission.requestLocationPermission();
-
-                      if (result == PermissionState.granted) {
-                        await permission.getCurrentPosition();
-                      }
-                    }
-                  },
-                ),
-              );
-            },
-          )
+            builder: (context, permissions, child) =>
+                !permissions.isLocationAllowed
+                    ? Align(
+                        alignment: Alignment.bottomCenter,
+                        child: PermissionEnableComponent())
+                    : SizedBox.shrink(),
+          ),
         ],
       ),
     );

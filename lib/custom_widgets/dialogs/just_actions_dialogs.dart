@@ -101,7 +101,7 @@ class JustActionsDialogs extends StatelessWidget {
 }
 
 Future<DialogEnums?> showActionDialog(
-  BuildContext context, {
+  BuildContext dialogContext, {
   required String title,
   String? subtitle,
   required String lottie,
@@ -110,7 +110,7 @@ Future<DialogEnums?> showActionDialog(
   String? btn2,
 }) {
   return showDialog<DialogEnums>(
-    context: context,
+    context: dialogContext,
     barrierDismissible: false,
     builder: (_) => JustActionsDialogs(
       title: title,
@@ -119,90 +119,92 @@ Future<DialogEnums?> showActionDialog(
       btn1Txt: btn1,
       btn2Txt: btn2,
       btn1Tap: () =>
-          btn1Tap?.call() ?? Navigator.pop(context, DialogEnums.treasureTaken),
+          btn1Tap?.call() ??
+          Navigator.pop(dialogContext, DialogEnums.treasureTaken),
       btn2Tap: btn2 == null
           ? null
-          : () => Navigator.pop(context, DialogEnums.treasureNotTaken),
+          : () => Navigator.pop(dialogContext, DialogEnums.treasureNotTaken),
     ),
   );
 }
 
 Future<void> showAllDialogs(
-    BuildContext context, String senderId, TreasureGetModel treasure) async {
+    BuildContext allDialogs, String senderId, TreasureGetModel treasure) async {
   final startResult = await showDialog(
-    context: context,
+    context: allDialogs,
     builder: (context) => TreasurePreview(
       treasure: treasure,
       isConfirmation: true,
     ),
   );
-  if (!context.mounted) return;
+  if (!allDialogs.mounted) return;
   if (startResult == DialogEnums.treasureNotTaken) {
-    context.go(Routes.dashboard);
+    allDialogs.go(Routes.dashboard);
     return;
   }
+  if (!allDialogs.mounted) return;
   final firstResult = await showActionDialog(
-    context,
+    allDialogs,
     title: AppStrings.didYouTakeTheItem,
     lottie: AppImages.takePhotos,
     btn1: AppStrings.yes,
     btn2: AppStrings.no,
     btn1Tap: () async {
       CustomSnackbar().showSnackbar(
-          SnackBarEnums.processing, 'Collecting treasure...', context);
-      final result = await context.read<ApiProvider>().collectTreasure(
-          context.read<PreferencesProvider>().accessToken ?? '',
+          SnackBarEnums.processing, 'Collecting treasure...', allDialogs);
+      final result = await allDialogs.read<ApiProvider>().collectTreasure(
+          allDialogs.read<PreferencesProvider>().accessToken ?? '',
           senderId,
           treasure.productId ?? '');
       if (result == ApiEnums.success) {
         CustomSnackbar().showSnackbar(SnackBarEnums.success,
-            context.read<ApiProvider>().responseTxt, context);
-        Navigator.of(context).pop(DialogEnums.treasureTaken);
+            allDialogs.read<ApiProvider>().responseTxt, allDialogs);
+        Navigator.of(allDialogs).pop(DialogEnums.treasureTaken);
       }
     },
   );
-  if (!context.mounted) return;
-
+  if (!allDialogs.mounted) return;
   if (firstResult == DialogEnums.treasureNotTaken) {
     await showActionDialog(
-      context,
+      allDialogs,
       lottie: AppImages.mapDotted,
       btn1: 'Close',
       title: AppStrings.sorry,
       subtitle: AppStrings.bestOfLuckOnYourAdventure,
     );
-    if (!context.mounted) return;
-    context.go(Routes.dashboard);
+    if (!allDialogs.mounted) return;
+    allDialogs.go(Routes.dashboard);
     return;
   }
+  if (!allDialogs.mounted) return;
   final result2 = await showActionDialog(
-    context,
+    allDialogs,
     lottie: AppImages.mapBrowsing,
     btn1: AppStrings.next,
-    btn1Tap: () => Navigator.of(context).pop(DialogEnums.treasureNotTaken),
+    //btn1Tap: () => Navigator.of(allDialogs).pop(DialogEnums.treasureTaken),
     title: AppStrings.congratsOnYourTesoroAppFinds,
   );
-  if (!context.mounted) return;
+  if (!allDialogs.mounted) return;
   if (result2 == DialogEnums.treasureNotTaken) {
-    context.go(Routes.dashboard);
+    allDialogs.go(Routes.dashboard);
     return;
   }
-  if (!context.mounted) return;
+  if (!allDialogs.mounted) return;
   final result3 = await showActionDialog(
-    context,
+    allDialogs,
     lottie: AppImages.money,
     btn1: AppStrings.yes,
     btn2: AppStrings.no,
     title: 'Would you like to give a tip ${treasure.postedBy?.name ?? ''}',
   );
-  if (!context.mounted) return;
+  if (!allDialogs.mounted) return;
   if (result3 == DialogEnums.treasureNotTaken) {
-    context.go(Routes.dashboard);
+    allDialogs.go(Routes.dashboard);
     return;
   }
-  if (!context.mounted) return;
+  if (!allDialogs.mounted) return;
   final result4 = await showDialog<DialogEnums>(
-    context: context,
+    context: allDialogs,
     barrierDismissible: false,
     builder: (context) => GiveTipsDialog(
       receiverId: treasure.postedBy?.id ?? treasure.userId ?? '',
@@ -210,37 +212,37 @@ Future<void> showAllDialogs(
       treasureId: treasure.productId ?? '',
     ),
   );
-  if (!context.mounted) return;
+  if (!allDialogs.mounted) return;
   if (result4 == DialogEnums.treasureNotTaken) {
-    context.go(Routes.dashboard);
+    allDialogs.go(Routes.dashboard);
     return;
   }
-  if (!context.mounted) return;
+  if (!allDialogs.mounted) return;
   final result5 = await showActionDialog(
-    context,
+    allDialogs,
     lottie: AppImages.dollarchest,
     btn1: AppStrings.next,
     title: AppStrings.thankYouForUsingTheTesoroApp,
   );
-  if (!context.mounted) return;
+  if (!allDialogs.mounted) return;
   if (result5 == DialogEnums.treasureNotTaken) {
-    context.go(Routes.dashboard);
+    allDialogs.go(Routes.dashboard);
     return;
   }
-  if (!context.mounted) return;
+  if (!allDialogs.mounted) return;
   final result6 = await showDialog<DialogEnums>(
     barrierDismissible: false,
-    context: context,
+    context: allDialogs,
     builder: (context) => NavigationCompletedDialog(
       treasureId: treasure.productId ?? '',
       userId: senderId,
       name: treasure.postedBy?.name ?? "",
     ),
   );
-  if (!context.mounted) return;
+  if (!allDialogs.mounted) return;
   if (result6 == DialogEnums.treasureTaken) {
-    context.go(Routes.dashboard);
+    allDialogs.go(Routes.dashboard);
     return;
   }
-  if (!context.mounted) return;
+  if (!allDialogs.mounted) return;
 }
