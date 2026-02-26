@@ -27,7 +27,7 @@ class TreasureDetailsView extends StatelessWidget {
   Widget build(BuildContext context) {
     final isUserTreasure = treasureGetModel.postedBy?.id ==
         context.read<PreferencesProvider>().userId;
-    final isCollected = treasureGetModel.collectedBy;
+    final isCollected = treasureGetModel.collectedBy?.name != 'Unknown';
     return CustomScaffold(
       backgroundColor: AppColors.light,
       child: SingleChildScrollView(
@@ -90,7 +90,7 @@ class TreasureDetailsView extends StatelessWidget {
                         condition: treasureGetModel.condition?.name ?? 'Bad',
                         itemName: treasureGetModel.title ?? 'N/A',
                         price: treasureGetModel.price.toString()),
-                    if (isCollected == null)
+                    if (!isCollected)
                       CustomBtn(
                           text: isUserTreasure
                               ? 'Edit Treasure'
@@ -153,7 +153,7 @@ class TreasureDetailsView extends StatelessWidget {
                       const Divider(),
                     if (!isUserTreasure || treasureGetModel.collectedBy != null)
                       Text(
-                        treasureGetModel.collectedBy != null
+                        treasureGetModel.collectedBy?.name != 'Unknown'
                             ? 'Collected By'
                             : 'Posted By:',
                         style: AppTextStyles.bodyLarge
@@ -161,12 +161,15 @@ class TreasureDetailsView extends StatelessWidget {
                       ),
                     // if (!isUserTreasure)
                     PostedByCard(
-                      imageUrl: treasureGetModel.postedBy?.profileImage ??
+                      imageUrl: treasureGetModel.collectedBy?.profileImage ??
+                          treasureGetModel.postedBy?.profileImage ??
                           'https://e7.pngegg.com/pngimages/371/667/png-clipart-computer-icons-user-profile-encapsulated-postscript-icon-black-rectangle-black.png',
-                      name: treasureGetModel.collectedBy ??
+                      name: treasureGetModel.collectedBy?.name ??
                           treasureGetModel.postedBy?.name ??
                           "N/A",
-                      rating: treasureGetModel.postedBy?.rating ?? 1,
+                      rating: treasureGetModel.collectedBy?.rating ??
+                          treasureGetModel.postedBy?.rating ??
+                          1,
                     ),
                   ],
                 ),

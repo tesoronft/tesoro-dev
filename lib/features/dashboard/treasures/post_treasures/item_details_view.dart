@@ -14,6 +14,8 @@ import 'package:tesoro_nft_app/providers/api_provider.dart';
 import 'package:tesoro_nft_app/routes/routes.dart';
 import 'package:tesoro_nft_app/services/analytics_service.dart';
 
+import '../../../../utils/form_validator.dart';
+
 class ItemDetailsView extends StatefulWidget {
   const ItemDetailsView({super.key, required this.treasurePostModel});
   final TreasurePostModel treasurePostModel;
@@ -35,6 +37,7 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
       PostTreasureController();
   ValueNotifier categoryId = ValueNotifier<dynamic>(null);
   ValueNotifier conditionId = ValueNotifier<dynamic>(null);
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
@@ -47,6 +50,7 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
         child: SafeArea(
           minimum: EdgeInsets.symmetric(horizontal: 10),
           child: Form(
+            key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 15,
@@ -60,6 +64,8 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                   hintText: AppStrings.estimatePrice,
                   keyboardType: TextInputType.number,
                   editingController: _postTreasureController.price,
+                  validation: FormValidators.validatePrice(
+                      _postTreasureController.price.text),
                 ),
                 Text(
                   AppStrings.category,
@@ -184,6 +190,8 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                   hintText: AppStrings.selectBrand,
                   keyboardType: TextInputType.text,
                   editingController: _postTreasureController.brand,
+                  validation: FormValidators.validateTreasureBrand(
+                      _postTreasureController.brand.text),
                 ),
                 Text(
                   AppStrings.model,
@@ -193,6 +201,8 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                   hintText: AppStrings.selectModel,
                   keyboardType: TextInputType.text,
                   editingController: _postTreasureController.model,
+                  validation: FormValidators.validateTreasureModel(
+                      _postTreasureController.model.text),
                 ),
                 Text(
                   AppStrings.description,
@@ -208,6 +218,11 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                   builder: (context, apis, child) => CustomBtn(
                     text: AppStrings.next,
                     onBtnTap: () async {
+                      if (!_formKey.currentState!.validate() ||
+                          categoryId.value == null ||
+                          conditionId.value == null) {
+                        return;
+                      }
                       widget.treasurePostModel.categoryId = apis
                           .categoryModelList?.categoryModel
                           ?.firstWhere(

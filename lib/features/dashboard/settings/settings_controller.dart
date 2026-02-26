@@ -12,7 +12,7 @@ class SettingsController {
         context.push(Routes.updateProfile);
         break;
       case 1:
-        context.push(Routes.webView, extra: privacyPolicyId);
+        await launchUrl(Uri.parse('https://tesoroapp.io/about'));
         break;
       case 2:
         context.push(Routes.webView, extra: privacyPolicyId);

@@ -6,9 +6,9 @@ class TreasureGetModel {
       itemModel,
       type,
       description,
-      collectedBy,
       collectedAt,
       createdAt;
+  CollectedBy? collectedBy;
   CategoryData? category;
   ConditionData? condition;
   dynamic price;
@@ -41,7 +41,7 @@ class TreasureGetModel {
         condition: ConditionData.fromJson(jsonData['condition']),
         createdAt: jsonData['createdAt'],
         collectedAt: jsonData['collectedAt'],
-        collectedBy: jsonData['collectedBy'],
+        collectedBy: CollectedBy.fromJson(jsonData['collectedBy'] ?? {}),
         description: jsonData['description'],
         distance: jsonData['distance'],
         itemModel: jsonData['itemModel'],
@@ -123,7 +123,22 @@ class PostedBy {
   factory PostedBy.fromJson(Map<String, dynamic> jsonData) {
     return PostedBy(
       id: jsonData['_id']?.toString(),
-      name: jsonData['name']?.toString() ?? "Unknown",
+      name: jsonData['name']?.toString() ?? '',
+      profileImage: jsonData['profileImage']?.toString() ?? '',
+      rating: jsonData['rating'] ?? 0,
+    );
+  }
+}
+
+class CollectedBy {
+  String? id, name, profileImage;
+
+  dynamic rating;
+  CollectedBy({this.id, this.name, this.profileImage, this.rating});
+  factory CollectedBy.fromJson(Map<String, dynamic> jsonData) {
+    return CollectedBy(
+      id: jsonData['_id']?.toString(),
+      name: jsonData['name']?.toString() ?? '',
       profileImage: jsonData['profileImage']?.toString() ?? '',
       rating: jsonData['rating'] ?? 0,
     );

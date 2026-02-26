@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:tesoro_nft_app/consts/app_colors.dart';
+import 'package:tesoro_nft_app/utils/set_image.dart';
 
 class ImagePreview extends StatelessWidget {
   ImagePreview({super.key, required this.images});
@@ -26,21 +27,11 @@ class ImagePreview extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                         color: AppColors.currency),
                     clipBehavior: Clip.antiAlias,
-                    child: images.first.toString().contains('https')
-                        ? Image.network(
-                            images[currentIndex.value],
-                            height: MediaQuery.sizeOf(context).height / 3,
-                            width: MediaQuery.sizeOf(context).width / 1,
-                            fit: BoxFit.cover,
-                          )
-                        : Image.file(
-                            File(
-                              images[currentIndex.value],
-                            ),
-                            height: MediaQuery.sizeOf(context).height / 3,
-                            width: MediaQuery.sizeOf(context).width / 1,
-                            fit: BoxFit.cover,
-                          ),
+                    child: SetImage(
+                      imagePath: images[current],
+                      height: MediaQuery.sizeOf(context).height / 3,
+                      width: MediaQuery.sizeOf(context).width / 1,
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),

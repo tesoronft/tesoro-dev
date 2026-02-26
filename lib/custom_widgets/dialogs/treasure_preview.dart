@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
@@ -14,6 +12,7 @@ import 'package:tesoro_nft_app/enums/snack_bar_enums.dart';
 import 'package:tesoro_nft_app/providers/api_provider.dart';
 import 'package:tesoro_nft_app/providers/preferences_provider.dart';
 import 'package:tesoro_nft_app/routes/routes.dart';
+import 'package:tesoro_nft_app/utils/set_image.dart';
 
 import '../../enums/dialog_enums.dart';
 import '../../models/treasures/treasure_get_model.dart';
@@ -30,25 +29,10 @@ class TreasurePreview extends StatelessWidget {
         borderRadius: BorderRadius.circular(isConfirmation ? 10 : 0),
       ),
       backgroundColor: AppColors.light,
-      title: treasure.photos!.first.toString().contains('https')
-          ? SizedBox(
-              height: 200,
-              width: double.infinity,
-              child: Image.network(
-                treasure.photos!.first,
-                fit: BoxFit.cover,
-              ),
-            )
-          : SizedBox(
-              height: 200,
-              width: double.infinity,
-              child: Image.file(
-                File(
-                  treasure.photos!.first,
-                ),
-                fit: BoxFit.cover,
-              ),
-            ),
+      title: SizedBox(
+          height: 200,
+          width: double.infinity,
+          child: SetImage(imagePath: treasure.photos!.first)),
       titlePadding: EdgeInsets.all(6),
       contentPadding: EdgeInsets.all(6),
       content: Column(

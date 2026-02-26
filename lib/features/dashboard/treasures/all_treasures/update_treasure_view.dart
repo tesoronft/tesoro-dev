@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -11,6 +10,7 @@ import 'package:tesoro_nft_app/custom_widgets/custom_snackbar.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_text_field.dart';
 import 'package:tesoro_nft_app/models/treasures/treasure_get_model.dart';
 import 'package:tesoro_nft_app/providers/preferences_provider.dart';
+import 'package:tesoro_nft_app/utils/set_image.dart';
 
 import '../../../../consts/app_colors.dart';
 import '../../../../consts/app_strings.dart';
@@ -239,19 +239,10 @@ class _UpdateTreasureViewState extends State<UpdateTreasureView> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                             clipBehavior: Clip.antiAlias,
-                            child: Image.file(
-                              File(
-                                  widget.treasureGetModel.photos?[index] ?? ''),
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  Container(
-                                color: Colors.grey[300],
-                                width: 150,
-                                height: 150,
-                                child: Icon(Icons.broken_image,
-                                    color: Colors.grey[700]),
-                              ),
-                            ),
+                            child: SetImage(
+                                imagePath:
+                                    widget.treasureGetModel.photos?[index] ??
+                                        ''),
                           ),
                           GestureDetector(
                             onTap: () =>
@@ -280,17 +271,8 @@ class _UpdateTreasureViewState extends State<UpdateTreasureView> {
                           onBtnTap: () async {
                             log(widget.treasureGetModel.productId.toString());
 
-                            // treasurePostModel.categoryId = apis
-                            //     .categoryModelList?.categoryModel
-                            //     ?.firstWhere(
-                            //         (element) => element.id == categoryId.value)
-                            //     .name;
-                            // treasurePostModel.conditionId = apis
-                            //     .conditionsList?.categoryModel
-                            //     ?.firstWhere((element) =>
-                            //         element.id == conditionId.value)
-                            //     .name;
-
+                            treasurePostModel.title =
+                                _postTreasureController.title.text;
                             treasurePostModel.brand =
                                 _postTreasureController.brand.text;
                             treasurePostModel.description =
@@ -299,8 +281,10 @@ class _UpdateTreasureViewState extends State<UpdateTreasureView> {
                                 _postTreasureController.type.text;
                             treasurePostModel.itemModel =
                                 _postTreasureController.model.text;
-                            treasurePostModel.condition = conditionId.value;
-                            treasurePostModel.category = categoryId.value;
+                            treasurePostModel.condition = conditionId.value ??
+                                widget.treasureGetModel.condition?.id;
+                            treasurePostModel.category = categoryId.value ??
+                                widget.treasureGetModel.category?.id;
                             treasurePostModel.price =
                                 int.parse(_postTreasureController.price.text);
                             await AnalyticsService.logEvent(

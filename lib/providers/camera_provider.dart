@@ -11,13 +11,13 @@ class CameraProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
 
   List<CameraDescription> cameras = [];
-  List<String> get cameraImages => _cameraImages;
-  List<String> _cameraImages = [];
+  List<XFile> get cameraImages => _cameraImages;
+  List<XFile> _cameraImages = [];
   Future<void>? _initializeControllerFuture;
   Future<void>? get initializeControllerFuture => _initializeControllerFuture;
   bool _isFlashOn = false;
   bool get isFlashOn => _isFlashOn;
-  void setImages(List<String> images) {
+  void setImages(List<XFile> images) {
     _cameraImages.addAll(images);
     notifyListeners();
   }
@@ -53,17 +53,17 @@ class CameraProvider with ChangeNotifier {
     }
   }
 
-  Future<String> clickImage() async {
+  Future<XFile> clickImage() async {
     try {
       final image = await _cameraController?.takePicture();
       log(image?.path ?? '');
-      _cameraImages.add(image?.path ?? '');
-      return image?.path ?? '';
+      _cameraImages.add(image ?? XFile(''));
+      return image ?? XFile('');
     } catch (e) {
       log(e.toString());
       _isLoading = false;
       notifyListeners();
-      return '';
+      return XFile('');
     }
   }
 

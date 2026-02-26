@@ -26,9 +26,10 @@ dependencies:
   sign_in_with_apple: ^7.0.1
 
   #firebase
-  firebase_analytics: ^12.0.4
-  firebase_crashlytics: ^5.0.5
-  firebase_remote_config: ^6.1.4
+  firebase_core: ^3.11.0
+  firebase_analytics: ^11.4.2
+  firebase_crashlytics: ^4.3.2
+  firebase_remote_config: ^5.4.0
 
   #local databases
   shared_preferences: ^2.5.4
@@ -67,9 +68,9 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   webview_flutter: ^4.13.0
   geocoding: ^4.0.0
-  firebase_core: ^4.3.0
   lottie: ^3.3.2
   internet_connection_checker: ^1.0.0+1
+  cached_network_image: ^3.4.1
  
 
 
@@ -93,7 +94,6 @@ flutter_native_splash:
   ios: true
   web: false
   android_gravity: center
-  ios_content_mode: scaleAspectFill
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

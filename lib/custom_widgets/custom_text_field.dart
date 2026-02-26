@@ -3,16 +3,16 @@ import 'package:tesoro_nft_app/consts/app_colors.dart';
 import 'package:tesoro_nft_app/consts/app_text_styles.dart';
 
 class CustomTextField extends StatefulWidget {
-  CustomTextField({
-    super.key,
-    required this.hintText,
-    this.isPassword = false,
-    this.fillColors,
-    required this.keyboardType,
-    this.maxLength,
-    required this.editingController,
-    this.helperTxt,
-  });
+  CustomTextField(
+      {super.key,
+      required this.hintText,
+      this.isPassword = false,
+      this.fillColors,
+      required this.keyboardType,
+      this.maxLength,
+      required this.editingController,
+      this.helperTxt,
+      this.validation});
   final String hintText;
   final bool isPassword;
   bool isVissible = false;
@@ -21,7 +21,7 @@ class CustomTextField extends StatefulWidget {
   final TextEditingController editingController;
   Color? fillColors;
   int? maxLength;
-
+  String? validation;
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
 }
@@ -33,10 +33,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
       controller: widget.editingController,
       maxLines: widget.maxLength ?? 1,
       validator: (value) {
-        if (value == null || value.isEmpty && widget.maxLength != null) {
-          return 'This field cannot be empty';
-        }
-        return null;
+        return widget.validation != null
+            ? value!.isEmpty
+                ? widget.validation
+                : null
+            : null;
       },
       style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.normal),
       cursorColor: AppColors.primary,

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
@@ -19,6 +17,7 @@ import 'package:tesoro_nft_app/models/treasures/treasure_post_model.dart';
 import 'package:tesoro_nft_app/providers/api_provider.dart';
 import 'package:tesoro_nft_app/providers/preferences_provider.dart';
 import 'package:tesoro_nft_app/routes/routes.dart';
+import 'package:tesoro_nft_app/utils/set_image.dart';
 
 import '../../../../services/analytics_service.dart';
 
@@ -58,10 +57,9 @@ class ConfirmDetailsView extends StatelessWidget {
                             borderRadius: BorderRadius.circular(10),
                             color: AppColors.light,
                           ),
-                          child: Image.file(
-                            File(treasurePostModel.photos?[index] ?? ''),
-                            fit: BoxFit.fill,
-                          ),
+                          child: SetImage(
+                              imagePath:
+                                  treasurePostModel.photos?[index] ?? ''),
                         );
                       },
                     ),

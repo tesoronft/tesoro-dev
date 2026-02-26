@@ -8,4 +8,6 @@ class AuthController {
   final TextEditingController confirmPasswordController =
       TextEditingController();
   final TextEditingController nameController = TextEditingController();
+
+  final TextEditingController otpController = TextEditingController();
 }

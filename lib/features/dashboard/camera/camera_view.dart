@@ -99,7 +99,7 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
                           'user_picked_image_from_gallery');
                       final result = await DeviceImagePicker().pickImage();
                       camera.setImages(
-                        result?.map((path) => path.path).toList() ?? [],
+                        result?.map((path) => path).toList() ?? [],
                       );
                       await camera.disposeCamera();
                       context.pop();
@@ -113,8 +113,9 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
                     },
                     onFlashTap: () async {
                       await AnalyticsService.logEvent('user_toggled_flash');
-                      camera.toggleFlash();
+                      await camera.toggleFlash();
                     },
+                    isFlashOn: camera.isFlashOn,
                   ),
                 ],
               ),

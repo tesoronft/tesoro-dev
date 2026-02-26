@@ -53,6 +53,7 @@ class AppImages {
   //camera
   static const String cameraClick = 'assets/images/cameraClick.png';
   static const String flash = 'assets/images/flash.png';
+  static const String flashOff = 'assets/images/flashOff.png';
   static const String gallery = 'assets/images/gallery.png';
 
   //lottie

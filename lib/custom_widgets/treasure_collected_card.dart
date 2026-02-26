@@ -1,10 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:tesoro_nft_app/consts/app_colors.dart';
 import 'package:tesoro_nft_app/consts/app_strings.dart';
 import 'package:tesoro_nft_app/consts/app_text_styles.dart';
 import 'package:tesoro_nft_app/utils/covert_time_to_minutes.dart';
+import 'package:tesoro_nft_app/utils/set_image.dart';
 
 class TreasureCollectedCard extends StatelessWidget {
   const TreasureCollectedCard(
@@ -37,25 +36,12 @@ class TreasureCollectedCard extends StatelessWidget {
           spacing: 10,
           children: [
             Container(
-              height: 80,
-              width: 90,
-              decoration:
-                  BoxDecoration(borderRadius: BorderRadius.circular(10)),
-              clipBehavior: Clip.antiAlias,
-              child: Image.file(
-                File(imageUrl),
-                fit: BoxFit.cover,
-                filterQuality: FilterQuality.high,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  color: AppColors.light,
-                  child: Icon(
-                    Icons.broken_image_outlined,
-                    color: AppColors.primary,
-                    size: 32,
-                  ),
-                ),
-              ),
-            ),
+                height: 80,
+                width: 90,
+                decoration:
+                    BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                clipBehavior: Clip.antiAlias,
+                child: SetImage(imagePath: imageUrl)),
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,

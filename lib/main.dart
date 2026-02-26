@@ -23,8 +23,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       // key: navigatorKey,
-      routerConfig: Routes.router,
       debugShowCheckedModeBanner: false,
+      routerConfig: Routes.router,
     );
   }
 }

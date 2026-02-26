@@ -1,9 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:tesoro_nft_app/consts/app_colors.dart';
 import 'package:tesoro_nft_app/consts/app_strings.dart';
 import 'package:tesoro_nft_app/consts/app_text_styles.dart';
+import 'package:tesoro_nft_app/utils/set_image.dart';
 
 class TreasurePostedCard extends StatelessWidget {
   const TreasurePostedCard({
@@ -31,40 +30,7 @@ class TreasurePostedCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 4,
             children: [
-              Expanded(
-                child: imagePath.contains('https')
-                    ? Image.network(
-                        imagePath,
-                        // height: 150,
-                        width: double.infinity,
-                        filterQuality: FilterQuality.high,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Container(
-                          color: AppColors.light,
-                          child: Icon(
-                            Icons.broken_image_outlined,
-                            color: AppColors.primary,
-                            size: 32,
-                          ),
-                        ),
-                      )
-                    : Image.file(
-                        File(imagePath),
-                        // height: 150,
-                        width: double.infinity,
-                        filterQuality: FilterQuality.high,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Container(
-                          alignment: Alignment.center,
-                          color: AppColors.light,
-                          child: Icon(
-                            Icons.broken_image_outlined,
-                            color: Colors.grey,
-                            size: 64,
-                          ),
-                        ),
-                      ),
-              ),
+              Expanded(child: SetImage(imagePath: imagePath)),
               Padding(
                 padding: const EdgeInsets.only(left: 5),
                 child: Text(
@@ -94,12 +60,16 @@ class TreasurePostedCard extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
-            color: collectedBy == null ? AppColors.primary : AppColors.error,
+            color: collectedBy == 'Not Collected'
+                ? AppColors.primary
+                : AppColors.error,
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
             child: Text(
-              collectedBy == null ? AppStrings.available : AppStrings.collected,
+              collectedBy == 'Not Collected'
+                  ? AppStrings.available
+                  : AppStrings.collected,
               style: AppTextStyles.labelMedium.copyWith(color: AppColors.light),
             ),
           ),

@@ -5,9 +5,11 @@ class CameraComponents extends StatelessWidget {
   const CameraComponents(
       {super.key,
       required this.onCameraClickTap,
+      this.isFlashOn = false,
       required this.onFlashTap,
       required this.onGalleryTap});
   final VoidCallback onGalleryTap, onCameraClickTap, onFlashTap;
+  final bool isFlashOn;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -30,7 +32,7 @@ class CameraComponents extends StatelessWidget {
         InkWell(
           onTap: onFlashTap,
           child: Image.asset(
-            AppImages.flash,
+            isFlashOn ? AppImages.flash : AppImages.flashOff,
             height: 60,
           ),
         ),

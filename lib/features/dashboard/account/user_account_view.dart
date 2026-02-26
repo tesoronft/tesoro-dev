@@ -149,17 +149,6 @@ class _UserAccountViewState extends State<UserAccountView> {
                           ),
                         ),
                       ),
-                      // Padding(
-                      //   padding: const EdgeInsets.all(8.0),
-                      //   child: CustomBtn(
-                      //     text: AppStrings.earnOroTokens,
-                      //     onBtnTap: () async => await showAllDialogs(context),
-                      //     trailingIcon: Icon(
-                      //       Icons.arrow_forward,
-                      //       color: AppColors.light,
-                      //     ),
-                      //   ),
-                      // ),
                     ],
                   ),
                 ),

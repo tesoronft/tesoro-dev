@@ -13,6 +13,7 @@ import 'package:tesoro_nft_app/routes/routes.dart';
 import 'package:tesoro_nft_app/utils/app_permissions.dart';
 import 'package:tesoro_nft_app/utils/internet_checker.dart';
 
+import '../../../custom_widgets/permission_enable_component.dart';
 import '../../../custom_widgets/shimmer_effect.dart';
 import '../../../custom_widgets/treasures/empty_view.dart';
 import '../../../models/treasures/get_all_treasures_model.dart';
@@ -111,6 +112,9 @@ class _TreasurePostedViewState extends State<TreasurePostedView> {
                   if (internet.isConnected == false) {
                     return OfflineView();
                   }
+                  if (!permissions.isLocationAllowed) {
+                    return PermissionEnableComponent();
+                  }
                   return Column(
                     children: [
                       Expanded(
@@ -137,7 +141,9 @@ class _TreasurePostedViewState extends State<TreasurePostedView> {
                                       thisTreasure?.condition?.name ?? 'N/A',
                                   imagePath: thisTreasure?.photos?.first,
                                   itemName: thisTreasure?.title ?? '',
-                                  collectedBy: thisTreasure?.collectedBy,
+                                  collectedBy:
+                                      thisTreasure?.collectedBy?.name ??
+                                          'Not Collected',
                                 ),
                               );
                             }),

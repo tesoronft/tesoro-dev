@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:camera/camera.dart';
 import 'package:http/http.dart' as https;
 import 'package:flutter/material.dart';
 import 'package:tesoro_nft_app/enums/api_enums.dart';
@@ -14,12 +15,12 @@ import 'package:tesoro_nft_app/models/treasures/get_posted_treasure_model.dart';
 import 'package:tesoro_nft_app/models/treasures/treasure_get_model.dart';
 import 'package:tesoro_nft_app/models/user/user_profile.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-
+import 'package:http_parser/http_parser.dart';
 import '../models/tips/sended_tips_model.dart';
 import '../models/treasures/treasure_post_model.dart';
 
 class ApiProvider with ChangeNotifier {
-  final String baseUrl = 'https://tesoro-backend-production.up.railway.app/api';
+  final String baseUrl = 'https://api.tesoroapp.io/api';
   bool _isLoading = false;
   bool get isLoading => _isLoading;
   String _responseTxt = '';
@@ -93,6 +94,218 @@ class ApiProvider with ChangeNotifier {
         final json = jsonDecode(response.body);
         log(response.body);
         _authModel = AuthModel.fromJson(json['data']);
+        _responseTxt = json['message'];
+        _isLoading = false;
+        notifyListeners();
+        return ApiEnums.success;
+      } else {
+        log(response.body);
+        final json = jsonDecode(response.body);
+        _responseTxt = json['details']['message'];
+        _isLoading = false;
+        notifyListeners();
+        return ApiEnums.failed;
+      }
+    } catch (e) {
+      log(e.toString());
+      _isLoading = false;
+      _responseTxt = e.toString();
+      notifyListeners();
+      return ApiEnums.failed;
+    }
+  }
+
+  Future<ApiEnums> confirmEmail(String email) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final response = await https.post(
+          Uri.parse('$baseUrl/auth/forgot-password'),
+          body: {"email": email});
+      if (response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        log(response.body);
+        _responseTxt = json['message'];
+        _isLoading = false;
+        notifyListeners();
+        return ApiEnums.success;
+      } else {
+        log(response.body);
+        final json = jsonDecode(response.body);
+        _responseTxt = json['details']['message'];
+        _isLoading = false;
+        notifyListeners();
+        return ApiEnums.failed;
+      }
+    } catch (e) {
+      log(e.toString());
+      _isLoading = false;
+      _responseTxt = e.toString();
+      notifyListeners();
+      return ApiEnums.failed;
+    }
+  }
+
+  Future<ApiEnums> verifyOtp(String email, String otp) async {
+    try {
+      final response = await https.post(Uri.parse('$baseUrl/auth/verify-otp'),
+          body: {"email": email, "otp": otp});
+      if (response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        log(response.body);
+        _responseTxt = json['message'];
+        _isLoading = false;
+        notifyListeners();
+        return ApiEnums.success;
+      } else {
+        log(response.body);
+        final json = jsonDecode(response.body);
+        _responseTxt = json['details']['message'];
+        _isLoading = false;
+        notifyListeners();
+        return ApiEnums.failed;
+      }
+    } catch (e) {
+      log(e.toString());
+      _isLoading = false;
+      _responseTxt = e.toString();
+      notifyListeners();
+      return ApiEnums.failed;
+    }
+  }
+
+  Future<String> getImageUrl(
+      XFile image, String folderName, String token) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      var request = https.MultipartRequest(
+          'POST', Uri.parse('$baseUrl/upload/image/update'));
+
+      request.headers.addAll({"Authorization": "Bearer $token"});
+
+      request.fields['folder'] = folderName;
+
+      request.files.add(await https.MultipartFile.fromPath(
+        'image',
+        image.path,
+        contentType: MediaType('image', 'jpeg'),
+      ));
+
+      var streamedResponse = await request.send();
+      var response = await https.Response.fromStream(streamedResponse);
+
+      if (response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        _responseTxt = 'Image Uploaded';
+        _isLoading = false;
+        notifyListeners();
+        return json['data']['url'];
+      } else {
+        // The error you saw will now be caught here if it still fails
+        log("Error Response: ${response.body}");
+        final json = jsonDecode(response.body);
+        _responseTxt = json['details']?['message'] ?? 'Upload failed';
+        _isLoading = false;
+        notifyListeners();
+        return '';
+      }
+    } catch (e) {
+      log("Catch Error: $e");
+      _isLoading = false;
+      _responseTxt = e.toString();
+      notifyListeners();
+      return '';
+    }
+  }
+
+  Future<List<String>> getImageUrls(
+      List<XFile> images, String folderName, String token) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      var request =
+          https.MultipartRequest('POST', Uri.parse('$baseUrl/upload/images'));
+
+      request.headers.addAll({"Authorization": "Bearer $token"});
+
+      request.fields['folder'] = folderName;
+
+      for (var image in images) {
+        request.files.add(await https.MultipartFile.fromPath(
+          'images',
+          image.path,
+          contentType: MediaType('image', 'jpeg'),
+        ));
+      }
+
+      var streamedResponse = await request.send();
+      var response = await https.Response.fromStream(streamedResponse);
+
+      if (response.statusCode == 201) {
+        log(response.body);
+        final json = jsonDecode(response.body);
+        _responseTxt = json['message'] ?? 'Images Uploaded';
+        _isLoading = false;
+        notifyListeners();
+        return json['data']['urls'].cast<String>();
+      } else {
+        log("Error Response: ${response.body}");
+        final json = jsonDecode(response.body);
+        _responseTxt = json['details']?['message'] ?? 'Upload failed';
+        _isLoading = false;
+        notifyListeners();
+        return [];
+      }
+    } catch (e) {
+      log("Catch Error: $e");
+      _isLoading = false;
+      _responseTxt = e.toString();
+      notifyListeners();
+      return [];
+    }
+  }
+
+  Future<ApiEnums> deleteAccount(String password, String userId) async {
+    try {
+      final response = await https.post(Uri.parse('$baseUrl/auth/users/delete'),
+          body: {"password": password, "userId": userId});
+      if (response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        log(response.body);
+        _responseTxt = json['message'];
+        _isLoading = false;
+        notifyListeners();
+        return ApiEnums.success;
+      } else {
+        log(response.body);
+        final json = jsonDecode(response.body);
+        _responseTxt = json['details']['message'];
+        _isLoading = false;
+        notifyListeners();
+        return ApiEnums.failed;
+      }
+    } catch (e) {
+      log(e.toString());
+      _isLoading = false;
+      _responseTxt = e.toString();
+      notifyListeners();
+      return ApiEnums.failed;
+    }
+  }
+
+  Future<ApiEnums> resetPassword(String email, String newPassword) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final response = await https.post(
+          Uri.parse('$baseUrl/auth/reset-password'),
+          body: {"email": email, "newPassword": newPassword});
+      if (response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        log(response.body);
         _responseTxt = json['message'];
         _isLoading = false;
         notifyListeners();
@@ -245,59 +458,6 @@ class ApiProvider with ChangeNotifier {
       _responseTxt = e.toString();
       notifyListeners();
       return ApiEnums.failed;
-    }
-  }
-
-  Future<String> verifyOtp(String email, String otp) async {
-    _isLoading = true;
-    notifyListeners();
-    try {
-      final response = await https.post(Uri.parse('$baseUrl/auth/verify-otp'),
-          body: {"email": email, 'otp': otp});
-      if (response.statusCode == 201) {
-        final json = jsonDecode(response.body);
-        log(json);
-        _isLoading = false;
-        notifyListeners();
-        return json;
-      } else {
-        log(response.body);
-        _isLoading = false;
-        notifyListeners();
-        return response.reasonPhrase ?? response.statusCode.toString();
-      }
-    } catch (e) {
-      log(e.toString());
-      _isLoading = false;
-      notifyListeners();
-      return e.toString();
-    }
-  }
-
-  Future<String> resetPassword(String email, String password) async {
-    _isLoading = true;
-    notifyListeners();
-    try {
-      final response = await https.post(
-          Uri.parse('$baseUrl/auth/reset-password'),
-          body: {"email": email, 'newPassword': password});
-      if (response.statusCode == 201) {
-        final json = jsonDecode(response.body);
-        log(json);
-        _isLoading = false;
-        notifyListeners();
-        return json;
-      } else {
-        log(response.body);
-        _isLoading = false;
-        notifyListeners();
-        return response.reasonPhrase ?? response.statusCode.toString();
-      }
-    } catch (e) {
-      log(e.toString());
-      _isLoading = false;
-      notifyListeners();
-      return e.toString();
     }
   }
 
@@ -474,7 +634,7 @@ class ApiProvider with ChangeNotifier {
       if (response.statusCode == 201) {
         final json = jsonDecode(response.body);
         log(response.body);
-        _responseTxt = json['message'] ?? 'Data Received';
+        _responseTxt = 'Data Received';
         _treasureGetModel = TreasureGetModel.fromJson(json);
         _isLoading = false;
         notifyListeners();
@@ -599,40 +759,38 @@ class ApiProvider with ChangeNotifier {
       String accessToken,
       TreasurePostModel treasurePostModel,
       TreasureGetModel treasureGetModel) async {
-    log(treasurePostModel.condition ?? 'no id');
-    log(treasurePostModel.category ?? 'no id');
-    log(treasureGetModel.productId ?? 'no id');
-    log("Type of treasureId: ${treasureGetModel.productId.runtimeType}");
-    log("Type of condition: ${treasurePostModel.condition.runtimeType}");
-    log("Type of category: ${treasurePostModel.category.runtimeType}");
     _isLoading = true;
     notifyListeners();
     try {
-      final response = await https.post(Uri.parse('$baseUrl/treasures/update'),
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer $accessToken',
+      final response = await https.post(
+        Uri.parse('$baseUrl/treasures/update'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
+        body: jsonEncode({
+          "treasureId": treasureGetModel.productId,
+          "title": treasurePostModel.title,
+          "price": treasurePostModel.price,
+          "location": {
+            "address": treasureGetModel.location?.address,
+            "lat": treasureGetModel.location?.coordinates?[1],
+            "lng": treasureGetModel.location?.coordinates?[0],
+            "placeId": "ChIJd_Y0eVIvkIARuQyDN0F1LBA"
           },
-          body: jsonEncode({
-            "treasureId": treasureGetModel.productId,
-            "title": treasurePostModel.title,
-            "price": treasurePostModel.price,
-            "location": {
-              "address": treasureGetModel.location?.address,
-              "lat": treasureGetModel.location?.coordinates![1],
-              "lng": treasureGetModel.location?.coordinates![0],
-              "placeId": "ChIJd_Y0eVIvkIARuQyDN0F1LBA"
-            },
-            "photos": treasureGetModel.photos,
-            "brand": treasurePostModel.brand,
-            "condition": treasurePostModel.condition,
-            "category": treasurePostModel.category,
-            "itemModel": treasurePostModel.itemModel,
-            "description": treasurePostModel.description,
-          }));
+          "photos": treasureGetModel.photos,
+          "brand": treasurePostModel.brand,
+          "condition": treasurePostModel.condition,
+          "category": treasurePostModel.category,
+          "itemModel": treasurePostModel.itemModel,
+          "description": treasurePostModel.description,
+        }),
+      );
+
       if (response.statusCode == 201) {
+        final jsonData = jsonDecode(response.body);
         log(response.body);
-        _responseTxt = response.reasonPhrase ?? 'Treasure Updated';
+        _responseTxt = jsonData["message"] ?? 'Treasure Updated';
         _isLoading = false;
         notifyListeners();
         return ApiEnums.success;

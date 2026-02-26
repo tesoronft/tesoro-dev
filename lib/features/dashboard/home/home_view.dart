@@ -48,11 +48,11 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
 
   // @override
   // void didChangeAppLifecycleState(AppLifecycleState state) async {
-  //   if (state != AppLifecycleState.resumed) return;
+  //   if (state == AppLifecycleState.hidden) return;
 
   //   final geoLocation = Provider.of<AppPermissions>(context, listen: false);
   //   log('Checking location permissions on app resume');
-  //   if (geoLocation.position == null) {
+  //   if (geoLocation.isLocationAllowed == false) {
   //     final position = await geoLocation.getCurrentPosition();
   //     await geoLocation.getCurrentPlacemark();
 
@@ -147,7 +147,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                           longitude: permissions.position?.longitude ?? 0.0,
                           latitude: permissions.position?.latitude ?? 0.0,
                         ),
-                        zoom: 20,
+                        zoom: 15,
                       ),
                       initialMinZoomPreference: 2,
                       initialMaxZoomPreference: 21.0,

@@ -16,12 +16,14 @@ import 'package:tesoro_nft_app/enums/snack_bar_enums.dart';
 import 'package:tesoro_nft_app/providers/api_provider.dart';
 import 'package:tesoro_nft_app/providers/preferences_provider.dart';
 import 'package:tesoro_nft_app/routes/routes.dart';
+import 'package:tesoro_nft_app/utils/form_validator.dart';
 
 class AuthCard extends StatelessWidget {
   AuthCard({super.key, required this.issSignin, required this.onBtnTap});
   final bool issSignin;
   final VoidCallback onBtnTap;
   final AuthController _authController = AuthController();
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Consumer2<ApiProvider, PreferencesProvider>(
@@ -55,26 +57,33 @@ class AuthCard extends StatelessWidget {
                 height: 75,
               ),
               Form(
+                key: _formKey,
                 child: SingleChildScrollView(
                   child: Column(
-                    spacing: 20,
+                    spacing: 10,
                     children: [
                       if (!issSignin)
                         CustomTextField(
                           editingController: _authController.nameController,
                           hintText: AppStrings.name,
                           keyboardType: TextInputType.name,
+                          validation: FormValidators.validateName(
+                              _authController.nameController.text),
                         ),
                       CustomTextField(
                         editingController: _authController.emailController,
                         hintText: AppStrings.exampleEmail,
                         keyboardType: TextInputType.emailAddress,
+                        validation: FormValidators.validateEmail(
+                            _authController.emailController.text),
                       ),
                       CustomTextField(
                         editingController: _authController.passwordController,
                         hintText: AppStrings.password,
                         keyboardType: TextInputType.visiblePassword,
                         isPassword: true,
+                        validation: FormValidators.validatePassword(
+                            _authController.passwordController.text),
                         // onVisibilityTap: () {},
                       ),
                       if (!issSignin)
@@ -84,10 +93,13 @@ class AuthCard extends StatelessWidget {
                           hintText: AppStrings.confirmPassword,
                           keyboardType: TextInputType.visiblePassword,
                           isPassword: true,
+                          validation: FormValidators.validateConfirmPassword(
+                              _authController.passwordController.text,
+                              _authController.confirmPasswordController.text),
                           //  onVisibilityTap: () {},
                         ),
                       TextButton(
-                          onPressed: () {},
+                          onPressed: () => context.push(Routes.confirmEmail),
                           child: Text(
                             AppStrings.forgotPassword,
                             style: AppTextStyles.bodySmall.copyWith(
@@ -103,6 +115,9 @@ class AuthCard extends StatelessWidget {
                                   ? AppStrings.signin
                                   : AppStrings.signup,
                               onBtnTap: () async {
+                                if (!_formKey.currentState!.validate()) {
+                                  return;
+                                }
                                 final result = issSignin
                                     ? await apis.signInUser(
                                         _authController.emailController.text,

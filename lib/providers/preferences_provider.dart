@@ -6,11 +6,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 class PreferencesProvider with ChangeNotifier {
   String? _accessToken, _refereshToken, _userId;
   bool _isDeleting = false;
+  bool? _isSSOUser;
   bool get isDeleting => _isDeleting;
   String? get refreshToken => _refereshToken;
   String? get accessToken => _accessToken;
   String? get userId => _userId;
-
+  bool? get isSSOUser => _isSSOUser;
   PreferencesProvider() {
     log('Getting all preferences');
     getAllPrefs();
@@ -22,7 +23,8 @@ class PreferencesProvider with ChangeNotifier {
     _refereshToken = await getRefreshToken();
     _accessToken = await getAccessToken();
     _userId = _prefs.getString('userId') ?? '';
-    log('accessToken:$_accessToken, refereshToken:$_refereshToken,userId:$userId');
+    _isSSOUser = _prefs.getBool('isSSOUser') ?? false;
+    log('accessToken:$_accessToken, refereshToken:$_refereshToken,userId:$userId, isSSOUser:$_isSSOUser');
     notifyListeners();
   }
 
@@ -43,6 +45,14 @@ class PreferencesProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> setIsSSOUser(bool isSSO) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isSSOUser', isSSO);
+    _isSSOUser = isSSO;
+    log('Is SSO User: $isSSO');
+    notifyListeners();
+  }
+
   Future<void> setUserId(String userId) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('userId', userId);
@@ -59,6 +69,7 @@ class PreferencesProvider with ChangeNotifier {
     _accessToken = '';
     _refereshToken = '';
     _userId = '';
+    _isSSOUser = null;
     _isDeleting = false;
     notifyListeners();
   }

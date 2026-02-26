@@ -20,6 +20,7 @@ import 'package:tesoro_nft_app/enums/snack_bar_enums.dart';
 import 'package:tesoro_nft_app/models/treasures/treasure_post_model.dart';
 import 'package:tesoro_nft_app/providers/camera_provider.dart';
 import 'package:tesoro_nft_app/routes/routes.dart';
+import 'package:tesoro_nft_app/utils/form_validator.dart';
 
 import '../../../../providers/api_provider.dart';
 import '../../../../providers/preferences_provider.dart';
@@ -58,6 +59,7 @@ class _PostTreasureViewState extends State<PostTreasureView>
   TreasurePostModel treasurePostModel = TreasurePostModel();
   final PostTreasureController _postTreasureController =
       PostTreasureController();
+  final _formKey = GlobalKey<FormState>();
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
@@ -75,6 +77,7 @@ class _PostTreasureViewState extends State<PostTreasureView>
           SafeArea(
             minimum: EdgeInsets.symmetric(horizontal: 10),
             child: Form(
+              key: _formKey,
               child: Column(
                 spacing: 15,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -88,6 +91,8 @@ class _PostTreasureViewState extends State<PostTreasureView>
                     keyboardType: TextInputType.text,
                     fillColors: Colors.grey[100],
                     editingController: _postTreasureController.title,
+                    validation: FormValidators.validateTreasureTitle(
+                        _postTreasureController.title.text),
                   ),
                   Text(
                     AppStrings.location,
@@ -98,6 +103,8 @@ class _PostTreasureViewState extends State<PostTreasureView>
                     keyboardType: TextInputType.text,
                     fillColors: Colors.grey[100],
                     editingController: _postTreasureController.location,
+                    validation: FormValidators.validateTreasureLocation(
+                        _postTreasureController.location.text),
                   ),
                   Text(
                     AppStrings.addPhotos,
@@ -121,16 +128,18 @@ class _PostTreasureViewState extends State<PostTreasureView>
                                     alignment: Alignment.topRight,
                                     children: [
                                       Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                        clipBehavior: Clip.antiAlias,
-                                        child: Image.file(
-                                          File(camera.cameraImages[index]),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          clipBehavior: Clip.antiAlias,
+                                          child: Image.file(
+                                            File(camera
+                                                .cameraImages[index].path),
+                                            width: 150,
+                                            height: 150,
+                                            fit: BoxFit.cover,
+                                          )),
                                       GestureDetector(
                                         // InkWell works too, but GestureDetector is lighter for simple icons
                                         onTap: () => camera.removeImage(index),
@@ -169,12 +178,12 @@ class _PostTreasureViewState extends State<PostTreasureView>
                       ],
                     ),
                   ),
-                  Consumer<AppPermissions>(
-                    builder: (context, permission, child) => CustomBtn(
+                  Consumer2<AppPermissions, ApiProvider>(
+                    builder: (context, permission, apiProvider, child) =>
+                        CustomBtn(
                       text: AppStrings.next,
                       onBtnTap: () async {
-                        if (_postTreasureController.location.text.isNotEmpty &&
-                            _postTreasureController.title.text.isNotEmpty) {
+                        if (_formKey.currentState!.validate()) {
                           treasurePostModel.location ??= Location();
                           treasurePostModel.photos ??= [];
 
@@ -187,11 +196,16 @@ class _PostTreasureViewState extends State<PostTreasureView>
                               _postTreasureController.location.text;
                           treasurePostModel.title =
                               _postTreasureController.title.text;
-                          treasurePostModel.photos!.addAll(
-                              context.read<CameraProvider>().cameraImages);
+                          final allImages = await apiProvider.getImageUrls(
+                              context.read<CameraProvider>().cameraImages,
+                              'treasures',
+                              context.read<PreferencesProvider>().accessToken ??
+                                  '');
+                          treasurePostModel.photos = allImages;
                           log(longitude.toString());
                           log(latitude.toString());
-                          if (permission.position != null) {
+                          if (permission.position != null &&
+                              allImages.isNotEmpty) {
                             context.push(Routes.itemDetails,
                                 extra: treasurePostModel);
                           } else {

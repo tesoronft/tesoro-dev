@@ -17,7 +17,7 @@ class CustomAvatar extends StatelessWidget {
         color: Colors.grey[200],
         image: profileImage.contains('https')
             ? DecorationImage(
-                fit: BoxFit.contain, image: NetworkImage(profileImage))
+                fit: BoxFit.cover, image: NetworkImage(profileImage))
             : DecorationImage(
                 fit: BoxFit.cover,
                 image: FileImage(File(profileImage)),

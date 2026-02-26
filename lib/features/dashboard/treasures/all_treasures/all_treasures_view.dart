@@ -175,7 +175,8 @@ class _AllTreasuresViewState extends State<AllTreasuresView> {
                                       },
                                       child: TreasurePostedCard(
                                           collectedBy:
-                                              thisTreasure?.collectedBy,
+                                              thisTreasure?.collectedBy?.name ??
+                                                  'Not Collected',
                                           condition:
                                               thisTreasure?.condition?.name ??
                                                   '',

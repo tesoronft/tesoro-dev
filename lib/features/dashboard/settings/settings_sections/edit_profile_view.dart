@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +22,8 @@ import 'package:tesoro_nft_app/utils/device_image_picker.dart';
 class EditProfileView extends StatelessWidget {
   EditProfileView({super.key});
   final AuthController _authController = AuthController();
-  final ValueNotifier<String?> _profileImage = ValueNotifier<String?>(null);
+  final ValueNotifier<XFile?> _profileImage = ValueNotifier<XFile?>(null);
+
   @override
   Widget build(BuildContext context) {
     return Consumer2<ApiProvider, PreferencesProvider>(
@@ -54,7 +56,7 @@ class EditProfileView extends StatelessWidget {
                                 alignment: Alignment.bottomRight,
                                 children: [
                                   CustomAvatar(
-                                      profileImage: _profileImage.value ??
+                                      profileImage: _profileImage.value?.path ??
                                           api.userProfile?.profileImage ??
                                           'https://e7.pngegg.com/pngimages/371/667/png-clipart-computer-icons-user-profile-encapsulated-postscript-icon-black-rectangle-black.png'),
                                   Positioned(
@@ -76,37 +78,23 @@ class EditProfileView extends StatelessWidget {
                                 ],
                               ),
                             ),
-
                             CustomTextField(
                                 hintText: AppStrings.name,
                                 keyboardType: TextInputType.text,
                                 editingController:
                                     _authController.nameController),
-
-                            // CustomTextField(
-                            //   hintText: AppStrings.password,
-                            //   keyboardType: TextInputType.visiblePassword,
-                            //   editingController:
-                            //       _authController.passwordController,
-                            //   isPassword: true,
-                            //   // isVissible: false,
-                            // ),
-                            // CustomTextField(
-                            //   hintText: AppStrings.confirmPassword,
-                            //   keyboardType: TextInputType.visiblePassword,
-                            //   editingController:
-                            //       _authController.confirmPasswordController,
-                            //   isPassword: true,
-                            //   //isVissible: false,
-                            // ),
                             CustomBtn(
                                 text: 'Update',
                                 onBtnTap: () async {
+                                  final result = await api.getImageUrl(
+                                      _profileImage.value!,
+                                      'user-profiles',
+                                      prefs.accessToken ?? '');
                                   final authEnum = await api.updateUserData(
                                     prefs.accessToken ?? '',
                                     api.userProfile?.email,
                                     _authController.nameController.text,
-                                    _profileImage.value ?? '',
+                                    result,
                                     _authController
                                         .confirmPasswordController.text,
                                     _authController.passwordController.text,
@@ -126,23 +114,23 @@ class EditProfileView extends StatelessWidget {
                                         context);
                                   }
                                 }),
-                            SizedBox(
-                              height: 30,
-                            ),
-                            ListTile(
-                              title: Text('Update Password'),
-                              onTap: () => context.push(Routes.updatePassword),
-                              // tileColor: AppColors.lightPrimary,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  side: BorderSide(color: Color(0xff9EA1A8))),
-                              titleTextStyle: AppTextStyles.bodyMedium,
-                              trailing: Icon(Icons.arrow_forward_ios,
-                                  color: AppColors.dark, size: 16),
-                            ),
+                            SizedBox(height: 20),
+                            if (prefs.isSSOUser != true)
+                              ListTile(
+                                title: Text('Update Password'),
+                                onTap: () =>
+                                    context.push(Routes.updatePassword),
+                                // tileColor: AppColors.lightPrimary,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    side: BorderSide(color: Color(0xff9EA1A8))),
+                                titleTextStyle: AppTextStyles.bodyMedium,
+                                trailing: Icon(Icons.arrow_forward_ios,
+                                    color: AppColors.dark, size: 16),
+                              ),
                             ListTile(
                               title: Text('Delete Account'),
-                              onTap: () => context.push(Routes.updatePassword),
+                              onTap: () => context.push(Routes.deleteAccount),
                               tileColor: AppColors.error,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),

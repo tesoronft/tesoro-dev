@@ -5,7 +5,6 @@ import 'package:tesoro_nft_app/services/remote_config_service.dart';
 
 class PlatformsSigninController {
   static Future<String?> signinWithGoogle() async {
-    // PASS YOUR WEB CLIENT ID HERE
     final GoogleSignIn googleSignIn = GoogleSignIn.instance;
 
     try {

@@ -55,6 +55,7 @@ class SigninView extends StatelessWidget {
                             apiProvider.responseTxt, context);
                         await prefs.setUserId(
                             apiProvider.authModel?.user?.userId ?? '');
+                        await prefs.setIsSSOUser(true);
                         await prefs.setAccessToken(
                             apiProvider.authModel?.accessToken ?? '');
                         await prefs.setRefreshToken(
@@ -86,6 +87,7 @@ class SigninView extends StatelessWidget {
                             apiProvider.responseTxt, context);
                         await prefs.setUserId(
                             apiProvider.authModel?.user?.userId ?? '');
+                        await prefs.setIsSSOUser(true);
                         await prefs.setAccessToken(
                             apiProvider.authModel?.accessToken ?? '');
                         await prefs.setRefreshToken(

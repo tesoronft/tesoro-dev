@@ -18,11 +18,15 @@ import 'package:tesoro_nft_app/features/dashboard/treasures/post_treasures/item_
 import 'package:tesoro_nft_app/features/dashboard/treasures/post_treasures/post_treasure_view.dart';
 import 'package:tesoro_nft_app/features/dashboard/treasures/treasure_navigation.dart';
 import 'package:tesoro_nft_app/features/onboarding/onboarding1_view.dart';
+import 'package:tesoro_nft_app/features/others/delete_account.dart';
 import 'package:tesoro_nft_app/features/subscriptions/main_subscription_view.dart';
 import 'package:tesoro_nft_app/features/subscriptions/subscription_first_view.dart';
 import 'package:tesoro_nft_app/features/subscriptions/subscription_second_view.dart';
 import 'package:tesoro_nft_app/models/treasures/treasure_post_model.dart';
 
+import '../features/auth/forgot-password/confirm_email_view.dart';
+import '../features/auth/forgot-password/confirm_otp_view.dart';
+import '../features/auth/forgot-password/reset_password.dart';
 import '../features/dashboard/dashboard_view.dart';
 import '../features/dashboard/settings/settings_view.dart';
 import '../features/dashboard/treasures/all_treasures/update_treasure_view.dart';
@@ -40,6 +44,9 @@ class Routes {
   static const String onboarding2 = '/onboarding2';
   static const String signin = '/signin';
   static const String signup = '/signup';
+  static const String confirmEmail = '/forgotPassword/confirmEmail';
+  static const String confirmOtp = '/forgotPassword/confirmOtp';
+  static const String resetPassword = '/forgotPassword/resetPassword';
   static const String forgotPassword = '/forgotPassword';
   static const String dashboard = '/dashboard';
   static const String home = '/dashboard/home';
@@ -72,6 +79,7 @@ class Routes {
   static const String cameraView = '/dashboard/cameraView';
   static const String offlineView = '/others/offlineView';
   static const String updatePassword = '/others/updatePassword';
+  static const String deleteAccount = '/others/deleteAccount';
   static GoRouter router =
       GoRouter(initialLocation: splash, navigatorKey: navigatorKey, routes: [
     GoRoute(path: splash, builder: (context, state) => const SplashView()),
@@ -83,6 +91,20 @@ class Routes {
         builder: (context, state) => const Onboarding2View()),
     GoRoute(path: signin, builder: (context, state) => const SigninView()),
     GoRoute(path: signup, builder: (context, state) => const SignupView()),
+    GoRoute(
+        path: confirmEmail, builder: (context, state) => ConfirmEmailView()),
+    GoRoute(
+        path: confirmOtp,
+        builder: (context, state) {
+          final email = state.extra as String? ?? '';
+          return ConfirmOtpView(email: email);
+        }),
+    GoRoute(
+        path: resetPassword,
+        builder: (context, state) {
+          final email = state.extra as String? ?? '';
+          return ResetPassword(email: email);
+        }),
     GoRoute(
         path: forgotPassword,
         builder: (context, state) => const Onboarding2View()),
@@ -199,6 +221,10 @@ class Routes {
     GoRoute(
       path: updatePassword,
       builder: (context, state) => UpdatePassword(),
+    ),
+    GoRoute(
+      path: deleteAccount,
+      builder: (context, state) => DeleteAccountView(),
     ),
     GoRoute(
         path: confirmDetails,

@@ -186,4 +186,13 @@ class AppStrings {
   // Others
   static const String downloadThisAmazingApp = 'Download this amazing app';
   static const String tesoroNFT = 'Tesoro NFT';
+
+  // Delete Account
+  static const String deleteAccount = 'Delete Account';
+  static const String areYouSureYouWantToDelete =
+      'Are you sure you want to delete your account? This action cannot be undone.';
+  static const String deletingYourAccountWillResultIn =
+      'Deleting your account will result in the permanent loss of all your data, including your profile information, posted items, and any interactions you have had on the app.';
+  static const String yesDeleteMyAccount = 'Yes, delete my account';
+  static const String noKeepMyAccount = 'No, keep my account';
 }
