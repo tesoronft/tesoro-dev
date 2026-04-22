@@ -80,6 +80,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
 
           final markerIdValue = markerData.id ?? '${latitude}_$longitude';
           return Marker(
+            icon: AssetMapBitmap(AppImages.mark, width: 30, height: 30),
             markerId: MarkerId(markerIdValue),
             position: LatLng(latitude, longitude),
             onTap: () async {

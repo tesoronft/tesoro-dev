@@ -8,9 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:tesoro_nft_app/custom_widgets/home_center_arrow.dart';
 import 'package:tesoro_nft_app/custom_widgets/shimmer_effect.dart';
 import 'package:tesoro_nft_app/custom_widgets/treasures/empty_view.dart';
-import 'package:tesoro_nft_app/features/others/offline_view.dart';
 import 'package:tesoro_nft_app/routes/routes.dart';
-import 'package:tesoro_nft_app/utils/internet_checker.dart';
 
 import '../../../../consts/app_colors.dart';
 import '../../../../consts/app_strings.dart';
