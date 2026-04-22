@@ -13,7 +13,7 @@ class SetImage extends StatelessWidget {
   final double height, width;
   @override
   Widget build(BuildContext context) {
-    return imagePath.contains('http')
+    return imagePath.contains('https')
         ? CachedNetworkImage(
             key: ValueKey(imagePath),
             cacheKey: imagePath,
@@ -24,6 +24,8 @@ class SetImage extends StatelessWidget {
             fit: BoxFit.cover,
             errorWidget: (context, url, error) => Container(
               color: Colors.grey[300],
+              height: height,
+              width: width,
               child: const Icon(
                 Icons.broken_image_outlined,
                 color: Colors.grey,
@@ -41,6 +43,8 @@ class SetImage extends StatelessWidget {
                 filterQuality: FilterQuality.high,
                 errorBuilder: (context, error, stackTrace) => Container(
                   color: Colors.grey[300],
+                  height: height,
+                  width: width,
                   child: const Icon(
                     Icons.broken_image_outlined,
                     color: Colors.grey,
@@ -57,6 +61,8 @@ class SetImage extends StatelessWidget {
                 filterQuality: FilterQuality.high,
                 errorBuilder: (context, error, stackTrace) => Container(
                   color: Colors.grey[300],
+                  height: height,
+                  width: width,
                   child: const Icon(
                     Icons.broken_image_outlined,
                     color: Colors.grey,

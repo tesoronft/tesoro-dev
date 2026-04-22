@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "498406490238-a09o2so2ml2qatqj15tumb8qen2ocom1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tesoro.nft.application",
+            "certificate_hash": "7e8467f4f04c4926161a6a90a8227764a09474b3"
+          }
+        },
+        {
           "client_id": "498406490238-lq4091i1mv5p8t0a1ade1pgk03h0j859.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

@@ -40,8 +40,8 @@ class _TipsReceivedViewState extends State<TipsReceivedView> {
   ReceivedTipsResponse? tipsReceivedResponse;
   @override
   Widget build(BuildContext context) {
-    return Consumer3<ApiProvider, PreferencesProvider, InternetChecker>(
-      builder: (context, apis, prefs, internet, child) => CustomScaffold(
+    return Consumer2<ApiProvider, PreferencesProvider>(
+      builder: (context, apis, prefs, child) => CustomScaffold(
           isAppbarRequired: true,
           appBarTitle: AppStrings.tipsReceived,
           backgroundColor: AppColors.light,
@@ -85,9 +85,9 @@ class _TipsReceivedViewState extends State<TipsReceivedView> {
                   title: 'Explore treasures to tip',
                 );
               }
-              if (internet.isConnected == false) {
-                return OfflineView();
-              }
+              // if (internet.isConnected == false) {
+              //   return OfflineView();
+              // }
               return Column(
                 children: [
                   Expanded(

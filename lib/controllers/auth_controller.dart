@@ -10,4 +10,13 @@ class AuthController {
   final TextEditingController nameController = TextEditingController();
 
   final TextEditingController otpController = TextEditingController();
+
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    currentPasswordController.dispose();
+    confirmPasswordController.dispose();
+    nameController.dispose();
+    otpController.dispose();
+  }
 }

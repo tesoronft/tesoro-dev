@@ -23,6 +23,10 @@ class ApiProvider with ChangeNotifier {
   final String baseUrl = 'https://api.tesoroapp.io/api';
   bool _isLoading = false;
   bool get isLoading => _isLoading;
+  bool _isMarkerLoaded = false;
+  bool get isMarkerLoaded => _isMarkerLoaded;
+  bool _isTreasureLoading = false;
+  bool get getIsTreasureLoading => _isTreasureLoading;
   String _responseTxt = '';
   String get responseTxt => _responseTxt;
   GetAllTreasuresModel? _getAllTreasuresModel, _getUserTreasureModel;
@@ -51,6 +55,29 @@ class ApiProvider with ChangeNotifier {
   AllMarkers? _allMarkers;
   AllMarkers? get allMarkers => _allMarkers;
 
+  ApiProvider() {
+    log('🟠 [API] ApiProvider constructor called');
+  }
+
+  @override
+  void dispose() {
+    log('🟠 [API] ApiProvider dispose() called');
+    _getAllTreasuresModel = null;
+    _getUserTreasureModel = null;
+    _treasureGetModel = null;
+    _contentInfoModel = null;
+    _contentInfo = null;
+    _authModel = null;
+    _userProfile = null;
+    _categoryModelList = null;
+    _conditionsList = null;
+    _allCollectedTreasure = null;
+    _receivedTipsModel = null;
+    _giveTipsModel = null;
+    _allMarkers = null;
+    super.dispose();
+  }
+
   Future<ApiEnums> createAccount(
       String userName, String email, String password) async {
     _isLoading = true;
@@ -60,14 +87,14 @@ class ApiProvider with ChangeNotifier {
           body: {"name": userName, "email": email, "password": password});
       if (response.statusCode == 201) {
         final json = jsonDecode(response.body);
-        log(response.body);
+        debugPrint(response.body);
         _authModel = AuthModel.fromJson(json['data']);
         _responseTxt = json['message'];
         _isLoading = false;
         notifyListeners();
         return ApiEnums.success;
       } else {
-        log(response.body);
+        debugPrint(response.body);
         final json = jsonDecode(response.body);
         _responseTxt = json['details']['message'];
         _isLoading = false;
@@ -75,7 +102,7 @@ class ApiProvider with ChangeNotifier {
         return ApiEnums.failed;
       }
     } catch (e) {
-      log(e.toString());
+      debugPrint(e.toString());
       _isLoading = false;
       _responseTxt = e.toString();
       notifyListeners();
@@ -620,7 +647,7 @@ class ApiProvider with ChangeNotifier {
 
   Future<ApiEnums> getTreasureData(
       String treasureId, String accessToken) async {
-    _isLoading = true;
+    _isTreasureLoading = true;
     notifyListeners();
     try {
       final response = await https.post(
@@ -636,20 +663,20 @@ class ApiProvider with ChangeNotifier {
         log(response.body);
         _responseTxt = 'Data Received';
         _treasureGetModel = TreasureGetModel.fromJson(json);
-        _isLoading = false;
+        _isTreasureLoading = false;
         notifyListeners();
         return ApiEnums.success;
       } else {
         log(response.body);
         final json = jsonDecode(response.body);
         _responseTxt = json['details']['message'];
-        _isLoading = false;
+        _isTreasureLoading = false;
         notifyListeners();
         return ApiEnums.failed;
       }
     } catch (e) {
       log(e.toString());
-      _isLoading = false;
+      _isTreasureLoading = false;
       _responseTxt = e.toString();
       notifyListeners();
       return ApiEnums.failed;
@@ -796,7 +823,6 @@ class ApiProvider with ChangeNotifier {
         return ApiEnums.success;
       } else {
         log(response.body);
-        final json = jsonDecode(response.body);
         _isLoading = false;
         _responseTxt = response.reasonPhrase ??
             'Treasure update failed. Please try again.';
@@ -1103,7 +1129,8 @@ class ApiProvider with ChangeNotifier {
 
   Future<ApiEnums> getMarkers(String accessToken, int page, double longitude,
       double latitude, int distance) async {
-    _isLoading = true;
+    log('🟠 [API] getMarkers() called - page=$page, long=$longitude, lat=$latitude, distance=$distance');
+    _isMarkerLoaded = true;
     notifyListeners();
     try {
       final uri = Uri.parse('$baseUrl/treasures/markers').replace(
@@ -1115,6 +1142,7 @@ class ApiProvider with ChangeNotifier {
           'distance': distance.toString(),
         },
       );
+      log('🟠 [API] getMarkers() API request started');
 
       final response = await https.post(
         uri,
@@ -1129,19 +1157,19 @@ class ApiProvider with ChangeNotifier {
         final jsonData = jsonDecode(response.body);
 
         _allMarkers = AllMarkers.fromJson(jsonData);
-        print(_allMarkers);
-        _isLoading = false;
+        log(_allMarkers.toString());
+        _isMarkerLoaded = false;
         notifyListeners();
         return ApiEnums.success;
       } else {
         log(response.body);
-        _isLoading = false;
+        _isMarkerLoaded = false;
         notifyListeners();
         return ApiEnums.failed;
       }
     } catch (e) {
       log(e.toString());
-      _isLoading = false;
+      _isMarkerLoaded = false;
       notifyListeners();
       return ApiEnums.failed;
     }

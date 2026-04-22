@@ -28,7 +28,7 @@ class SettingsController {
             'mailto:x@tesoroapp.io?subject=Feedback for Tesoro App&body=Hi, I would like to share the following feedback...'));
         break;
       case 6:
-        await launchUrl(Uri.parse('https://tidy-employee-835129.framer.app/'));
+        await launchUrl(Uri.parse('https://tesoroapp.io/contact-us'));
         break;
       case 7:
         AppShare.shareApp();

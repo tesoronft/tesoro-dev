@@ -63,6 +63,7 @@ class _PostTreasureViewState extends State<PostTreasureView>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _postTreasureController.dispose();
     super.dispose();
   }
 
@@ -204,8 +205,7 @@ class _PostTreasureViewState extends State<PostTreasureView>
                           treasurePostModel.photos = allImages;
                           log(longitude.toString());
                           log(latitude.toString());
-                          if (permission.position != null &&
-                              allImages.isNotEmpty) {
+                          if (allImages.isNotEmpty) {
                             context.push(Routes.itemDetails,
                                 extra: treasurePostModel);
                           } else {

@@ -36,31 +36,47 @@ class _AllTreasuresViewState extends State<AllTreasuresView> {
   void initState() {
     super.initState();
 
+    // ✅ FIX: Defer location request to avoid blocking UI on app start
     Future.microtask(() async {
+      if (!mounted) return;
+
       final permissions = context.read<AppPermissions>();
       final api = context.read<ApiProvider>();
 
-      final position = await permissions.getCurrentPosition();
+      try {
+        final position = await permissions.getCurrentPosition();
 
-      await api.getAllTreasuresData(
-        1,
-        6,
-        'all',
-        position?.longitude.toString() ?? '0.0',
-        position?.latitude.toString() ?? '0.0',
-        '10',
-        context.read<PreferencesProvider>().accessToken ?? '',
-      );
-      getAllTreasureModel = api.getAllTreasureModel;
+        if (!mounted) return;
+
+        await api.getAllTreasuresData(
+          1,
+          6,
+          'all',
+          position?.longitude.toString() ?? '0.0',
+          position?.latitude.toString() ?? '0.0',
+          '10',
+          context.read<PreferencesProvider>().accessToken ?? '',
+        );
+        getAllTreasureModel = api.getAllTreasureModel;
+      } catch (e) {
+        debugPrint('Error loading treasures: $e');
+      }
     });
   }
 
   GetAllTreasuresModel? getAllTreasureModel;
   ValueNotifier<int> rangeNotifier = ValueNotifier<int>(10);
+
+  @override
+  void dispose() {
+    rangeNotifier.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Consumer3<ApiProvider, AppPermissions, InternetChecker>(
-      builder: (context, api, permissions, internet, child) => CustomScaffold(
+    return Consumer2<ApiProvider, AppPermissions>(
+      builder: (context, api, permissions, child) => CustomScaffold(
           backgroundColor: AppColors.light,
           isAppbarRequired: true,
           appBarTitle: AppStrings.allTreasures,
@@ -110,9 +126,9 @@ class _AllTreasuresViewState extends State<AllTreasuresView> {
                   if (getAllTreasureModel?.allTreasuresData?.isEmpty ?? true) {
                     return EmptyView();
                   }
-                  if (internet.isConnected == false) {
-                    return OfflineView();
-                  }
+                  // if (internet.isConnected == false) {
+                  //   return OfflineView();
+                  // }
                   return ValueListenableBuilder(
                       valueListenable: rangeNotifier,
                       builder: (context, range, child) {
@@ -170,13 +186,23 @@ class _AllTreasuresViewState extends State<AllTreasuresView> {
                                     return GestureDetector(
                                       onTap: () {
                                         log('Navigating to details of treasure id: ${thisTreasure?.postedBy?.rating}');
+                                        log('Navigating to details of treasure id: ${thisTreasure?.collectedBy?.name}');
+                                        log('Navigating to details of treasure id: ${thisTreasure?.collectedAt}');
+                                        log('Navigating to details of treasure id: ${thisTreasure?.collectedBy?.rating}');
                                         context.push(Routes.treasureDetails,
                                             extra: thisTreasure);
                                       },
                                       child: TreasurePostedCard(
-                                          collectedBy:
-                                              thisTreasure?.collectedBy?.name ??
-                                                  'Not Collected',
+                                          isCollected: (thisTreasure
+                                                      ?.collectedAt
+                                                      ?.isNotEmpty ??
+                                                  false) ||
+                                              ((thisTreasure?.collectedBy?.id
+                                                          ?.isNotEmpty ??
+                                                      false) ||
+                                                  (thisTreasure?.collectedBy
+                                                          ?.name?.isNotEmpty ??
+                                                      false)),
                                           condition:
                                               thisTreasure?.condition?.name ??
                                                   '',

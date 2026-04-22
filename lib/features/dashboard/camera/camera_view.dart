@@ -41,7 +41,9 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    //context.read<CameraProvider>().disposeCamera();
+    Future.microtask(() async {
+      await context.read<CameraProvider>().disposeCamera();
+    });
     super.dispose();
   }
 

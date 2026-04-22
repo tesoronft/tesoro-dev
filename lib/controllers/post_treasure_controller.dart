@@ -10,4 +10,16 @@ class PostTreasureController {
   final TextEditingController model = TextEditingController();
   final TextEditingController type = TextEditingController();
   final TextEditingController description = TextEditingController();
+
+  void dispose() {
+    title.dispose();
+    location.dispose();
+    price.dispose();
+    category.dispose();
+    condition.dispose();
+    brand.dispose();
+    model.dispose();
+    type.dispose();
+    description.dispose();
+  }
 }

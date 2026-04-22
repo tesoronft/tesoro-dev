@@ -38,6 +38,15 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
   ValueNotifier categoryId = ValueNotifier<dynamic>(null);
   ValueNotifier conditionId = ValueNotifier<dynamic>(null);
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    _postTreasureController.dispose();
+    categoryId.dispose();
+    conditionId.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(

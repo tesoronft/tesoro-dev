@@ -41,6 +41,14 @@ class _UpdateTreasureViewState extends State<UpdateTreasureView> {
   ValueNotifier conditionId = ValueNotifier<dynamic>(null);
 
   @override
+  void dispose() {
+    _postTreasureController.dispose();
+    categoryId.dispose();
+    conditionId.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     _postTreasureController.price.text =
         widget.treasureGetModel.price?.toString() ?? '';

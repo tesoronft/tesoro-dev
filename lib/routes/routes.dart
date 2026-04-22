@@ -205,10 +205,11 @@ class Routes {
     GoRoute(
         path: navigationView,
         builder: (context, state) {
-          final treasure = state.extra as TreasureGetModel;
-          return TreasureNavigation(
-            treasureGetModel: treasure,
-          );
+          //final treasure = state.extra as TreasureGetModel;
+          // return TreasureNavigation(
+          //   treasureGetModel: treasure,
+          // );
+          return EditProfileView();
         }),
     GoRoute(
       path: updateProfile,

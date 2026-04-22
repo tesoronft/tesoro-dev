@@ -26,22 +26,22 @@ class OfflineView extends StatelessWidget {
               style: TextStyle(fontSize: 18),
               textAlign: TextAlign.center,
             ),
-            Consumer<InternetChecker>(
-              builder: (context, internet, child) => CustomBtn(
-                text: 'Refresh',
-                onBtnTap: () async {
-                  final isConnected = await internet.checkConnection();
-                  if (isConnected) {
-                    btn1Tap?.call() ?? context.go(Routes.splash);
-                  } else {
-                    CustomSnackbar().showSnackbar(
-                        SnackBarEnums.failed,
-                        'Connection is still offline. Please check your network.',
-                        context);
-                  }
-                },
-              ),
-            )
+            // Consumer<InternetChecker>(
+            //   builder: (context, internet, child) => CustomBtn(
+            //     text: 'Refresh',
+            //     onBtnTap: () async {
+            //       final isConnected = await internet.checkConnection();
+            //       if (isConnected) {
+            //         btn1Tap?.call() ?? context.go(Routes.splash);
+            //       } else {
+            //         CustomSnackbar().showSnackbar(
+            //             SnackBarEnums.failed,
+            //             'Connection is still offline. Please check your network.',
+            //             context);
+            //       }
+            //     },
+            //   ),
+            // )
           ],
         ));
   }

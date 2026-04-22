@@ -29,11 +29,17 @@ class _UserAccountViewState extends State<UserAccountView> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+
       final apis = Provider.of<ApiProvider>(context, listen: false);
       if (apis.userProfile == null) {
-        await apis.getUserData(
-          context.read<PreferencesProvider>().accessToken ?? '',
-        );
+        try {
+          await apis.getUserData(
+            context.read<PreferencesProvider>().accessToken ?? '',
+          );
+        } catch (e) {
+          debugPrint('Error loading user data: $e');
+        }
       }
     });
   }

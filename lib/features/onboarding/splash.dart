@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:google_navigation_flutter/google_navigation_flutter.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+// import 'package:google_navigation_flutter/google_navigation_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tesoro_nft_app/consts/app_colors.dart';
 import 'package:tesoro_nft_app/consts/app_images.dart';
@@ -30,10 +31,7 @@ class _SplashViewState extends State<SplashView> {
       final prefs = Provider.of<PreferencesProvider>(context, listen: false);
 
       final apis = Provider.of<ApiProvider>(context, listen: false);
-      if (!await GoogleMapsNavigator.areTermsAccepted()) {
-        GoogleMapsNavigator.showTermsAndConditionsDialog(
-            'Please accept terms and conditions', 'Tesoro NFT');
-      }
+
       Future.delayed(
           Duration(seconds: 2),
           () async => await SplashNavigation().appNavigation(

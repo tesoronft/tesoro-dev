@@ -12,12 +12,22 @@ class DashboardData {
     AppImages.person,
     AppImages.user
   ];
-  static List<Widget> dashboardScreens = [
-    HomeView(),
-    AllTreasuresView(
-      isFromHome: false,
-    ),
-    UserAccountView(),
-    SettingsView()
-  ];
+
+  // ✅ FIX: Load screens LAZILY on-demand instead of all at once
+  // This prevents multiple simultaneous location requests and API calls
+  static Widget getScreen(int index) {
+    switch (index) {
+      case 0:
+        return HomeView();
+      case 1:
+        return AllTreasuresView(isFromHome: false);
+      case 2:
+        return UserAccountView();
+      case 3:
+        return SettingsView();
+      default:
+        return SettingsView();
+      //   return HomeView();
+    }
+  }
 }

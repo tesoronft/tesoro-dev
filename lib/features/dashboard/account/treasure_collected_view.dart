@@ -39,96 +39,89 @@ class _TreasureCollectedViewState extends State<TreasureCollectedView> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer3<ApiProvider, AppPermissions, InternetChecker>(
-      builder: (context, apis, permissions, internet, child) => CustomScaffold(
+    return Consumer2<ApiProvider, AppPermissions>(
+      builder: (context, apis, permissions, child) => CustomScaffold(
         isAppbarRequired: true,
         appBarTitle: AppStrings.treasureCollected,
         backgroundColor: AppColors.light,
-        child: !internet.isConnected
-            ? OfflineView()
-            : SafeArea(
-                minimum: EdgeInsets.all(10),
-                child: apis.isLoading
-                    ? ShimmerEffect()
-                    : apis.allCollectedTreasure?.listOfPostedTreasures
-                                ?.isEmpty ??
-                            true
-                        ? EmptyView()
-                        : EasyRefresh.builder(onRefresh: () async {
-                            await apis.getTreasureCollectedByUser(
-                                1,
-                                context
-                                        .read<PreferencesProvider>()
-                                        .accessToken ??
-                                    '',
-                                context.read<PreferencesProvider>().userId ??
-                                    '');
-                          }, childBuilder: (context, physics) {
-                            if (apis.isLoading) {
-                              return ShimmerEffect();
-                            }
+        child:
+            //  !internet.isConnected
+            //     ? OfflineView()
+            //     :
+            SafeArea(
+          minimum: EdgeInsets.all(10),
+          child: apis.isLoading
+              ? ShimmerEffect()
+              : apis.allCollectedTreasure?.listOfPostedTreasures?.isEmpty ??
+                      true
+                  ? EmptyView()
+                  : EasyRefresh.builder(onRefresh: () async {
+                      await apis.getTreasureCollectedByUser(
+                          1,
+                          context.read<PreferencesProvider>().accessToken ?? '',
+                          context.read<PreferencesProvider>().userId ?? '');
+                    }, childBuilder: (context, physics) {
+                      if (apis.isLoading) {
+                        return ShimmerEffect();
+                      }
 
-                            if (apis.allCollectedTreasure
-                                    ?.listOfPostedTreasures ==
-                                null) {
-                              return SizedBox();
-                            }
+                      if (apis.allCollectedTreasure?.listOfPostedTreasures ==
+                          null) {
+                        return SizedBox();
+                      }
 
-                            if (apis.allCollectedTreasure?.listOfPostedTreasures
-                                    ?.isEmpty ??
-                                true) {
-                              return EmptyView();
-                            }
-                            if (internet.isConnected == false) {
-                              return OfflineView();
-                            }
-                            return Stack(
-                              children: [
-                                Column(
-                                  children: [
-                                    Expanded(
-                                      child: ListView.builder(
-                                        physics: physics,
-                                        itemCount: apis.allCollectedTreasure
-                                            ?.listOfPostedTreasures?.length,
-                                        itemBuilder: (context, index) {
-                                          final thisCollection = apis
-                                              .allCollectedTreasure
-                                              ?.listOfPostedTreasures?[index];
-                                          return Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 10),
-                                            child: TreasureCollectedCard(
-                                              date:
-                                                  thisCollection?.collectedAt ??
-                                                      'N/A',
-                                              imageUrl:
-                                                  thisCollection?.photos?.first,
-                                              itemName: thisCollection?.title ??
-                                                  'N/A',
-                                              location: thisCollection
-                                                      ?.locationModel
-                                                      ?.address ??
-                                                  'N/A',
-                                              personName: thisCollection
-                                                      ?.postedBy?.userName ??
-                                                  'N/A',
-                                            ),
-                                          );
-                                        },
+                      if (apis.allCollectedTreasure?.listOfPostedTreasures
+                              ?.isEmpty ??
+                          true) {
+                        return EmptyView();
+                      }
+                      // if (internet.isConnected == false) {
+                      //   return OfflineView();
+                      // }
+                      return Stack(
+                        children: [
+                          Column(
+                            children: [
+                              Expanded(
+                                child: ListView.builder(
+                                  physics: physics,
+                                  itemCount: apis.allCollectedTreasure
+                                      ?.listOfPostedTreasures?.length,
+                                  itemBuilder: (context, index) {
+                                    final thisCollection = apis
+                                        .allCollectedTreasure
+                                        ?.listOfPostedTreasures?[index];
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10),
+                                      child: TreasureCollectedCard(
+                                        date: thisCollection?.collectedAt ??
+                                            'N/A',
+                                        imageUrl: thisCollection?.photos?.first,
+                                        itemName:
+                                            thisCollection?.title ?? 'N/A',
+                                        location: thisCollection
+                                                ?.locationModel?.address ??
+                                            'N/A',
+                                        personName: thisCollection
+                                                ?.postedBy?.userName ??
+                                            'N/A',
                                       ),
-                                    ),
-                                  ],
+                                    );
+                                  },
                                 ),
-                                !permissions.isLocationAllowed
-                                    ? Align(
-                                        alignment: Alignment.bottomCenter,
-                                        child: PermissionEnableComponent())
-                                    : SizedBox.shrink(),
-                              ],
-                            );
-                          }),
-              ),
+                              ),
+                            ],
+                          ),
+                          !permissions.isLocationAllowed
+                              ? Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: PermissionEnableComponent())
+                              : SizedBox.shrink(),
+                        ],
+                      );
+                    }),
+        ),
       ),
     );
   }

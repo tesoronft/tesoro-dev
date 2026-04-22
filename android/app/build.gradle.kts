@@ -53,10 +53,9 @@ android {
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName("debug")
+           // signingConfig = signingConfigs.getByName("debug")
             signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
-            shrinkResources = true
             setProguardFiles(listOf(
                 getDefaultProguardFile("proguard-android-optimize.txt"), 
                 "proguard-rules.pro"
@@ -64,10 +63,6 @@ android {
         }
     }
 }
-configurations.all {
-    exclude(group = "com.google.android.gms", module = "play-services-maps")
-}
-
 flutter {
     source = "../.."
 }

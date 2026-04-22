@@ -57,9 +57,15 @@ class _TreasurePostedViewState extends State<TreasurePostedView> {
   ValueNotifier<String> availability = ValueNotifier<String>('Available');
 
   @override
+  void dispose() {
+    availability.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Consumer3<ApiProvider, AppPermissions, InternetChecker>(
-      builder: (context, api, permissions, internet, child) => CustomScaffold(
+    return Consumer2<ApiProvider, AppPermissions>(
+      builder: (context, api, permissions, child) => CustomScaffold(
           isAppbarRequired: true,
           appBarTitle: AppStrings.myTreasures,
           backgroundColor: AppColors.light,
@@ -109,9 +115,9 @@ class _TreasurePostedViewState extends State<TreasurePostedView> {
                   if (getAllTreasureModel?.allTreasuresData?.isEmpty ?? true) {
                     return EmptyView();
                   }
-                  if (internet.isConnected == false) {
-                    return OfflineView();
-                  }
+                  // if (internet.isConnected == false) {
+                  //   return OfflineView();
+                  // }
                   if (!permissions.isLocationAllowed) {
                     return PermissionEnableComponent();
                   }
@@ -141,9 +147,15 @@ class _TreasurePostedViewState extends State<TreasurePostedView> {
                                       thisTreasure?.condition?.name ?? 'N/A',
                                   imagePath: thisTreasure?.photos?.first,
                                   itemName: thisTreasure?.title ?? '',
-                                  collectedBy:
-                                      thisTreasure?.collectedBy?.name ??
-                                          'Not Collected',
+                                  isCollected:
+                                      (thisTreasure?.collectedAt?.isNotEmpty ??
+                                              false) ||
+                                          ((thisTreasure?.collectedBy?.id
+                                                      ?.isNotEmpty ??
+                                                  false) ||
+                                              (thisTreasure?.collectedBy?.name
+                                                      ?.isNotEmpty ??
+                                                  false)),
                                 ),
                               );
                             }),

@@ -71,38 +71,38 @@ class SignupView extends StatelessWidget {
                       leadingIcon: SvgPicture.asset(AppImages.google),
                     ),
                   ),
-                  Consumer2<ApiProvider, PreferencesProvider>(
-                    builder: (context, apiProvider, prefs, child) => CustomBtn(
-                      text: AppStrings.continueWithApple,
-                      textStyle: AppTextStyles.bodyMedium
-                          .copyWith(color: AppColors.dark),
-                      onBtnTap: () async {
-                        final result =
-                            await PlatformsSigninController.signinWithGoogle();
-                        if (result != null) {
-                          final response =
-                              await apiProvider.googleSignin(result);
-                          if (!apiProvider.isLoading &&
-                              response == ApiEnums.success) {
-                            CustomSnackbar().showSnackbar(SnackBarEnums.success,
-                                apiProvider.responseTxt, context);
-                            await prefs.setUserId(
-                                apiProvider.authModel?.user?.userId ?? '');
-                            await prefs.setAccessToken(
-                                apiProvider.authModel?.accessToken ?? '');
-                            await prefs.setRefreshToken(
-                                apiProvider.authModel?.refreshToken ?? '');
-                            context.go(Routes.dashboard);
-                          } else {
-                            CustomSnackbar().showSnackbar(SnackBarEnums.failed,
-                                apiProvider.responseTxt, context);
-                          }
-                        }
-                      },
-                      btnColor: AppColors.light,
-                      leadingIcon: SvgPicture.asset(AppImages.apple),
-                    ),
-                  ),
+                  // Consumer2<ApiProvider, PreferencesProvider>(
+                  //   builder: (context, apiProvider, prefs, child) => CustomBtn(
+                  //     text: AppStrings.continueWithApple,
+                  //     textStyle: AppTextStyles.bodyMedium
+                  //         .copyWith(color: AppColors.dark),
+                  //     onBtnTap: () async {
+                  //       final result =
+                  //           await PlatformsSigninController.signinWithGoogle();
+                  //       if (result != null) {
+                  //         final response =
+                  //             await apiProvider.googleSignin(result);
+                  //         if (!apiProvider.isLoading &&
+                  //             response == ApiEnums.success) {
+                  //           CustomSnackbar().showSnackbar(SnackBarEnums.success,
+                  //               apiProvider.responseTxt, context);
+                  //           await prefs.setUserId(
+                  //               apiProvider.authModel?.user?.userId ?? '');
+                  //           await prefs.setAccessToken(
+                  //               apiProvider.authModel?.accessToken ?? '');
+                  //           await prefs.setRefreshToken(
+                  //               apiProvider.authModel?.refreshToken ?? '');
+                  //           context.go(Routes.dashboard);
+                  //         } else {
+                  //           CustomSnackbar().showSnackbar(SnackBarEnums.failed,
+                  //               apiProvider.responseTxt, context);
+                  //         }
+                  //       }
+                  //     },
+                  //     btnColor: AppColors.light,
+                  //     leadingIcon: SvgPicture.asset(AppImages.apple),
+                  //   ),
+                  // ),
                 ],
               ),
             ),

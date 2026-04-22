@@ -17,7 +17,8 @@ class DashboardView extends StatelessWidget {
       builder: (context, dashboardValue, child) => PopScope(
         canPop: false,
         child: Scaffold(
-          body: DashboardData.dashboardScreens[dashboardValue.currentIndex],
+          // ✅ FIX: Load screen on-demand instead of from pre-created list
+          body: DashboardData.getScreen(dashboardValue.currentIndex),
           floatingActionButton: FloatingActionButton(
             onPressed: () async {
               await AnalyticsService.logEvent('post_treasure_view');

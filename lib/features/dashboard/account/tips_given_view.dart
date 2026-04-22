@@ -7,12 +7,10 @@ import 'package:tesoro_nft_app/consts/app_strings.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_scaffold.dart';
 import 'package:tesoro_nft_app/custom_widgets/tips_info.dart';
 import 'package:tesoro_nft_app/custom_widgets/treasures/empty_view.dart';
-import 'package:tesoro_nft_app/features/others/offline_view.dart';
 
 import '../../../models/tips/sended_tips_model.dart';
 import '../../../providers/api_provider.dart';
 import '../../../providers/preferences_provider.dart';
-import '../../../utils/internet_checker.dart';
 
 class TipsGivenView extends StatefulWidget {
   const TipsGivenView({super.key});
@@ -40,8 +38,8 @@ class _TipsGivenViewState extends State<TipsGivenView> {
   SendedTipsResponse? tipsGivenResponse;
   @override
   Widget build(BuildContext context) {
-    return Consumer3<ApiProvider, PreferencesProvider, InternetChecker>(
-      builder: (context, apis, prefs, internet, child) => CustomScaffold(
+    return Consumer2<ApiProvider, PreferencesProvider>(
+      builder: (context, apis, prefs, child) => CustomScaffold(
           isAppbarRequired: true,
           appBarTitle: AppStrings.tipsGiven,
           backgroundColor: AppColors.light,
@@ -84,9 +82,7 @@ class _TipsGivenViewState extends State<TipsGivenView> {
                   title: 'Explore treasures to tip',
                 );
               }
-              if (internet.isConnected == false) {
-                return OfflineView();
-              }
+
               return Column(
                 children: [
                   Expanded(

@@ -41,7 +41,9 @@ class TreasureGetModel {
         condition: ConditionData.fromJson(jsonData['condition']),
         createdAt: jsonData['createdAt'],
         collectedAt: jsonData['collectedAt'],
-        collectedBy: CollectedBy.fromJson(jsonData['collectedBy'] ?? {}),
+        collectedBy: jsonData['collectedBy'] == null
+            ? null
+            : CollectedBy.fromJson(jsonData['collectedBy']),
         description: jsonData['description'],
         distance: jsonData['distance'],
         itemModel: jsonData['itemModel'],

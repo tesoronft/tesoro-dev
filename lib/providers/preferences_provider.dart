@@ -13,19 +13,35 @@ class PreferencesProvider with ChangeNotifier {
   String? get userId => _userId;
   bool? get isSSOUser => _isSSOUser;
   PreferencesProvider() {
+    log('🔵 [PREFS] PreferencesProvider constructor called');
     log('Getting all preferences');
-    getAllPrefs();
+    getAllPrefs().then((_) {
+      log('🔵 [PREFS] getAllPrefs() completed');
+    }).catchError((e) {
+      log('🔵 [PREFS] getAllPrefs() ERROR: $e');
+    });
   }
 
   // Main Function
   Future<void> getAllPrefs() async {
-    final SharedPreferences _prefs = await SharedPreferences.getInstance();
-    _refereshToken = await getRefreshToken();
-    _accessToken = await getAccessToken();
-    _userId = _prefs.getString('userId') ?? '';
-    _isSSOUser = _prefs.getBool('isSSOUser') ?? false;
-    log('accessToken:$_accessToken, refereshToken:$_refereshToken,userId:$userId, isSSOUser:$_isSSOUser');
-    notifyListeners();
+    log('🔵 [PREFS] getAllPrefs() started');
+    try {
+      final SharedPreferences _prefs = await SharedPreferences.getInstance();
+      log('🔵 [PREFS] SharedPreferences obtained');
+      _refereshToken = await getRefreshToken();
+      log('🔵 [PREFS] refreshToken loaded: $_refereshToken');
+      _accessToken = await getAccessToken();
+      log('🔵 [PREFS] accessToken loaded: $_accessToken');
+      _userId = _prefs.getString('userId') ?? '';
+      log('🔵 [PREFS] userId loaded: $_userId');
+      _isSSOUser = _prefs.getBool('isSSOUser') ?? false;
+      log('🔵 [PREFS] isSSOUser loaded: $_isSSOUser');
+      log('accessToken:$_accessToken, refereshToken:$_refereshToken,userId:$userId, isSSOUser:$_isSSOUser');
+      notifyListeners();
+      log('🔵 [PREFS] getAllPrefs() completed successfully');
+    } catch (e) {
+      log('🔵 [PREFS] getAllPrefs() ERROR: $e');
+    }
   }
 
   //Setters

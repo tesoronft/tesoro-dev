@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tesoro_nft_app/consts/app_colors.dart';
+import 'package:tesoro_nft_app/consts/app_images.dart';
 import 'package:tesoro_nft_app/consts/app_strings.dart';
 import 'package:tesoro_nft_app/consts/app_text_styles.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_btn.dart';
@@ -27,7 +28,9 @@ class TreasureDetailsView extends StatelessWidget {
   Widget build(BuildContext context) {
     final isUserTreasure = treasureGetModel.postedBy?.id ==
         context.read<PreferencesProvider>().userId;
-    final isCollected = treasureGetModel.collectedBy?.name != 'Unknown';
+    final isCollected = (treasureGetModel.collectedAt?.isNotEmpty ?? false) ||
+        ((treasureGetModel.collectedBy?.id?.isNotEmpty ?? false) ||
+            (treasureGetModel.collectedBy?.name?.isNotEmpty ?? false));
     return CustomScaffold(
       backgroundColor: AppColors.light,
       child: SingleChildScrollView(
@@ -149,27 +152,29 @@ class TreasureDetailsView extends StatelessWidget {
                       style: AppTextStyles.bodyLarge
                           .copyWith(color: const Color(0xff0D5C63)),
                     ),
-                    if (!isUserTreasure || treasureGetModel.collectedBy != null)
+                    if (!isCollected ||
+                        !isUserTreasure ||
+                        treasureGetModel.collectedBy != null)
                       const Divider(),
                     if (!isUserTreasure || treasureGetModel.collectedBy != null)
                       Text(
-                        treasureGetModel.collectedBy?.name != 'Unknown'
-                            ? 'Collected By'
-                            : 'Posted By:',
+                        isCollected ? 'Collected By' : 'Posted By:',
                         style: AppTextStyles.bodyLarge
                             .copyWith(color: AppColors.dark),
                       ),
-                    // if (!isUserTreasure)
+                    // if (!isCollected)
                     PostedByCard(
-                      imageUrl: treasureGetModel.collectedBy?.profileImage ??
-                          treasureGetModel.postedBy?.profileImage ??
-                          'https://e7.pngegg.com/pngimages/371/667/png-clipart-computer-icons-user-profile-encapsulated-postscript-icon-black-rectangle-black.png',
-                      name: treasureGetModel.collectedBy?.name ??
-                          treasureGetModel.postedBy?.name ??
-                          "N/A",
-                      rating: treasureGetModel.collectedBy?.rating ??
-                          treasureGetModel.postedBy?.rating ??
-                          1,
+                      imageUrl: !isCollected
+                          ? treasureGetModel.postedBy?.profileImage ??
+                              AppImages.transparantLogo
+                          : treasureGetModel.collectedBy?.profileImage ??
+                              AppImages.transparantLogo,
+                      name: !isCollected
+                          ? treasureGetModel.postedBy?.name ?? 'Unknown'
+                          : treasureGetModel.collectedBy?.name ?? 'Unknown',
+                      rating: !isCollected
+                          ? treasureGetModel.postedBy?.rating ?? 0.0
+                          : treasureGetModel.collectedBy?.rating ?? 0.0,
                     ),
                   ],
                 ),

@@ -10,10 +10,10 @@ class TreasurePostedCard extends StatelessWidget {
     required this.condition,
     required this.imagePath,
     required this.itemName,
-    this.collectedBy,
+    required this.isCollected,
   });
   final String imagePath, itemName, condition;
-  final String? collectedBy;
+  final bool isCollected;
 
   @override
   Widget build(BuildContext context) {
@@ -60,16 +60,12 @@ class TreasurePostedCard extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
-            color: collectedBy == 'Not Collected'
-                ? AppColors.primary
-                : AppColors.error,
+            color: isCollected ? AppColors.error : AppColors.primary,
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
             child: Text(
-              collectedBy == 'Not Collected'
-                  ? AppStrings.available
-                  : AppStrings.collected,
+              isCollected ? AppStrings.collected : AppStrings.available,
               style: AppTextStyles.labelMedium.copyWith(color: AppColors.light),
             ),
           ),

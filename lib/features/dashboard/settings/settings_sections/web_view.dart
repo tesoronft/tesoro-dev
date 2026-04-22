@@ -42,6 +42,13 @@ class _WebViewState extends State<WebView> {
   }
 
   WebViewController? controller;
+
+  @override
+  void dispose() {
+    controller = null;
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
