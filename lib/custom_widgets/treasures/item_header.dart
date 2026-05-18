@@ -26,7 +26,7 @@ class ItemHeader extends StatelessWidget {
                 text: TextSpan(
               children: [
                 TextSpan(
-                  text: price,
+                  text: '\$$price',
                   style: AppTextStyles.bodySmall.copyWith(
                       color: AppColors.dark,
                       fontWeight: FontWeight.bold,

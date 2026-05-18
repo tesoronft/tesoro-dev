@@ -21,6 +21,7 @@ class Onboarding1View extends StatelessWidget {
       children: [
         Image.asset(
           AppImages.splashBackground,
+          width: double.infinity,
           fit: BoxFit.fill,
         ),
         SafeArea(

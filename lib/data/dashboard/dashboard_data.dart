@@ -26,7 +26,7 @@ class DashboardData {
       case 3:
         return SettingsView();
       default:
-        return SettingsView();
+        return HomeView();
       //   return HomeView();
     }
   }

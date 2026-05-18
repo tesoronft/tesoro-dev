@@ -25,7 +25,7 @@ class ImagePreview extends StatelessWidget {
                     width: MediaQuery.sizeOf(context).width / 1,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: AppColors.currency),
+                        color: AppColors.light),
                     clipBehavior: Clip.antiAlias,
                     child: SetImage(
                       imagePath: images[current],

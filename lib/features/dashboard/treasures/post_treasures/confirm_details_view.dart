@@ -107,7 +107,7 @@ class ConfirmDetailsView extends StatelessWidget {
                         text: TextSpan(
                       children: [
                         TextSpan(
-                          text: treasurePostModel.price.toString(),
+                          text: '\$${treasurePostModel.price}',
                           style: AppTextStyles.bodyMedium.copyWith(
                               color: AppColors.dark,
                               fontWeight: FontWeight.normal,

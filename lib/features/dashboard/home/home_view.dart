@@ -136,8 +136,8 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
       backgroundColor: AppColors.light,
       appBar: AppBar(
         toolbarHeight: 90,
-        backgroundColor: AppColors.light,
-        title: Image.asset(AppImages.logo, height: 70, width: 70),
+        backgroundColor: AppColors.primary,
+        title: Image.asset(AppImages.transparantLogo, height: 60, width: 60),
         centerTitle: true,
         automaticallyImplyLeading: false,
         leadingWidth: 100,

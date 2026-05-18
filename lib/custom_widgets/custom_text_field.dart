@@ -12,7 +12,8 @@ class CustomTextField extends StatefulWidget {
       this.maxLength,
       required this.editingController,
       this.helperTxt,
-      this.validation});
+      this.validation,
+      this.prefixIcon});
   final String hintText;
   final bool isPassword;
   bool isVissible = false;
@@ -22,6 +23,7 @@ class CustomTextField extends StatefulWidget {
   Color? fillColors;
   int? maxLength;
   String? validation;
+  final IconData? prefixIcon;
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
 }
@@ -48,6 +50,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
       decoration: InputDecoration(
         fillColor: widget.fillColors ?? AppColors.light,
         helperText: widget.helperTxt,
+        prefixIcon: widget.prefixIcon != null
+            ? Icon(
+                widget.prefixIcon,
+                color: AppColors.primary,
+              )
+            : null,
         filled: true,
         enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(10)),

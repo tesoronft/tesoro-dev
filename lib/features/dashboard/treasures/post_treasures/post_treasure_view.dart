@@ -119,7 +119,11 @@ class _PostTreasureViewState extends State<PostTreasureView>
                           Expanded(
                             child: SizedBox(
                               height: 150,
-                              child: ListView.builder(
+                              child: GridView.builder(
+                                gridDelegate:
+                                    SliverGridDelegateWithMaxCrossAxisExtent(
+                                        maxCrossAxisExtent: 120,
+                                        crossAxisSpacing: 10),
                                 scrollDirection: Axis.horizontal,
                                 itemCount: camera.cameraImages.length,
                                 itemBuilder: (context, index) => Padding(
@@ -165,7 +169,7 @@ class _PostTreasureViewState extends State<PostTreasureView>
                             await AnalyticsService.logEvent(
                                 'treasure_properties_dialog');
                             final result = await showDialog(
-                              barrierDismissible: false,
+                              barrierDismissible: true,
                               context: context,
                               builder: (context) => TreasureProperties(),
                             );
@@ -211,29 +215,10 @@ class _PostTreasureViewState extends State<PostTreasureView>
                           } else {
                             CustomSnackbar().showSnackbar(
                               SnackBarEnums.failed,
-                              'Unable to get your location. Please try again.',
+                              apiProvider.responseTxt,
                               context,
                             );
                           }
-
-                          // if (permission.permissionState ==
-                          //     PermissionState.granted) {
-
-                          // } else if (permission.permissionState ==
-                          //     PermissionState.deniedForever) {
-                          //   CustomSnackbar().showSnackbar(
-                          //     SnackBarEnums.processing,
-                          //     'Please enable location permission from settings',
-                          //     context,
-                          //   );
-                          //   await permission.openLocationSettings();
-                          // } else {
-                          //   CustomSnackbar().showSnackbar(
-                          //     SnackBarEnums.processing,
-                          //     'Please allow us to access your location',
-                          //     context,
-                          //   );
-                          // }
                         }
                       },
                     ),

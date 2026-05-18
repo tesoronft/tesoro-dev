@@ -31,7 +31,7 @@ class TreasurePreview extends StatelessWidget {
       backgroundColor: AppColors.light,
       title: SizedBox(
           height: 200,
-          width: double.infinity,
+          width: 200,
           child: SetImage(imagePath: treasure.photos!.first)),
       titlePadding: EdgeInsets.all(6),
       contentPadding: EdgeInsets.all(6),

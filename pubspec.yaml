@@ -1,7 +1,7 @@
 name: tesoro_nft_app
 description: "A new Flutter project."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 1.0.0+4
+version: 1.0.0+5
 
 environment:
   sdk: '>=3.3.0 <4.0.0'
@@ -45,9 +45,6 @@ dependencies:
   #maps
   google_maps_flutter: ^2.17.0
   geolocator: ^14.0.2
-  #google_navigation_flutter: ^0.7.0
-  #maps_launcher: ^3.0.0+1
-  #map_launcher: ^4.4.2
 
   #camera and gallery
   camera: ^0.11.3

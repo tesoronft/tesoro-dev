@@ -3,6 +3,7 @@ import 'package:tesoro_nft_app/consts/app_colors.dart';
 import 'package:tesoro_nft_app/consts/app_text_styles.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_btn.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_snackbar.dart';
+import 'package:tesoro_nft_app/custom_widgets/popup_button.dart';
 import 'package:tesoro_nft_app/enums/snack_bar_enums.dart';
 
 class TreasureProperties extends StatelessWidget {
@@ -13,6 +14,15 @@ class TreasureProperties extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      icon: Align(
+        alignment: Alignment.topRight,
+        child: PopupButton(
+          icon: Icons.close,
+          iconColor: AppColors.light,
+          iconBgColor: AppColors.primary,
+          iconRadius: 100,
+        ),
+      ),
       title: Text(
         'To continue please check all options',
         textAlign: TextAlign.center,

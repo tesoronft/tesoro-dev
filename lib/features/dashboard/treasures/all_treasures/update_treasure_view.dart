@@ -63,6 +63,7 @@ class _UpdateTreasureViewState extends State<UpdateTreasureView> {
     return CustomScaffold(
         backgroundColor: AppColors.light,
         isAppbarRequired: true,
+        extendBody: false,
         appBarTitle: 'Edit ${widget.treasureGetModel.title} Info',
         child: SafeArea(
           minimum: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -90,6 +91,7 @@ class _UpdateTreasureViewState extends State<UpdateTreasureView> {
                   hintText: AppStrings.estimatePrice,
                   keyboardType: TextInputType.number,
                   editingController: _postTreasureController.price,
+                  prefixIcon: Icons.attach_money,
                 ),
                 Text(
                   AppStrings.category,
@@ -200,7 +202,8 @@ class _UpdateTreasureViewState extends State<UpdateTreasureView> {
                     }),
                 Text(
                   AppStrings.brand,
-                  style: AppTextStyles.bodySmall,
+                  style: AppTextStyles.bodySmall
+                      .copyWith(fontWeight: FontWeight.bold),
                 ),
                 CustomTextField(
                   hintText: AppStrings.selectBrand,
@@ -209,7 +212,8 @@ class _UpdateTreasureViewState extends State<UpdateTreasureView> {
                 ),
                 Text(
                   AppStrings.model,
-                  style: AppTextStyles.bodySmall,
+                  style: AppTextStyles.bodySmall
+                      .copyWith(fontWeight: FontWeight.bold),
                 ),
                 CustomTextField(
                   hintText: AppStrings.selectModel,
@@ -218,7 +222,8 @@ class _UpdateTreasureViewState extends State<UpdateTreasureView> {
                 ),
                 Text(
                   AppStrings.description,
-                  style: AppTextStyles.bodySmall,
+                  style: AppTextStyles.bodySmall
+                      .copyWith(fontWeight: FontWeight.bold),
                 ),
                 CustomTextField(
                   hintText: AppStrings.enterItemDesc,
@@ -228,21 +233,23 @@ class _UpdateTreasureViewState extends State<UpdateTreasureView> {
                 ),
                 Text(
                   'Images',
-                  style: AppTextStyles.bodySmall,
+                  style: AppTextStyles.bodySmall
+                      .copyWith(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
                   height: 150,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: widget.treasureGetModel.photos?.length,
+                    itemCount: widget.treasureGetModel.photos?.length ?? 0,
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) => Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 6),
                       child: Stack(
                         alignment: Alignment.topRight,
                         children: [
                           Container(
+                            height: 150,
+                            width: 150,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -252,18 +259,18 @@ class _UpdateTreasureViewState extends State<UpdateTreasureView> {
                                     widget.treasureGetModel.photos?[index] ??
                                         ''),
                           ),
-                          GestureDetector(
-                            onTap: () =>
-                                widget.treasureGetModel.photos?.removeAt(index),
-                            child: Container(
-                              margin: const EdgeInsets.all(4),
-                              decoration: const BoxDecoration(
-                                color: Color(0xffE4E4E4),
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(Icons.close, size: 16),
-                            ),
-                          ),
+                          // GestureDetector(
+                          //   onTap: () =>
+                          //       widget.treasureGetModel.photos?.removeAt(index),
+                          //   child: Container(
+                          //     margin: const EdgeInsets.all(4),
+                          //     decoration: const BoxDecoration(
+                          //       color: Color(0xffE4E4E4),
+                          //       shape: BoxShape.circle,
+                          //     ),
+                          //     child: const Icon(Icons.close, size: 16),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),

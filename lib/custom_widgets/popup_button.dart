@@ -3,8 +3,17 @@ import 'package:go_router/go_router.dart';
 import 'package:tesoro_nft_app/consts/app_colors.dart';
 
 class PopupButton extends StatelessWidget {
-  const PopupButton({super.key, this.onTap});
+  const PopupButton(
+      {super.key,
+      this.onTap,
+      this.icon,
+      this.iconColor,
+      this.iconBgColor,
+      this.iconRadius});
   final VoidCallback? onTap;
+  final IconData? icon;
+  final Color? iconColor, iconBgColor;
+  final int? iconRadius;
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -16,14 +25,14 @@ class PopupButton extends StatelessWidget {
         height: 35,
         width: 35,
         decoration: BoxDecoration(
-          color: AppColors.light,
-          borderRadius: BorderRadius.circular(10.0),
+          color: iconBgColor ?? AppColors.light,
+          borderRadius: BorderRadius.circular(iconRadius?.toDouble() ?? 10.0),
         ),
         child: Center(
           child: Icon(
-            Icons.arrow_back_ios,
+            icon ?? Icons.arrow_back_ios,
             size: 18,
-            color: AppColors.dark,
+            color: iconColor ?? AppColors.dark,
           ),
         ),
       ),

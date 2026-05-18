@@ -100,9 +100,9 @@ class AppStrings {
   static const String category = 'Category';
   static const String selectCategory = 'Select Category';
   static const String selectCondition = 'Select Condition';
-  static const String brand = 'Brand';
+  static const String brand = 'Brand (Optional)';
   static const String selectBrand = 'Add Brand';
-  static const String model = 'Model';
+  static const String model = 'Model (Optional)';
   static const String selectModel = 'Add Model';
   static const String type = 'Type (Optional)';
   static const String selectType = 'Select Type';

@@ -70,6 +70,7 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                       .copyWith(fontWeight: FontWeight.bold),
                 ),
                 CustomTextField(
+                  prefixIcon: Icons.attach_money,
                   hintText: AppStrings.estimatePrice,
                   keyboardType: TextInputType.number,
                   editingController: _postTreasureController.price,
@@ -102,10 +103,8 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                                   isExpanded: true,
                                   hint: Text(
                                     'Select Category',
-                                    style: AppTextStyles.bodyMedium.copyWith(
-                                      fontWeight: FontWeight.normal,
-                                      color: Color(0xff9EA1A8),
-                                    ),
+                                    style: AppTextStyles.bodySmall
+                                        .copyWith(color: Color(0xff9EA1A8)),
                                   ),
                                   dropdownColor: AppColors.light,
                                   value: categoryId.value,
@@ -161,9 +160,8 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                                   borderRadius: BorderRadius.circular(10),
                                   hint: Text(
                                     'Select Condition Type',
-                                    style: AppTextStyles.bodyMedium.copyWith(
-                                        fontWeight: FontWeight.w100,
-                                        color: Color(0xff9EA1A8)),
+                                    style: AppTextStyles.bodySmall
+                                        .copyWith(color: Color(0xff9EA1A8)),
                                   ),
                                   value: conditionId.value,
                                   dropdownColor: AppColors.light,
@@ -193,29 +191,32 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                     }),
                 Text(
                   AppStrings.brand,
-                  style: AppTextStyles.bodySmall,
+                  style: AppTextStyles.bodySmall
+                      .copyWith(fontWeight: FontWeight.bold),
                 ),
                 CustomTextField(
                   hintText: AppStrings.selectBrand,
                   keyboardType: TextInputType.text,
                   editingController: _postTreasureController.brand,
-                  validation: FormValidators.validateTreasureBrand(
-                      _postTreasureController.brand.text),
+                  // validation: FormValidators.validateTreasureBrand(
+                  //     _postTreasureController.brand.text),
                 ),
                 Text(
                   AppStrings.model,
-                  style: AppTextStyles.bodySmall,
+                  style: AppTextStyles.bodySmall
+                      .copyWith(fontWeight: FontWeight.bold),
                 ),
                 CustomTextField(
                   hintText: AppStrings.selectModel,
                   keyboardType: TextInputType.text,
                   editingController: _postTreasureController.model,
-                  validation: FormValidators.validateTreasureModel(
-                      _postTreasureController.model.text),
+                  // validation: FormValidators.validateTreasureModel(
+                  //     _postTreasureController.model.text),
                 ),
                 Text(
                   AppStrings.description,
-                  style: AppTextStyles.bodySmall,
+                  style: AppTextStyles.bodySmall
+                      .copyWith(fontWeight: FontWeight.bold),
                 ),
                 CustomTextField(
                   hintText: AppStrings.enterItemDesc,

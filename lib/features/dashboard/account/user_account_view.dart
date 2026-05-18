@@ -7,10 +7,8 @@ import 'package:tesoro_nft_app/consts/app_colors.dart';
 import 'package:tesoro_nft_app/consts/app_strings.dart';
 import 'package:tesoro_nft_app/consts/app_text_styles.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_avatar.dart';
-import 'package:tesoro_nft_app/custom_widgets/custom_btn.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_notched_appbar.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_scaffold.dart';
-import 'package:tesoro_nft_app/custom_widgets/oro_rate_card.dart';
 import 'package:tesoro_nft_app/custom_widgets/settings_central.dart';
 import 'package:tesoro_nft_app/custom_widgets/settings_header.dart';
 import 'package:tesoro_nft_app/providers/api_provider.dart';
@@ -73,11 +71,16 @@ class _UserAccountViewState extends State<UserAccountView> {
                           Positioned(
                               top: 60,
                               left: 160,
-                              child: CustomAvatar(
-                                  radius: 90,
-                                  profileImage: apis
-                                          .userProfile?.profileImage ??
-                                      'https://e7.pngegg.com/pngimages/371/667/png-clipart-computer-icons-user-profile-encapsulated-postscript-icon-black-rectangle-black.png'))
+                              child: GestureDetector(
+                                onTap: () {
+                                  context.push(Routes.updateProfile);
+                                },
+                                child: CustomAvatar(
+                                    radius: 90,
+                                    profileImage: apis
+                                            .userProfile?.profileImage ??
+                                        'https://e7.pngegg.com/pngimages/371/667/png-clipart-computer-icons-user-profile-encapsulated-postscript-icon-black-rectangle-black.png'),
+                              ))
                         ],
                       ),
                       SizedBox(
@@ -135,26 +138,29 @@ class _UserAccountViewState extends State<UserAccountView> {
                               context.push(Routes.treasurePosted),
                         ),
                       ),
+                      SizedBox(
+                        height: MediaQuery.sizeOf(context).height / 20,
+                      ),
                       // Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: OroRateCard(
-                            convertedRate: '\$2,388.93 ',
-                            usdAmount: '\$0.0119',
-                            difference: ' -21.6%',
-                            oroAvailable: '201M '),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: CustomBtn(
-                          text: AppStrings.earnOroTokens,
-                          onBtnTap: () => context.push(Routes.oroPage),
-                          trailingIcon: Icon(
-                            Icons.arrow_forward,
-                            color: AppColors.light,
-                          ),
-                        ),
-                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.symmetric(horizontal: 8),
+                      //   child: OroRateCard(
+                      //       convertedRate: '\$2,388.93 ',
+                      //       usdAmount: '\$0.0119',
+                      //       difference: ' -21.6%',
+                      //       oroAvailable: '201M '),
+                      // ),
+                      // Padding(
+                      //   padding: const EdgeInsets.all(8.0),
+                      //   child: CustomBtn(
+                      //     text: AppStrings.earnOroTokens,
+                      //     onBtnTap: () => context.push(Routes.oroPage),
+                      //     trailingIcon: Icon(
+                      //       Icons.arrow_forward,
+                      //       color: AppColors.light,
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
