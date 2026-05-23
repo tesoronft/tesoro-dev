@@ -4,16 +4,18 @@ import 'package:tesoro_nft_app/consts/app_colors.dart';
 import '../consts/app_text_styles.dart';
 
 class SettingsCentral extends StatelessWidget {
-  const SettingsCentral(
+  SettingsCentral(
       {super.key,
       required this.givenAmount,
       required this.receivedAmount,
       required this.firstTitle,
       required this.secondTitle,
       required this.onFirstTap,
-      required this.onSecondTap});
+      required this.onSecondTap,
+      this.isAmount = false});
   final String receivedAmount, givenAmount, firstTitle, secondTitle;
   final VoidCallback onFirstTap, onSecondTap;
+  bool isAmount = false;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -39,10 +41,18 @@ class SettingsCentral extends StatelessWidget {
                     style: AppTextStyles.bodyMedium
                         .copyWith(color: AppColors.dark),
                   ),
-                  Text(
-                    receivedAmount,
-                    style: AppTextStyles.headingLarge
-                        .copyWith(fontSize: 24, color: AppColors.error),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      isAmount
+                          ? Icon(Icons.paid, color: AppColors.primary, size: 24)
+                          : SizedBox.shrink(),
+                      Text(
+                        receivedAmount,
+                        style: AppTextStyles.headingLarge
+                            .copyWith(fontSize: 24, color: AppColors.error),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -66,10 +76,18 @@ class SettingsCentral extends StatelessWidget {
                     style: AppTextStyles.bodyMedium
                         .copyWith(color: AppColors.dark),
                   ),
-                  Text(
-                    givenAmount,
-                    style: AppTextStyles.headingLarge
-                        .copyWith(fontSize: 24, color: AppColors.error),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      isAmount
+                          ? Icon(Icons.paid, color: AppColors.primary, size: 24)
+                          : SizedBox.shrink(),
+                      Text(
+                        givenAmount,
+                        style: AppTextStyles.headingLarge
+                            .copyWith(fontSize: 24, color: AppColors.error),
+                      ),
+                    ],
                   ),
                 ],
               ),

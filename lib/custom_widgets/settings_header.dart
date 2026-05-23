@@ -19,9 +19,15 @@ class SettingsHeader extends StatelessWidget {
           name,
           style: AppTextStyles.headingMedium.copyWith(color: AppColors.dark),
         ),
-        Text(
-          earning,
-          style: AppTextStyles.bodyMedium.copyWith(color: AppColors.error),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.paid, color: AppColors.primary, size: 24),
+            Text(
+              earning,
+              style: AppTextStyles.bodyMedium.copyWith(color: AppColors.error),
+            ),
+          ],
         ),
         Text(
           location,

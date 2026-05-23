@@ -27,6 +27,7 @@ import 'package:tesoro_nft_app/models/treasures/treasure_post_model.dart';
 import '../features/auth/forgot-password/confirm_email_view.dart';
 import '../features/auth/forgot-password/confirm_otp_view.dart';
 import '../features/auth/forgot-password/reset_password.dart';
+import '../features/dashboard/account/amount_earned_view.dart';
 import '../features/dashboard/dashboard_view.dart';
 import '../features/dashboard/settings/settings_view.dart';
 import '../features/dashboard/treasures/all_treasures/update_treasure_view.dart';
@@ -54,6 +55,7 @@ class Routes {
   static const String updateProfile = '/dashboard/settings/updateProfile';
   static const String userAccount = '/dashboard/account';
   static const String tipsReceived = '/dashboard/account/tipsReceived';
+  static const String amountsEarned = '/dashboard/account/amountsEarned';
   static const String tipsGiven = '/dashboard/account/tipsGiven';
   static const String treasurePosted = '/dashboard/account/treasurePosted';
   static const String treasureCollected =
@@ -119,6 +121,9 @@ class Routes {
     GoRoute(
         path: tipsReceived,
         builder: (context, state) => const TipsReceivedView()),
+    GoRoute(
+        path: amountsEarned,
+        builder: (context, state) => const AmountEarnedView()),
     GoRoute(
         path: treasureCollected,
         builder: (context, state) => const TreasureCollectedView()),

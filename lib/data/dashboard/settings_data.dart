@@ -15,8 +15,8 @@ class SettingsData {
   ];
   static const List<String> settingsIcon = [
     AppImages.profile,
-    AppImages.profile,
-    AppImages.doc,
+    AppImages.about,
+    AppImages.privacyPolicy,
     AppImages.doc,
     AppImages.star,
     AppImages.chat,

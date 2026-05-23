@@ -156,7 +156,13 @@ Future<void> showAllDialogs(
           allDialogs.read<PreferencesProvider>().accessToken ?? '',
           senderId,
           treasure.productId ?? '');
-      if (result == ApiEnums.success) {
+      final result2 = await allDialogs.read<ApiProvider>().storeTreasureAmount(
+          senderId,
+          treasure.postedBy?.id ?? treasure.userId ?? '',
+          treasure.productId ?? '',
+          treasure.price?.toString() ?? '',
+          allDialogs.read<PreferencesProvider>().accessToken ?? '');
+      if (result == ApiEnums.success && result2 == ApiEnums.success) {
         CustomSnackbar().showSnackbar(SnackBarEnums.success,
             allDialogs.read<ApiProvider>().responseTxt, allDialogs);
         Navigator.of(allDialogs).pop(DialogEnums.treasureTaken);

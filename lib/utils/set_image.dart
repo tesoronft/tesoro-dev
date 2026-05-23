@@ -14,22 +14,27 @@ class SetImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return imagePath.contains('https')
-        ? CachedNetworkImage(
-            key: ValueKey(imagePath),
-            cacheKey: imagePath,
-            imageUrl: imagePath,
-            width: width,
-            height: height,
-            filterQuality: FilterQuality.high,
-            fit: BoxFit.cover,
-            errorWidget: (context, url, error) => Container(
-              color: Colors.grey[300],
-              height: height,
+        ? InteractiveViewer(
+            maxScale: 4.0,
+            minScale: 0.5,
+            clipBehavior: Clip.none,
+            child: CachedNetworkImage(
+              key: ValueKey(imagePath),
+              cacheKey: imagePath,
+              imageUrl: imagePath,
               width: width,
-              child: const Icon(
-                Icons.broken_image_outlined,
-                color: Colors.grey,
-                size: 32,
+              height: height,
+              filterQuality: FilterQuality.high,
+              fit: BoxFit.cover,
+              errorWidget: (context, url, error) => Container(
+                color: Colors.grey[300],
+                height: height,
+                width: width,
+                child: const Icon(
+                  Icons.broken_image_outlined,
+                  color: Colors.grey,
+                  size: 32,
+                ),
               ),
             ),
           )

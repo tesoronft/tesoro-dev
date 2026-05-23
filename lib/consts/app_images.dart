@@ -22,6 +22,8 @@ class AppImages {
   static const String offline = 'assets/images/offline.png';
   // Settings
   static const String profile = 'assets/images/profileIcon.svg';
+  static const String privacyPolicy = 'assets/images/privacyPolicy.svg';
+  static const String about = 'assets/images/aboutUs.svg';
   static const String star = 'assets/images/star.svg';
   static const String diamond = 'assets/images/diamond.svg';
   static const String share = 'assets/images/share.svg';

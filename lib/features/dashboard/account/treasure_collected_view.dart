@@ -6,10 +6,8 @@ import 'package:tesoro_nft_app/consts/app_strings.dart';
 import 'package:tesoro_nft_app/custom_widgets/custom_scaffold.dart';
 import 'package:tesoro_nft_app/custom_widgets/treasure_collected_card.dart';
 import 'package:tesoro_nft_app/custom_widgets/treasures/empty_view.dart';
-import 'package:tesoro_nft_app/features/others/offline_view.dart';
 import 'package:tesoro_nft_app/providers/api_provider.dart';
 import 'package:tesoro_nft_app/providers/preferences_provider.dart';
-import 'package:tesoro_nft_app/utils/internet_checker.dart';
 
 import '../../../custom_widgets/permission_enable_component.dart';
 import '../../../custom_widgets/shimmer_effect.dart';

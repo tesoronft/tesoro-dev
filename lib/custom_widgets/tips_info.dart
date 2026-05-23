@@ -5,14 +5,16 @@ import 'package:tesoro_nft_app/consts/app_text_styles.dart';
 import 'package:tesoro_nft_app/utils/covert_time_to_minutes.dart';
 
 class TipsInfo extends StatelessWidget {
-  const TipsInfo(
+  TipsInfo(
       {super.key,
       required this.address,
       required this.amountTitle,
       required this.date,
       required this.totalAmount,
-      required this.userName});
+      required this.userName,
+      this.isAmountEarned = true});
   final String userName, date, amountTitle, totalAmount, address;
+  bool isAmountEarned = true;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -53,20 +55,37 @@ class TipsInfo extends StatelessWidget {
                 )
               ],
             ),
-            RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                      text: amountTitle,
-                      style: AppTextStyles.labelMedium
-                          .copyWith(fontWeight: FontWeight.w900)),
-                  TextSpan(
-                      text: totalAmount,
-                      style: AppTextStyles.labelMedium
-                          .copyWith(color: AppColors.currency)),
-                ],
-              ),
+            Row(
+              children: [
+                Text(amountTitle,
+                    style: AppTextStyles.labelMedium
+                        .copyWith(fontWeight: FontWeight.w900)),
+                Row(
+                  children: [
+                    isAmountEarned
+                        ? Icon(Icons.paid, color: AppColors.primary, size: 20)
+                        : SizedBox(),
+                    Text(totalAmount,
+                        style: AppTextStyles.labelMedium
+                            .copyWith(color: AppColors.currency)),
+                  ],
+                ),
+              ],
             ),
+            // RichText(
+            //   text: TextSpan(
+            //     children: [
+            //       TextSpan(
+            //           text: amountTitle,
+            //           style: AppTextStyles.labelMedium
+            //               .copyWith(fontWeight: FontWeight.w900)),
+            //       TextSpan(
+            //           text: totalAmount,
+            //           style: AppTextStyles.labelMedium
+            //               .copyWith(fontWeight: FontWeight.w900)),
+            //     ],
+            //   ),
+            // ),
             SizedBox(
               width: 350,
               child: RichText(

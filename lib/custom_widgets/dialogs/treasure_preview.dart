@@ -62,7 +62,7 @@ class TreasurePreview extends StatelessWidget {
                   : RichText(
                       text: TextSpan(children: [
                       TextSpan(
-                        text: '${treasure.price ?? '0'}',
+                        text: '\$${treasure.price ?? '0'}',
                         style: AppTextStyles.bodySmall.copyWith(
                             fontWeight: FontWeight.bold,
                             color: AppColors.dark,

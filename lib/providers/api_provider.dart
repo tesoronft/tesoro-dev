@@ -48,10 +48,11 @@ class ApiProvider with ChangeNotifier {
   ConditionsModelList? get conditionsList => _conditionsList;
   GetAllCollectedTreasure? _allCollectedTreasure;
   GetAllCollectedTreasure? get allCollectedTreasure => _allCollectedTreasure;
-  ReceivedTipsResponse? _receivedTipsModel;
+  ReceivedTipsResponse? _receivedTipsModel, _treasureAmountsModel;
   SendedTipsResponse? _giveTipsModel;
   SendedTipsResponse? get givenTipsModel => _giveTipsModel;
   ReceivedTipsResponse? get receivedTipsModel => _receivedTipsModel;
+  ReceivedTipsResponse? get treasureAmountsModel => _treasureAmountsModel;
   AllMarkers? _allMarkers;
   AllMarkers? get allMarkers => _allMarkers;
 
@@ -73,6 +74,7 @@ class ApiProvider with ChangeNotifier {
     _conditionsList = null;
     _allCollectedTreasure = null;
     _receivedTipsModel = null;
+    _treasureAmountsModel = null;
     _giveTipsModel = null;
     _allMarkers = null;
     super.dispose();
@@ -661,7 +663,7 @@ class ApiProvider with ChangeNotifier {
       if (response.statusCode == 201) {
         final json = jsonDecode(response.body);
         log(response.body);
-        _responseTxt = 'Data Received';
+        _responseTxt = 'Treasure Fetched Successfully';
         _treasureGetModel = TreasureGetModel.fromJson(json);
         _isTreasureLoading = false;
         notifyListeners();
@@ -850,7 +852,7 @@ class ApiProvider with ChangeNotifier {
       });
       if (response.statusCode == 201) {
         final json = jsonDecode(response.body);
-        log(json);
+        log(response.body);
         _responseTxt = 'Treasure Removed Successfully';
         _isLoading = false;
         notifyListeners();
@@ -1061,6 +1063,78 @@ class ApiProvider with ChangeNotifier {
         return ApiEnums.failed;
       }
     } on HttpResponseError catch (e) {
+      log(e.toString());
+      _isLoading = false;
+      notifyListeners();
+      return ApiEnums.failed;
+    }
+  }
+
+  // Amount Received through treasure collection
+  Future<ApiEnums> storeTreasureAmount(String receiverId, String senderId,
+      String treasureId, String amount, String accessToken) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final response = await https
+          .post(Uri.parse('$baseUrl/treasure-collects/create'), headers: {
+        'Authorization': 'Bearer $accessToken',
+      }, body: {
+        "givenUser": senderId,
+        "receivedUser": receiverId,
+        "treasure": treasureId,
+        "amount": amount,
+      });
+      if (response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        log(response.body);
+        _responseTxt = json['message'];
+        _isLoading = false;
+        notifyListeners();
+        return ApiEnums.success;
+      } else {
+        log(response.body);
+        _responseTxt = 'Treasure amount not stored. Please try again.';
+        _isLoading = false;
+        notifyListeners();
+        return ApiEnums.failed;
+      }
+    } catch (e) {
+      log(e.toString());
+      _responseTxt = e.toString();
+      _isLoading = false;
+      notifyListeners();
+      return ApiEnums.failed;
+    }
+  }
+
+  Future<ApiEnums> getTreasuresAmounts(
+      String uid, String accessToken, int page) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final response = await https.post(
+          Uri.parse('$baseUrl/treasure-collects/received?page=$page&limit=5'),
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+          },
+          body: {
+            "userId": uid
+          });
+      if (response.statusCode == 201) {
+        final jsonData = jsonDecode(response.body);
+        log(response.body);
+        _treasureAmountsModel = ReceivedTipsResponse.fromJson(jsonData);
+        _isLoading = false;
+        notifyListeners();
+        return ApiEnums.success;
+      } else {
+        log(response.body);
+        _isLoading = false;
+        notifyListeners();
+        return ApiEnums.failed;
+      }
+    } catch (e) {
       log(e.toString());
       _isLoading = false;
       notifyListeners();

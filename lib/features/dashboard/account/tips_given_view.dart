@@ -99,7 +99,7 @@ class _TipsGivenViewState extends State<TipsGivenView> {
                                       'N/A',
                                   amountTitle: AppStrings.amountTipped,
                                   date: thisTip?.createdAt ?? 'N/A',
-                                  totalAmount: '\$${thisTip?.amount}',
+                                  totalAmount: '${thisTip?.amount}',
                                   userName:
                                       thisTip?.receiverData?.name ?? 'N/A'),
                             );

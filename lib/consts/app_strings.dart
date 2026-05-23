@@ -156,6 +156,7 @@ class AppStrings {
   static const String paymentAndDeposit = 'Payment and Deposit Methods';
   static const String tipsHistory = 'Tips History';
   static const String tipsReceived = 'Tips Received';
+  static const String amountEarned = 'Amount Earned';
   static const String tipsGiven = 'Tips Given';
   static const String treasureHistory = 'Treasure History';
   static const String treasureCollected = 'Treasure Collected';

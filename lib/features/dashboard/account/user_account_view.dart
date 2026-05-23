@@ -88,7 +88,7 @@ class _UserAccountViewState extends State<UserAccountView> {
                       ),
                       Center(
                         child: SettingsHeader(
-                          earning: '\$${apis.userProfile?.tipReceived}',
+                          earning: '${apis.userProfile?.tipReceived}',
                           location: apis.userProfile?.email ?? '',
                           name: apis.userProfile?.name ?? '',
                         ),
@@ -109,8 +109,9 @@ class _UserAccountViewState extends State<UserAccountView> {
                       ),
                       Center(
                         child: SettingsCentral(
-                          givenAmount: '\$${apis.userProfile?.tipGiven}',
-                          receivedAmount: '\$${apis.userProfile?.tipReceived}',
+                          isAmount: true,
+                          givenAmount: '${apis.userProfile?.tipGiven}',
+                          receivedAmount: '${apis.userProfile?.tipReceived}',
                           firstTitle: AppStrings.tipsReceived,
                           secondTitle: AppStrings.tipsGiven,
                           onFirstTap: () => context.push(Routes.tipsReceived),
@@ -136,6 +137,53 @@ class _UserAccountViewState extends State<UserAccountView> {
                               context.push(Routes.treasureCollected),
                           onSecondTap: () =>
                               context.push(Routes.treasurePosted),
+                        ),
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20),
+                        child: Text(
+                          AppStrings.amountEarned,
+                          style: AppTextStyles.headingMedium
+                              .copyWith(color: AppColors.dark),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () => context.push(Routes.amountsEarned),
+                        child: Center(
+                          //padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Container(
+                            width: MediaQuery.sizeOf(context).width / 2.3,
+                            decoration: BoxDecoration(
+                                color: AppColors.light,
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: AppColors.dark, blurRadius: 2)
+                                ]),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              spacing: 10,
+                              children: [
+                                Text(
+                                  'Amount Earned',
+                                  style: AppTextStyles.bodyMedium
+                                      .copyWith(color: AppColors.dark),
+                                ),
+                                Text(
+                                  apis.userProfile
+                                              ?.totalTreasureAmountCollected !=
+                                          null
+                                      ? '\$${apis.userProfile!.totalTreasureAmountCollected}'
+                                      : '\$0.00',
+                                  style: AppTextStyles.headingLarge.copyWith(
+                                      fontSize: 24, color: AppColors.error),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                       SizedBox(

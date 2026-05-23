@@ -82,6 +82,15 @@ class _TreasureNavigationState extends State<TreasureNavigation>
       value: _controller,
       child: Consumer<TreasureNavigationController>(
         builder: (context, controller, _) {
+          final summaryDistance = controller.isNavigationStarted
+              ? controller.remainingDistanceText
+              : controller.totalDistanceText;
+          final summaryDuration = controller.isNavigationStarted
+              ? controller.remainingDurationText
+              : controller.totalDurationText;
+          final summaryLabel =
+              controller.isNavigationStarted ? 'Remaining' : 'Total';
+
           return CustomScaffold(
             backgroundColor: AppColors.light,
             child: WillPopScope(
@@ -93,7 +102,12 @@ class _TreasureNavigationState extends State<TreasureNavigation>
                       initialCameraPosition: CameraPosition(
                         target:
                             controller.currentPosition ?? const LatLng(0, 0),
-                        zoom: 15,
+                        zoom: 17,
+                        tilt: 45,
+                      ),
+                      padding: EdgeInsets.only(
+                        top: 150,
+                        bottom: controller.isNavigationStarted ? 150 : 220,
                       ),
                       myLocationEnabled: true,
                       myLocationButtonEnabled: true,
@@ -102,105 +116,247 @@ class _TreasureNavigationState extends State<TreasureNavigation>
                       polylines: controller.polylines,
                       onMapCreated: controller.onMapCreated,
                     ),
-                  SafeArea(
-                    child: Column(
-                      children: [
-                        Padding(
+                  if (controller.isLocationAllowed)
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: SafeArea(
+                        bottom: false,
+                        child: Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 12,
-                            vertical: 6,
+                            vertical: 8,
                           ),
-                          child: Row(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Material(
-                                color: AppColors.light,
-                                borderRadius: BorderRadius.circular(12),
-                                child: IconButton(
-                                  onPressed: _exitScreen,
-                                  icon: const Icon(Icons.arrow_back),
+                              Row(
+                                children: [
+                                  Material(
+                                    color: AppColors.light,
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: IconButton(
+                                      onPressed: _exitScreen,
+                                      icon: const Icon(Icons.arrow_back),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(14),
+                                decoration: BoxDecoration(
+                                  color: AppColors.light,
+                                  borderRadius: BorderRadius.circular(16),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Color(0x22000000),
+                                      blurRadius: 12,
+                                      offset: Offset(0, 6),
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      controller.isNavigationStarted
+                                          ? 'Next turn'
+                                          : 'Route preview',
+                                      style: AppTextStyles.labelMedium.copyWith(
+                                        color: AppColors.dialogBtn,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      controller.nextInstruction,
+                                      style:
+                                          AppTextStyles.headingMedium.copyWith(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 10,
+                                            vertical: 6,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.lightPrimary,
+                                            borderRadius:
+                                                BorderRadius.circular(999),
+                                          ),
+                                          child: Text(
+                                            controller.nextTurnDistanceText,
+                                            style: AppTextStyles.bodySmall
+                                                .copyWith(
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Text(
+                                          'to next turn',
+                                          style: AppTextStyles.bodySmall,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        if (controller.isLocationAllowed)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            child: Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: AppColors.light,
-                                borderRadius: BorderRadius.circular(14),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Color(0x22000000),
-                                    blurRadius: 10,
-                                    offset: Offset(0, 4),
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    controller.nextInstruction,
-                                    style: AppTextStyles.bodyMedium.copyWith(
-                                      fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  if (controller.isLocationAllowed)
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: SafeArea(
+                        top: false,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 10,
+                          ),
+                          child: Container(
+                            padding: const EdgeInsets.all(14),
+                            decoration: BoxDecoration(
+                              color: AppColors.light,
+                              borderRadius: BorderRadius.circular(18),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Color(0x22000000),
+                                  blurRadius: 12,
+                                  offset: Offset(0, -2),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      '$summaryLabel distance',
+                                      style: AppTextStyles.labelMedium.copyWith(
+                                        color: AppColors.dark,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    Text(
+                                      summaryDistance,
+                                      style: AppTextStyles.bodyMedium.copyWith(
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 6),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      '$summaryLabel time',
+                                      style: AppTextStyles.labelMedium.copyWith(
+                                        color: AppColors.dark,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    Text(
+                                      summaryDuration,
+                                      style: AppTextStyles.bodyMedium.copyWith(
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 6),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'ETA',
+                                      style: AppTextStyles.labelMedium.copyWith(
+                                        color: AppColors.dark,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    Text(
+                                      controller.etaText,
+                                      style: AppTextStyles.bodyMedium.copyWith(
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                if (controller.isReadyToStart &&
+                                    !controller.isNavigationStarted) ...[
+                                  const SizedBox(height: 12),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      onPressed: controller.startNavigation,
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: AppColors.dialogBtn,
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 16,
+                                        ),
+                                        shape: const StadiumBorder(),
+                                      ),
+                                      child: Text(
+                                        'Start',
+                                        style: AppTextStyles.bodyLarge.copyWith(
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    'Next turn in ${controller.nextTurnDistanceText}',
-                                    style: AppTextStyles.bodySmall,
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Wrap(
-                                    spacing: 12,
-                                    runSpacing: 4,
-                                    children: [
-                                      Text(
-                                        'Distance: ${controller.remainingDistanceText}',
-                                        style: AppTextStyles.bodySmall,
-                                      ),
-                                      Text(
-                                        'Time: ${controller.remainingDurationText}',
-                                        style: AppTextStyles.bodySmall,
-                                      ),
-                                      Text(
-                                        'ETA: ${controller.etaText}',
-                                        style: AppTextStyles.bodySmall,
-                                      ),
-                                    ],
-                                  ),
                                 ],
-                              ),
+                              ],
                             ),
                           ),
-                        if (controller.isRerouting)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.primary,
-                                borderRadius: BorderRadius.circular(999),
-                              ),
-                              child: Text(
-                                'Re-routing...',
-                                style: AppTextStyles.labelMedium.copyWith(
-                                  color: AppColors.dark,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                          ),
-                      ],
+                        ),
+                      ),
                     ),
-                  ),
+                  if (controller.isRerouting)
+                    Positioned(
+                      top: 200,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                            borderRadius: BorderRadius.circular(999),
+                          ),
+                          child: Text(
+                            'Re-routing...',
+                            style: AppTextStyles.labelMedium.copyWith(
+                              color: AppColors.dark,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   if (!controller.isLocationAllowed)
                     Align(
                       alignment: Alignment.bottomCenter,

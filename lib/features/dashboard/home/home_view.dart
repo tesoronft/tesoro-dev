@@ -85,6 +85,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
             position: LatLng(latitude, longitude),
             onTap: () async {
               log(markerIdValue);
+              log(markerData.id ?? '');
               final result = await api.getTreasureData(
                   markerData.id ?? '', prefs.accessToken ?? '');
               if (result == ApiEnums.success) {
@@ -158,10 +159,16 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
               ],
             ),
             margin: const EdgeInsets.symmetric(vertical: 25, horizontal: 5),
-            child: Text(
-              '\$ ${api.userProfile?.tipReceived}',
-              style: AppTextStyles.bodyLarge
-                  .copyWith(color: const Color(0xff666666)),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.paid, color: AppColors.primary, size: 24),
+                Text(
+                  ' ${api.userProfile?.tipReceived}',
+                  style: AppTextStyles.bodyLarge
+                      .copyWith(color: const Color(0xff666666)),
+                ),
+              ],
             ),
           ),
         ),

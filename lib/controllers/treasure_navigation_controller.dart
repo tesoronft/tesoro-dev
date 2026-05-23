@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -38,6 +39,7 @@ class TreasureNavigationController extends ChangeNotifier {
   LatLng? _destination;
 
   String _totalDistanceText = '--';
+  String _totalDurationText = '--';
   String _remainingDistanceText = '--';
   String _remainingDurationText = '--';
   String _etaText = '--';
@@ -47,6 +49,8 @@ class TreasureNavigationController extends ChangeNotifier {
   bool _isLocationAllowed = true;
   bool _isLoading = true;
   bool _isRerouting = false;
+  bool _isNavigationStarted = false;
+  bool _isReadyToStart = false;
   bool _hasArrived = false;
   bool _isNavigationStopped = false;
   bool _isDisposed = false;
@@ -62,14 +66,20 @@ class TreasureNavigationController extends ChangeNotifier {
   String get etaText => _etaText;
   String get nextInstruction => _nextInstruction;
   String get nextTurnDistanceText => _nextTurnDistanceText;
+  String get totalDistanceText => _totalDistanceText;
+  String get totalDurationText => _totalDurationText;
 
   bool get isLocationAllowed => _isLocationAllowed;
   bool get isLoading => _isLoading;
   bool get isRerouting => _isRerouting;
+  bool get isNavigationStarted => _isNavigationStarted;
+  bool get isReadyToStart => _isReadyToStart;
 
   Future<void> initializeNavigation(AppPermissions permissions) async {
     _isNavigationStopped = false;
     _hasArrived = false;
+    _isNavigationStarted = false;
+    _isReadyToStart = false;
 
     final permissionState = await permissions.checkLocationPermission();
 
@@ -107,7 +117,17 @@ class TreasureNavigationController extends ChangeNotifier {
       destination: _destination!,
       moveCameraToBounds: true,
     );
+    _isReadyToStart = _routePoints.isNotEmpty;
+    _safeNotify();
+  }
 
+  Future<void> startNavigation() async {
+    if (_isNavigationStarted || _isNavigationStopped) return;
+    if (!_isReadyToStart || _currentPosition == null) return;
+
+    _isNavigationStarted = true;
+    _safeNotify();
+    await _focusOnCurrentPosition();
     _listenToPositionStream();
   }
 
@@ -122,7 +142,9 @@ class TreasureNavigationController extends ChangeNotifier {
       return;
     }
 
-    if (state == AppLifecycleState.resumed && _currentPosition != null) {
+    if (state == AppLifecycleState.resumed &&
+        _currentPosition != null &&
+        _isNavigationStarted) {
       _updateProgress(_currentPosition!);
     }
   }
@@ -137,6 +159,8 @@ class TreasureNavigationController extends ChangeNotifier {
 
     _isLocationAllowed = true;
     _isLoading = true;
+    _isNavigationStarted = false;
+    _isReadyToStart = false;
     _safeNotify();
     await initializeNavigation(permissions);
   }
@@ -144,6 +168,7 @@ class TreasureNavigationController extends ChangeNotifier {
   Future<void> stopNavigationSession({bool clearMapState = true}) async {
     if (_isNavigationStopped) return;
     _isNavigationStopped = true;
+    _isNavigationStarted = false;
 
     await _liveTrackingService.stopTracking();
 
@@ -151,6 +176,7 @@ class TreasureNavigationController extends ChangeNotifier {
 
     _isRerouting = false;
     _isLoading = false;
+    _isReadyToStart = false;
     _polylines.clear();
     _routePoints.clear();
     _routeSteps.clear();
@@ -161,7 +187,7 @@ class TreasureNavigationController extends ChangeNotifier {
   }
 
   void _listenToPositionStream() {
-    if (_isNavigationStopped) return;
+    if (_isNavigationStopped || !_isNavigationStarted) return;
 
     unawaited(_liveTrackingService.startTracking(onLocation: (current) async {
       if (_isNavigationStopped || _isDisposed) return;
@@ -170,9 +196,19 @@ class TreasureNavigationController extends ChangeNotifier {
       _refreshMarkers();
       _updateProgress(current);
 
+      final destination = _destination;
+      final bearing = destination == null
+          ? 0.0
+          : _bearingBetween(current: current, destination: destination);
+
       await _mapController?.animateCamera(
         CameraUpdate.newCameraPosition(
-          CameraPosition(target: current, zoom: 16),
+          CameraPosition(
+            target: current,
+            zoom: 30,
+            tilt: 45,
+            bearing: bearing,
+          ),
         ),
       );
 
@@ -224,6 +260,8 @@ class TreasureNavigationController extends ChangeNotifier {
       _routePoints = route.polylinePoints;
       _routeSteps = route.steps;
       _totalDistanceText = route.distanceText;
+      _totalDurationText = route.durationText;
+      _isReadyToStart = _routePoints.isNotEmpty;
 
       _polylines
         ..clear()
@@ -238,6 +276,7 @@ class TreasureNavigationController extends ChangeNotifier {
     } catch (_) {
       if (_isDisposed) return;
       _nextInstruction = 'Unable to build route. Check map key or network.';
+      _isReadyToStart = false;
       _safeNotify();
     } finally {
       if (_isDisposed) return;
@@ -318,10 +357,51 @@ class TreasureNavigationController extends ChangeNotifier {
     await _mapController?.animateCamera(
       CameraUpdate.newLatLngBounds(
         bounds,
-        70,
+        140,
       ),
     );
   }
+
+  Future<void> _focusOnCurrentPosition() async {
+    final current = _currentPosition;
+    if (_mapController == null || current == null) return;
+
+    final destination = _destination;
+    final bearing = destination == null
+        ? 0.0
+        : _bearingBetween(current: current, destination: destination);
+
+    await _mapController?.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: current,
+          zoom: 20,
+          tilt: 45,
+          bearing: bearing,
+        ),
+      ),
+    );
+  }
+
+  double _bearingBetween(
+      {required LatLng current, required LatLng destination}) {
+    final lat1 = _degreesToRadians(current.latitude);
+    final lat2 = _degreesToRadians(destination.latitude);
+    final deltaLng = _degreesToRadians(
+      destination.longitude - current.longitude,
+    );
+
+    final y = math.sin(deltaLng) * math.cos(lat2);
+    final x = math.cos(lat1) * math.sin(lat2) -
+        math.sin(lat1) * math.cos(lat2) * math.cos(deltaLng);
+
+    final bearing = math.atan2(y, x);
+    return (_radiansToDegrees(bearing) + 360) % 360;
+  }
+
+  double _degreesToRadians(double degrees) => degrees * math.pi / 180;
+
+  double _radiansToDegrees(double radians) => radians * 180 / math.pi;
 
   Future<void> _handleArrived() async {
     if (_hasArrived) return;

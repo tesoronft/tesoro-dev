@@ -27,10 +27,13 @@ class SettingsTile extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 18),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
         spacing: 6,
         children: [
-          SvgPicture.asset(imageUrl),
+          SvgPicture.asset(
+            imageUrl,
+            color: AppColors.primary,
+          ),
           Text(
             title,
             style: AppTextStyles.bodyMedium

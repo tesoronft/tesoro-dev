@@ -8,11 +8,9 @@ import 'package:tesoro_nft_app/custom_widgets/custom_scaffold.dart';
 import 'package:tesoro_nft_app/custom_widgets/tips_info.dart';
 import 'package:tesoro_nft_app/custom_widgets/treasures/empty_view.dart';
 import 'package:tesoro_nft_app/providers/api_provider.dart';
-import 'package:tesoro_nft_app/utils/internet_checker.dart';
 
 import '../../../models/tips/received_tips_model.dart';
 import '../../../providers/preferences_provider.dart';
-import '../../others/offline_view.dart';
 
 class TipsReceivedView extends StatefulWidget {
   const TipsReceivedView({super.key});
@@ -108,7 +106,7 @@ class _TipsReceivedViewState extends State<TipsReceivedView> {
                                           ?.toLocal()
                                           .toString() ??
                                       'N/A',
-                                  totalAmount: '\$${thisTip?.amount}',
+                                  totalAmount: '${thisTip?.amount}',
                                   userName:
                                       thisTip?.receiverData?.name ?? 'N/A'),
                             );
