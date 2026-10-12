@@ -1,16 +1,2 @@
-# tesoro_nft_app
-
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Tesoro brings together local discovery, reuse, and community to help people find and share valuable items left out in their city.
+Tesoro is a location-based app that lets people post, discover, and claim free items in real time. By turning sidewalks into a shared, gamified map of opportunity, Tesoro brings the idea that one person’s trash is another person’s treasure to life, allowing people to find valuable items without the need to meet others, and making it easy for communities to reduce waste and pass useful items from one person to the next.
